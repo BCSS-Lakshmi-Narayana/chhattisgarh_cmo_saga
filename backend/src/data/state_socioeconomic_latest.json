@@ -1,0 +1,83 @@
+{
+  "_meta": {
+    "description": "Chhattisgarh statewide labour-market indicators from the Periodic Labour Force Survey (PLFS) Annual Report July 2023 - June 2024, Appendix-A state tables. All rates are in per cent, usual status (ps+ss), age 15 years and above, rural+urban, unless a field name says otherwise.",
+    "source": "NSO/MoSPI, Annual Report PLFS 2023-24 (July 2023 - June 2024): Table 16 (LFPR, 15+) PDF p.125 (printed A-62); Table 16 (LFPR 15-29) PDF p.123 (A-60); Table 17 (WPR, 15+) PDF p.130 (A-67); Table 17 (WPR 15-29) PDF p.128 (A-65); Table 18 (UR 15-29) PDF p.133 (A-70); Table 18 (UR 15+) PDF p.135 (A-72); Table 27 (industry by NIC-2008 section, rural+urban persons) PDF p.237; Table 35 (non-agricultural workers by enterprise type) PDF pp.276 (rural persons), 279 (urban persons), 282 (rural+urban persons); Table 32 (UR, current weekly status, 15+) PDF p.260 (A-197).",
+    "source_url": "https://www.mospi.gov.in/sites/default/files/publication_reports/AnnualReport_PLFS2023-24L2.pdf",
+    "vintage": "2023-24",
+    "definition": "Usual status (principal status + subsidiary status, ps+ss), persons aged 15 years and above. Youth = age 15-29, same definition. Column order in every state table: rural male/female/person, urban male/female/person, rural+urban male/female/person (verified from the page headers).",
+    "granularity": "statewide",
+    "granularity_note": "PLFS publishes no district-level estimates. Chhattisgarh's sample (Table 35: 2,244 sampled non-agricultural workers; 980 rural, 1,264 urban) is much larger than Goa's, but urban female and youth sub-group rates still carry wide sampling error. Use the Census 2011 file for district contrasts.",
+    "why_not_newer": "PLFS moved to a calendar-year design in 2025, so no July 2024 - June 2025 annual report exists. The Annual Report PLFS 2025 (Jan-Dec 2025, released 26-27 March 2026) is the newest release, but its state tables could not be retrieved (mospi.gov.in report PDF not found at the usual path; PIB page returned 403); the MoSPI press note has no state figures. MoSPI says 2025 estimates are not strictly comparable with earlier annual reports. See latest_headline_2025.",
+    "cross_check": "Chhattisgarh has one of the lowest usual-status unemployment rates (2.5 vs all-India 3.2) and one of the highest female LFPRs (59.5 vs all-India 41.7, Table 16 p.125) because of very high rural female participation in agriculture (rural female LFPR 65.9). Urban unemployment (7.6, female 10.6, youth urban 20.6) is far above the rural rate (1.5). The current-weekly-status rate is 6.1 (Table 32), much higher than the usual-status 2.5 - seasonal under-employment in agriculture."
+  },
+  "statewide": {
+    "labour_force_participation_rate": 71.5,
+    "lfpr_male": 83.4,
+    "lfpr_female": 59.5,
+    "work_participation_rate": 69.7,
+    "wpr_male": 81.2,
+    "wpr_female": 58.1,
+    "lfpr_rural": 75.2,
+    "lfpr_urban": 57.0,
+    "sector_employment": {
+      "agriculture": 63.84,
+      "manufacturing_and_industry": 7.54,
+      "construction": 9.56,
+      "services": 19.05,
+      "_note": "% of usually working persons (ps+ss), all ages, rural+urban (Table 27, PDF p.237). agriculture = NIC section A; manufacturing_and_industry = B mining 0.52 + C manufacturing 6.66 + D electricity 0.17 + E water/waste 0.19; construction = F; services = sections G-T summed (6.49 trade + 1.90 transport + 1.29 accommodation & food + 0.18 + 0.56 + 0.08 + 0.23 + 0.31 + 1.28 public admin + 2.79 education + 1.85 health + 0.14 + 1.22 + 0.73 households). The published sections add to 99.99."
+    },
+    "unemployment_rate": 2.5,
+    "unemployment_rural": 1.5,
+    "unemployment_urban": 7.6,
+    "unemployment_youth_15_29": 6.3,
+    "unemployment_female": 2.4,
+    "unemployment_male": 2.6,
+    "unemployment_female_urban": 10.6,
+    "informal_sector_rural": 80.6,
+    "informal_sector_urban": 73.3,
+    "_informal_note": "Share of non-agricultural workers (NIC divisions 05-99, ps+ss) in proprietary and partnership enterprises (Table 35, column 2). Column 8 is employer's households (verified from word positions in the PDF header: col 2 proprietary & partnership, 3 govt/local body/PSE, 4 autonomous bodies, 5 public/private ltd company, 6 cooperatives, 7 trust/NPI, 8 employer's households, 9 others); counting them too gives rural 81.4 and urban 77.4. Rural+urban proprietary & partnership = 77.8. This measures the informal SECTOR, not informal employment.",
+    "extra": {
+      "unemployment_female_rural": 1.3,
+      "unemployment_male_rural": 1.6,
+      "unemployment_male_urban": 6.4,
+      "lfpr_male_rural": 84.6,
+      "lfpr_female_rural": 65.9,
+      "lfpr_male_urban": 78.8,
+      "lfpr_female_urban": 34.0,
+      "youth_15_29": {
+        "unemployment_rate": 6.3,
+        "unemployment_male": 6.6,
+        "unemployment_female": 5.8,
+        "unemployment_rural": 3.9,
+        "unemployment_urban": 20.6,
+        "unemployment_female_urban": 26.7,
+        "lfpr": 61.7,
+        "wpr": 57.8,
+        "_note": "Table 18 (p.133), Table 16 (p.123) and Table 17 (p.128), age 15-29, ps+ss. All-India youth UR for comparison: 10.2."
+      },
+      "unemployment_rate_cws_15plus": 6.1,
+      "unemployment_rate_cws_rural": 5.2,
+      "unemployment_rate_cws_urban": 10.3,
+      "all_india_unemployment_rate_15plus": 3.2,
+      "all_india_youth_unemployment_15_29": 10.2,
+      "sample_non_agri_workers": {
+        "rural": 980,
+        "urban": 1264,
+        "total": 2244
+      }
+    }
+  },
+  "latest_headline_2025": {
+    "vintage": "Calendar year 2025 (PLFS Annual Report 2025, Jan-Dec 2025)",
+    "unemployment_rate": 2.3,
+    "unemployment_rural": 1.8,
+    "unemployment_urban": 5.7,
+    "unemployment_female": 2.2,
+    "unemployment_youth_15_29": null,
+    "all_india_unemployment_rate_15plus": 3.1,
+    "all_india_youth_unemployment_15_29": 9.9,
+    "all_india_lfpr_15plus": 59.3,
+    "all_india_wpr_15plus": 57.4,
+    "note": "The Chhattisgarh figures (UR 2.3%, rural 1.8%, urban 5.7%, female 2.2%; age 15+, usual status) come from press coverage of the PLFS 2025 annual report (INH News, 12 May 2026: https://www.inhnews.in/news/chhattisgarh-unemployment-rate-2025-plfs-report; the 2.3% headline also carried by PTI). They were NOT checked against the report's state table. All-India UR 3.1% and youth 9.9% as used in the Goa file (MoSPI press note https://www.mospi.gov.in/uploads/latestReleases/latest_release_1774607827733_3e8964a9-268b-4cc9-ad65-cfc8a9e32f08_Press_note_AR_PLFS_2025_23032025_V2.1_26032026_final.pdf); all-India LFPR 59.3 and WPR 57.4 from the same press note as summarised in search results. Chhattisgarh youth rate for 2025 not found (null)."
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "surguja": [
+    "PREMNAGAR",
+    "BHATGAON",
+    "PRATAPPUR",
+    "RAMANUJGANJ",
+    "SAMRI",
+    "LUNDRA",
+    "AMBIKAPUR",
+    "SITAPUR"
+  ],
+  "raigarh": [
+    "JASHPUR",
+    "KUNKURI",
+    "PATHALGAON",
+    "LAILUNGA",
+    "RAIGARH",
+    "SARANGARH",
+    "KHARSIA",
+    "DHARAMJAIGARH"
+  ],
+  "janjgirchampa": [
+    "AKALTARA",
+    "JANJGIR-CHAMPA",
+    "SAKTI",
+    "CHANDRAPUR",
+    "JAIJAIPUR",
+    "PAMGARH",
+    "BILAIGARH",
+    "KASDOL"
+  ],
+  "korba": [
+    "BHARATPUR-SONHAT",
+    "MANENDRAGARH",
+    "BAIKUNTHPUR",
+    "RAMPUR",
+    "KORBA",
+    "KATGHORA",
+    "PALI-TANAKHAR",
+    "MARWAHI"
+  ],
+  "bilaspur": [
+    "KOTA",
+    "LORMI",
+    "MUNGELI",
+    "TAKHATPUR",
+    "BILHA",
+    "BILASPUR",
+    "BELTARA",
+    "MASTURI"
+  ],
+  "rajnandgaon": [
+    "PANDARIYA",
+    "KAWARDHA",
+    "KHAIRAGARH",
+    "DONGARGARH",
+    "RAJNANDGAON",
+    "DONGARGAON",
+    "KHUJJI",
+    "MOHLA-MANPUR"
+  ],
+  "durg": [
+    "PATAN",
+    "DURG-RURAL",
+    "DURG CITY",
+    "BHILAI NAGAR",
+    "VAISHALI NAGAR",
+    "AHIWARA",
+    "SAJA",
+    "BEMETARA",
+    "NAWAGARH"
+  ],
+  "raipur": [
+    "BALODA BAZAR",
+    "BHATAPARA",
+    "DHARSIWA",
+    "RAIPUR RURAL",
+    "RAIPUR CITY WEST",
+    "RAIPUR CITY NORTH",
+    "RAIPUR CITY SOUTH",
+    "ARANG",
+    "ABHANPUR"
+  ],
+  "mahasamund": [
+    "SARAIPALI",
+    "BASNA",
+    "KHALLARI",
+    "MAHASAMUND",
+    "RAJIM",
+    "BINDRANAWAGARH",
+    "KURUD",
+    "DHAMTARI"
+  ],
+  "bastar": [
+    "KONDAGAON",
+    "NARAYANPUR",
+    "BASTAR",
+    "JAGDALPUR",
+    "CHITRAKOT",
+    "DANTEWADA",
+    "BIJAPUR",
+    "KONTA"
+  ],
+  "kanker": [
+    "SIHAWA",
+    "SANJARI BALOD",
+    "DONDI LOHARA",
+    "GUNDERDEHI",
+    "ANTAGARH",
+    "BHANUPRATAPPUR",
+    "KANKER",
+    "KESHKAL"
+  ]
+}

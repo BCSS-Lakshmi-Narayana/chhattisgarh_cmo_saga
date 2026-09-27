@@ -1,0 +1,1905 @@
+{
+  "_meta": {
+    "description": "Census 2011 Primary Census Abstract (PCA) worker classification for Chhattisgarh. The four worker categories are % of TOTAL workers (main + marginal) and sum to 100. work_participation_rate = total workers / total population x 100. Extra fields beyond the Goa schema: literacy_rate (literates / population aged 7+), st_pct and sc_pct (% of population), urban_pct (% living in statutory + census towns), sex_ratio (females per 1000 males).",
+    "source": "Census of India 2011, PCA State & District level (NADA catalog 6191, DDW_PCA0000_2011_Indiastatedist.xlsx) for the 18 enumeration districts; PCA at town, village and ward level for each Chhattisgarh district (NADA catalogs 6591-6608, 'PCA TV', one xlsx per 2011 district) for the re-aggregation to current districts and tehsils; CD-block PCA (catalogs 41078-41095) cross-checked for rural totals. Village locations: Census 2011 village layer (ramSeraph/indian_admin_boundaries release census-2011, Census_Villages.parquet, joined on the 6-digit village code). Current boundaries: LGD district/sub-district polygons (ramSeraph release districts/subdistricts, Dec 2023) with the Nawagarh (03311) district label corrected to Bemetara.",
+    "source_url": "https://censusindia.gov.in/nada/index.php/catalog/6191",
+    "source_urls_tv": "https://censusindia.gov.in/nada/index.php/catalog/6591 ... /catalog/6608",
+    "vintage": "2011 (reference date 1 March 2011)",
+    "district_note": "Census 2011 enumerated Chhattisgarh in 18 districts (PCA codes 400-417): Koriya, Surguja, Jashpur, Raigarh, Korba, Janjgir-Champa, Bilaspur, Kabeerdham, Rajnandgaon, Durg, Raipur, Mahasamund, Dhamtari, Uttar Bastar Kanker, Bastar, Narayanpur, Dakshin Bastar Dantewada, Bijapur. The 9 districts of 1 Jan 2012 (27 total), Gaurela-Pendra-Marwahi (2020) and the five 2022 districts (33 total) did not exist; there is no Census 2011 table for them. The 18 top-level keys below are the 2011 districts as enumerated (their numbers equal the official PCA district rows exactly). current_boundaries re-aggregates every one of the 20,126 PCA villages and 190 town units (town parts counted once, 'M Corp. + OG' rows used instead of the plain rows) into the 33 current districts: villages by their Census-2011 point location inside the LGD 2023 district polygons (4 villages without a point, 1,026 persons, by their 2011 tehsil majority), towns by the current district of the majority of their 2011 tehsil's villages (all Chirmiri parts forced to MCB). Totals reproduce the state exactly (25,545,198 persons, 12,180,225 workers). Mapping of current districts to 2011 parents (share of 2011 population): Balod, Bemetara, Durg <- Durg; Baloda Bazar-Bhatapara, Gariaband, Raipur <- Raipur; Sarangarh-Bilaigarh <- Raigarh 62.7% + Raipur 37.3%; Balrampur-Ramanujganj, Surajpur, Surguja <- Surguja (Surajpur 0.7% Koriya); Koriya, Manendragarh-Chirmiri-Bharatpur <- Koriya; Mungeli, Gaurela-Pendra-Marwahi, Bilaspur <- Bilaspur; Janjgir-Champa, Sakti <- Janjgir-Champa; Rajnandgaon, Khairagarh-Chhuikhadan-Gandai, Mohla-Manpur-Ambagarh Chowki <- Rajnandgaon; Kabirdham <- Kabeerdham; Korba <- Korba; Raigarh <- Raigarh; Jashpur <- Jashpur; Mahasamund <- Mahasamund; Dhamtari <- Dhamtari; Kanker <- Uttar Bastar Kanker; Bastar, Kondagaon <- Bastar; Narayanpur <- Narayanpur (3.9% Uttar Bastar Kanker); Dantewada <- Dakshin Bastar Dantewada; Sukma <- Dakshin Bastar Dantewada 92.4% + Bastar 7.4%; Bijapur <- Bijapur (3.2% Narayanpur). Shares below 1% are mostly point-vs-polygon noise at district edges.",
+    "accuracy_note": "The re-aggregation is exact at the village level but depends on (a) the Census village points and (b) the Dec-2023 LGD polygons. Where the Chhattisgarh DES published 2011 figures for the new districts (Socio Economic Indicator 2015) they agree within 1% for most districts; larger gaps: Sukma +6.8% / Bastar -2.5% (Tongpal/Darbha area), Koriya 229,337 vs DES 247,427 and MCB 423,960 vs DES '376,000' (DES figure is rounded and the two DES figures do not add up to 2011 Koriya's 658,917), Narayanpur -4.0% / Bijapur +4.4% (the Abujhmarh line). Interior Abujhmarh villages were not house-listed in 2011, so Narayanpur/Bijapur figures under-count.",
+    "generated": "2026-09-26"
+  },
+  "koriya": {
+    "population_2011": 658917,
+    "total_workers": 307071,
+    "work_participation_rate": 46.6,
+    "wpr_male": 55.41,
+    "wpr_female": 37.51,
+    "cultivators": 38.59,
+    "agricultural_labourers": 30.82,
+    "household_industry": 1.57,
+    "other_workers": 29.01,
+    "literacy_rate": 70.64,
+    "st_pct": 46.18,
+    "sc_pct": 8.31,
+    "urban_pct": 31.16,
+    "sex_ratio": 968,
+    "census_district_code": 400,
+    "census_parent_district": "Koriya",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 400",
+    "current_districts": {
+      "Manendragarh-Chirmiri-Bharatpur": 64.3,
+      "Koriya": 34.8
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "surguja": {
+    "population_2011": 2359886,
+    "total_workers": 1155807,
+    "work_participation_rate": 48.98,
+    "wpr_male": 54.47,
+    "wpr_female": 43.36,
+    "cultivators": 40.26,
+    "agricultural_labourers": 45.28,
+    "household_industry": 1.09,
+    "other_workers": 13.37,
+    "literacy_rate": 60.01,
+    "st_pct": 55.11,
+    "sc_pct": 4.9,
+    "urban_pct": 10.29,
+    "sex_ratio": 978,
+    "census_district_code": 401,
+    "census_parent_district": "Surguja",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 401",
+    "current_districts": {
+      "Surguja": 35.8,
+      "Surajpur": 33.2,
+      "Balrampur-Ramanujganj": 31.0
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "jashpur": {
+    "population_2011": 851669,
+    "total_workers": 487360,
+    "work_participation_rate": 57.22,
+    "wpr_male": 62.07,
+    "wpr_female": 52.4,
+    "cultivators": 46.55,
+    "agricultural_labourers": 40.54,
+    "household_industry": 1.55,
+    "other_workers": 11.36,
+    "literacy_rate": 67.92,
+    "st_pct": 62.28,
+    "sc_pct": 5.74,
+    "urban_pct": 8.92,
+    "sex_ratio": 1005,
+    "census_district_code": 402,
+    "census_parent_district": "Jashpur",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 402",
+    "current_districts": {
+      "Jashpur": 100.0
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "raigarh": {
+    "population_2011": 1493984,
+    "total_workers": 690167,
+    "work_participation_rate": 46.2,
+    "wpr_male": 57.21,
+    "wpr_female": 35.09,
+    "cultivators": 30.18,
+    "agricultural_labourers": 46.91,
+    "household_industry": 1.44,
+    "other_workers": 21.46,
+    "literacy_rate": 73.26,
+    "st_pct": 33.84,
+    "sc_pct": 15.06,
+    "urban_pct": 16.49,
+    "sex_ratio": 991,
+    "census_district_code": 403,
+    "census_parent_district": "Raigarh",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 403",
+    "current_districts": {
+      "Raigarh": 74.4,
+      "Sarangarh-Bilaigarh": 25.5
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "korba": {
+    "population_2011": 1206640,
+    "total_workers": 521186,
+    "work_participation_rate": 43.19,
+    "wpr_male": 54.38,
+    "wpr_female": 31.64,
+    "cultivators": 21.69,
+    "agricultural_labourers": 42.56,
+    "household_industry": 1.52,
+    "other_workers": 34.23,
+    "literacy_rate": 72.37,
+    "st_pct": 40.9,
+    "sc_pct": 10.33,
+    "urban_pct": 36.99,
+    "sex_ratio": 969,
+    "census_district_code": 404,
+    "census_parent_district": "Korba",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 404",
+    "current_districts": {
+      "Korba": 99.9
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "janjgirchampa": {
+    "population_2011": 1619707,
+    "total_workers": 846466,
+    "work_participation_rate": 52.26,
+    "wpr_male": 58.63,
+    "wpr_female": 45.8,
+    "cultivators": 33.23,
+    "agricultural_labourers": 47.53,
+    "household_industry": 1.87,
+    "other_workers": 17.37,
+    "literacy_rate": 73.07,
+    "st_pct": 11.56,
+    "sc_pct": 24.57,
+    "urban_pct": 13.9,
+    "sex_ratio": 986,
+    "census_district_code": 405,
+    "census_parent_district": "Janjgir-Champa",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 405",
+    "current_districts": {
+      "Janjgir-Champa": 59.5,
+      "Sakti": 40.4
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "bilaspur": {
+    "population_2011": 2663629,
+    "total_workers": 1203197,
+    "work_participation_rate": 45.17,
+    "wpr_male": 52.94,
+    "wpr_female": 37.17,
+    "cultivators": 23.0,
+    "agricultural_labourers": 47.56,
+    "household_industry": 1.8,
+    "other_workers": 27.64,
+    "literacy_rate": 70.78,
+    "st_pct": 18.71,
+    "sc_pct": 20.76,
+    "urban_pct": 25.52,
+    "sex_ratio": 971,
+    "census_district_code": 406,
+    "census_parent_district": "Bilaspur",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 406",
+    "current_districts": {
+      "Bilaspur": 60.6,
+      "Mungeli": 26.6,
+      "Gaurela-Pendra-Marwahi": 12.7
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "kabirdham": {
+    "population_2011": 822526,
+    "total_workers": 404156,
+    "work_participation_rate": 49.14,
+    "wpr_male": 52.68,
+    "wpr_female": 45.58,
+    "cultivators": 41.48,
+    "agricultural_labourers": 45.98,
+    "household_industry": 0.75,
+    "other_workers": 11.78,
+    "literacy_rate": 60.85,
+    "st_pct": 20.31,
+    "sc_pct": 14.56,
+    "urban_pct": 10.63,
+    "sex_ratio": 996,
+    "census_district_code": 407,
+    "census_parent_district": "Kabeerdham (Kabirdham)",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 407",
+    "current_districts": {
+      "Kabirdham": 99.7
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "rajnandgaon": {
+    "population_2011": 1537133,
+    "total_workers": 800092,
+    "work_participation_rate": 52.05,
+    "wpr_male": 57.23,
+    "wpr_female": 46.94,
+    "cultivators": 42.76,
+    "agricultural_labourers": 36.26,
+    "household_industry": 1.36,
+    "other_workers": 19.63,
+    "literacy_rate": 75.96,
+    "st_pct": 26.36,
+    "sc_pct": 10.19,
+    "urban_pct": 17.73,
+    "sex_ratio": 1015,
+    "census_district_code": 408,
+    "census_parent_district": "Rajnandgaon",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 408",
+    "current_districts": {
+      "Rajnandgaon": 57.6,
+      "Khairagarh-Chhuikhadan-Gandai": 24.0,
+      "Mohla-Manpur-Ambagarh Chowki": 18.5
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "durg": {
+    "population_2011": 3343872,
+    "total_workers": 1496805,
+    "work_participation_rate": 44.76,
+    "wpr_male": 54.8,
+    "wpr_female": 34.61,
+    "cultivators": 26.21,
+    "agricultural_labourers": 37.44,
+    "household_industry": 1.51,
+    "other_workers": 34.84,
+    "literacy_rate": 79.06,
+    "st_pct": 11.88,
+    "sc_pct": 13.7,
+    "urban_pct": 38.42,
+    "sex_ratio": 988,
+    "census_district_code": 409,
+    "census_parent_district": "Durg",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 409",
+    "current_districts": {
+      "Durg": 51.5,
+      "Balod": 24.8,
+      "Bemetara": 23.4
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "raipur": {
+    "population_2011": 4063872,
+    "total_workers": 1757664,
+    "work_participation_rate": 43.25,
+    "wpr_male": 53.7,
+    "wpr_female": 32.63,
+    "cultivators": 21.81,
+    "agricultural_labourers": 40.34,
+    "household_industry": 1.94,
+    "other_workers": 35.92,
+    "literacy_rate": 75.56,
+    "st_pct": 11.72,
+    "sc_pct": 17.82,
+    "urban_pct": 36.5,
+    "sex_ratio": 984,
+    "census_district_code": 410,
+    "census_parent_district": "Raipur",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 410",
+    "current_districts": {
+      "Raipur": 53.2,
+      "Baloda Bazar-Bhatapara": 26.5,
+      "Gariaband": 14.7,
+      "Sarangarh-Bilaigarh": 5.6
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "mahasamund": {
+    "population_2011": 1032754,
+    "total_workers": 499260,
+    "work_participation_rate": 48.34,
+    "wpr_male": 57.01,
+    "wpr_female": 39.82,
+    "cultivators": 27.88,
+    "agricultural_labourers": 55.7,
+    "household_industry": 1.23,
+    "other_workers": 15.19,
+    "literacy_rate": 71.02,
+    "st_pct": 27.1,
+    "sc_pct": 13.52,
+    "urban_pct": 11.63,
+    "sex_ratio": 1017,
+    "census_district_code": 411,
+    "census_parent_district": "Mahasamund",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 411",
+    "current_districts": {
+      "Mahasamund": 100.0
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "dhamtari": {
+    "population_2011": 799781,
+    "total_workers": 402895,
+    "work_participation_rate": 50.38,
+    "wpr_male": 56.89,
+    "wpr_female": 43.92,
+    "cultivators": 33.62,
+    "agricultural_labourers": 45.32,
+    "household_industry": 1.81,
+    "other_workers": 19.25,
+    "literacy_rate": 78.36,
+    "st_pct": 25.96,
+    "sc_pct": 7.32,
+    "urban_pct": 18.65,
+    "sex_ratio": 1010,
+    "census_district_code": 412,
+    "census_parent_district": "Dhamtari",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 412",
+    "current_districts": {
+      "Dhamtari": 100.0
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "kanker": {
+    "population_2011": 748941,
+    "total_workers": 389359,
+    "work_participation_rate": 51.99,
+    "wpr_male": 58.26,
+    "wpr_female": 45.75,
+    "cultivators": 49.83,
+    "agricultural_labourers": 33.17,
+    "household_industry": 2.01,
+    "other_workers": 15.0,
+    "literacy_rate": 70.29,
+    "st_pct": 55.38,
+    "sc_pct": 4.21,
+    "urban_pct": 10.25,
+    "sex_ratio": 1006,
+    "census_district_code": 413,
+    "census_parent_district": "Uttar Bastar Kanker",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 413",
+    "current_districts": {
+      "Kanker": 99.3
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "bastar": {
+    "population_2011": 1413199,
+    "total_workers": 726531,
+    "work_participation_rate": 51.41,
+    "wpr_male": 57.89,
+    "wpr_female": 45.08,
+    "cultivators": 39.15,
+    "agricultural_labourers": 39.62,
+    "household_industry": 1.49,
+    "other_workers": 19.74,
+    "literacy_rate": 54.4,
+    "st_pct": 65.93,
+    "sc_pct": 2.69,
+    "urban_pct": 13.69,
+    "sex_ratio": 1023,
+    "census_district_code": 414,
+    "census_parent_district": "Bastar",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 414",
+    "current_districts": {
+      "Bastar": 57.6,
+      "Kondagaon": 40.7,
+      "Sukma": 1.4
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "narayanpur": {
+    "population_2011": 139820,
+    "total_workers": 71089,
+    "work_participation_rate": 50.84,
+    "wpr_male": 54.47,
+    "wpr_female": 47.2,
+    "cultivators": 62.44,
+    "agricultural_labourers": 19.44,
+    "household_industry": 1.32,
+    "other_workers": 16.8,
+    "literacy_rate": 48.62,
+    "st_pct": 77.36,
+    "sc_pct": 3.56,
+    "urban_pct": 15.81,
+    "sex_ratio": 994,
+    "census_district_code": 415,
+    "census_parent_district": "Narayanpur",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 415",
+    "current_districts": {
+      "Narayanpur": 91.5,
+      "Bijapur": 6.1,
+      "Kanker": 1.4
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "dantewada": {
+    "population_2011": 533638,
+    "total_workers": 286595,
+    "work_participation_rate": 53.71,
+    "wpr_male": 58.03,
+    "wpr_female": 49.46,
+    "cultivators": 57.71,
+    "agricultural_labourers": 24.21,
+    "household_industry": 0.81,
+    "other_workers": 17.28,
+    "literacy_rate": 42.12,
+    "st_pct": 76.88,
+    "sc_pct": 2.44,
+    "urban_pct": 18.03,
+    "sex_ratio": 1020,
+    "census_district_code": 416,
+    "census_parent_district": "Dakshin Bastar Dantewada",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 416",
+    "current_districts": {
+      "Dantewada": 53.0,
+      "Sukma": 46.3
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "bijapur": {
+    "population_2011": 255230,
+    "total_workers": 134525,
+    "work_participation_rate": 52.71,
+    "wpr_male": 55.64,
+    "wpr_female": 49.72,
+    "cultivators": 49.44,
+    "agricultural_labourers": 37.06,
+    "household_industry": 1.04,
+    "other_workers": 12.46,
+    "literacy_rate": 40.86,
+    "st_pct": 80.0,
+    "sc_pct": 3.97,
+    "urban_pct": 11.6,
+    "sex_ratio": 984,
+    "census_district_code": 417,
+    "census_parent_district": "Bijapur",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification); NADA catalog 6191, district code 417",
+    "current_districts": {
+      "Bijapur": 99.6
+    },
+    "current_districts_note": "% of this 2011 district's population now in each current district (shares <1% omitted: boundary noise)"
+  },
+  "current_boundaries": {
+    "note": "Census 2011 numbers re-aggregated to the 33 current (2026) district boundaries; see _meta.district_note for the method. census_parent_district lists the 2011 district(s) and the share of the new district's 2011 population drawn from each.",
+    "balod": {
+      "name": "Balod",
+      "population_2011": 828954,
+      "total_workers": 427918,
+      "work_participation_rate": 51.62,
+      "wpr_male": 57.05,
+      "wpr_female": 46.31,
+      "cultivators": 39.78,
+      "agricultural_labourers": 44.22,
+      "household_industry": 1.22,
+      "other_workers": 14.78,
+      "literacy_rate": 80.27,
+      "st_pct": 31.28,
+      "sc_pct": 8.29,
+      "urban_pct": 12.73,
+      "sex_ratio": 1022,
+      "census_parent_district": "Durg (100.0%) + Rajnandgaon (0.0%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "balodabazarbhatapara": {
+      "name": "Baloda Bazar-Bhatapara",
+      "population_2011": 1078341,
+      "total_workers": 491646,
+      "work_participation_rate": 45.59,
+      "wpr_male": 51.79,
+      "wpr_female": 39.42,
+      "cultivators": 31.75,
+      "agricultural_labourers": 51.45,
+      "household_industry": 1.25,
+      "other_workers": 15.54,
+      "literacy_rate": 71.08,
+      "st_pct": 13.69,
+      "sc_pct": 21.29,
+      "urban_pct": 13.94,
+      "sex_ratio": 1003,
+      "census_parent_district": "Raipur"
+    },
+    "balrampurramanujganj": {
+      "name": "Balrampur-Ramanujganj",
+      "population_2011": 732228,
+      "total_workers": 360738,
+      "work_participation_rate": 49.27,
+      "wpr_male": 53.55,
+      "wpr_female": 44.87,
+      "cultivators": 37.18,
+      "agricultural_labourers": 51.92,
+      "household_industry": 1.22,
+      "other_workers": 9.68,
+      "literacy_rate": 58.07,
+      "st_pct": 62.69,
+      "sc_pct": 4.5,
+      "urban_pct": 4.74,
+      "sex_ratio": 973,
+      "census_parent_district": "Surguja"
+    },
+    "bastar": {
+      "name": "Bastar",
+      "population_2011": 814249,
+      "total_workers": 388731,
+      "work_participation_rate": 47.74,
+      "wpr_male": 57.03,
+      "wpr_female": 38.6,
+      "cultivators": 30.1,
+      "agricultural_labourers": 46.61,
+      "household_industry": 1.2,
+      "other_workers": 22.09,
+      "literacy_rate": 53.48,
+      "st_pct": 62.01,
+      "sc_pct": 1.79,
+      "urban_pct": 16.64,
+      "sex_ratio": 1016,
+      "census_parent_district": "Bastar (100.0%) + Dakshin Bastar Dantewada (0.0%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "bemetara": {
+      "name": "Bemetara",
+      "population_2011": 784744,
+      "total_workers": 392241,
+      "work_participation_rate": 49.98,
+      "wpr_male": 54.01,
+      "wpr_female": 45.96,
+      "cultivators": 35.67,
+      "agricultural_labourers": 53.49,
+      "household_industry": 0.9,
+      "other_workers": 9.94,
+      "literacy_rate": 69.86,
+      "st_pct": 4.65,
+      "sc_pct": 18.14,
+      "urban_pct": 9.5,
+      "sex_ratio": 1001,
+      "census_parent_district": "Durg (99.9%) + Kabeerdham (Kabirdham) (0.1%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "bijapur": {
+      "name": "Bijapur",
+      "population_2011": 266422,
+      "total_workers": 141291,
+      "work_participation_rate": 53.03,
+      "wpr_male": 55.83,
+      "wpr_female": 50.2,
+      "cultivators": 50.92,
+      "agricultural_labourers": 35.92,
+      "household_industry": 1.02,
+      "other_workers": 12.14,
+      "literacy_rate": 39.99,
+      "st_pct": 80.65,
+      "sc_pct": 3.82,
+      "urban_pct": 11.11,
+      "sex_ratio": 986,
+      "census_parent_district": "Bijapur (95.4%) + Narayanpur (3.2%) + Dakshin Bastar Dantewada (1.4%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "bilaspur": {
+      "name": "Bilaspur",
+      "population_2011": 1615618,
+      "total_workers": 683313,
+      "work_participation_rate": 42.29,
+      "wpr_male": 52.06,
+      "wpr_female": 32.16,
+      "cultivators": 17.88,
+      "agricultural_labourers": 42.7,
+      "household_industry": 1.9,
+      "other_workers": 37.52,
+      "literacy_rate": 74.53,
+      "st_pct": 14.06,
+      "sc_pct": 20.8,
+      "urban_pct": 36.03,
+      "sex_ratio": 964,
+      "census_parent_district": "Bilaspur (100.0%) + Janjgir-Champa (0.0%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "dantewada": {
+      "name": "Dantewada",
+      "population_2011": 284412,
+      "total_workers": 145668,
+      "work_participation_rate": 51.22,
+      "wpr_male": 57.43,
+      "wpr_female": 45.14,
+      "cultivators": 53.23,
+      "agricultural_labourers": 21.9,
+      "household_industry": 0.73,
+      "other_workers": 24.14,
+      "literacy_rate": 48.45,
+      "st_pct": 71.19,
+      "sc_pct": 3.58,
+      "urban_pct": 23.92,
+      "sex_ratio": 1022,
+      "census_parent_district": "Dakshin Bastar Dantewada (99.4%) + Narayanpur (0.3%) + Bijapur (0.2%) + Bastar (0.1%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "dhamtari": {
+      "name": "Dhamtari",
+      "population_2011": 800919,
+      "total_workers": 403571,
+      "work_participation_rate": 50.39,
+      "wpr_male": 56.9,
+      "wpr_female": 43.94,
+      "cultivators": 33.61,
+      "agricultural_labourers": 45.34,
+      "household_industry": 1.83,
+      "other_workers": 19.22,
+      "literacy_rate": 78.31,
+      "st_pct": 26.06,
+      "sc_pct": 7.31,
+      "urban_pct": 18.63,
+      "sex_ratio": 1010,
+      "census_parent_district": "Dhamtari (99.9%) + Bastar (0.1%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "durg": {
+      "name": "Durg",
+      "population_2011": 1720994,
+      "total_workers": 672313,
+      "work_participation_rate": 39.07,
+      "wpr_male": 54.09,
+      "wpr_female": 23.51,
+      "cultivators": 12.05,
+      "agricultural_labourers": 23.76,
+      "household_industry": 2.05,
+      "other_workers": 62.14,
+      "literacy_rate": 82.52,
+      "st_pct": 5.88,
+      "sc_pct": 14.34,
+      "urban_pct": 64.19,
+      "sex_ratio": 966,
+      "census_parent_district": "Durg (100.0%) + Kabeerdham (Kabirdham) (0.0%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "gariaband": {
+      "name": "Gariaband",
+      "population_2011": 597653,
+      "total_workers": 302472,
+      "work_participation_rate": 50.61,
+      "wpr_male": 56.54,
+      "wpr_female": 44.8,
+      "cultivators": 27.21,
+      "agricultural_labourers": 61.07,
+      "household_industry": 1.79,
+      "other_workers": 9.93,
+      "literacy_rate": 68.26,
+      "st_pct": 36.14,
+      "sc_pct": 10.13,
+      "urban_pct": 6.77,
+      "sex_ratio": 1020,
+      "census_parent_district": "Raipur"
+    },
+    "gaurelapendramarwahi": {
+      "name": "Gaurela-Pendra-Marwahi",
+      "population_2011": 337343,
+      "total_workers": 177184,
+      "work_participation_rate": 52.52,
+      "wpr_male": 58.86,
+      "wpr_female": 46.16,
+      "cultivators": 27.13,
+      "agricultural_labourers": 47.42,
+      "household_industry": 2.13,
+      "other_workers": 23.33,
+      "literacy_rate": 65.18,
+      "st_pct": 57.15,
+      "sc_pct": 6.17,
+      "urban_pct": 9.57,
+      "sex_ratio": 996,
+      "census_parent_district": "Bilaspur (99.9%) + Korba (0.1%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "janjgirchampa": {
+      "name": "Janjgir-Champa",
+      "population_2011": 964378,
+      "total_workers": 494756,
+      "work_participation_rate": 51.3,
+      "wpr_male": 57.95,
+      "wpr_female": 44.47,
+      "cultivators": 32.71,
+      "agricultural_labourers": 45.95,
+      "household_industry": 2.01,
+      "other_workers": 19.33,
+      "literacy_rate": 74.5,
+      "st_pct": 8.04,
+      "sc_pct": 24.71,
+      "urban_pct": 16.96,
+      "sex_ratio": 973,
+      "census_parent_district": "Janjgir-Champa (100.0%) + Raipur (0.0%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "jashpur": {
+      "name": "Jashpur",
+      "population_2011": 852181,
+      "total_workers": 487617,
+      "work_participation_rate": 57.22,
+      "wpr_male": 62.06,
+      "wpr_female": 52.4,
+      "cultivators": 46.55,
+      "agricultural_labourers": 40.54,
+      "household_industry": 1.55,
+      "other_workers": 11.36,
+      "literacy_rate": 67.91,
+      "st_pct": 62.29,
+      "sc_pct": 5.73,
+      "urban_pct": 8.92,
+      "sex_ratio": 1005,
+      "census_parent_district": "Jashpur (99.9%) + Surguja (0.1%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "kabirdham": {
+      "name": "Kabirdham",
+      "population_2011": 823812,
+      "total_workers": 404883,
+      "work_participation_rate": 49.15,
+      "wpr_male": 52.68,
+      "wpr_female": 45.6,
+      "cultivators": 41.37,
+      "agricultural_labourers": 46.14,
+      "household_industry": 0.75,
+      "other_workers": 11.74,
+      "literacy_rate": 60.9,
+      "st_pct": 20.19,
+      "sc_pct": 14.71,
+      "urban_pct": 10.61,
+      "sex_ratio": 996,
+      "census_parent_district": "Kabeerdham (Kabirdham) (99.5%) + Bilaspur (0.3%) + Durg (0.1%) + Raipur (0.0%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "kanker": {
+      "name": "Kanker",
+      "population_2011": 747004,
+      "total_workers": 388340,
+      "work_participation_rate": 51.99,
+      "wpr_male": 58.24,
+      "wpr_female": 45.77,
+      "cultivators": 49.81,
+      "agricultural_labourers": 33.2,
+      "household_industry": 2.0,
+      "other_workers": 14.99,
+      "literacy_rate": 70.21,
+      "st_pct": 55.47,
+      "sc_pct": 4.22,
+      "urban_pct": 10.28,
+      "sex_ratio": 1007,
+      "census_parent_district": "Uttar Bastar Kanker (99.6%) + Narayanpur (0.3%) + Bastar (0.2%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "khairagarhchhuikhadangandai": {
+      "name": "Khairagarh-Chhuikhadan-Gandai",
+      "population_2011": 371012,
+      "total_workers": 198633,
+      "work_participation_rate": 53.54,
+      "wpr_male": 56.89,
+      "wpr_female": 50.25,
+      "cultivators": 40.98,
+      "agricultural_labourers": 46.49,
+      "household_industry": 1.18,
+      "other_workers": 11.35,
+      "literacy_rate": 69.98,
+      "st_pct": 13.7,
+      "sc_pct": 10.86,
+      "urban_pct": 11.57,
+      "sex_ratio": 1018,
+      "census_parent_district": "Rajnandgaon (99.3%) + Durg (0.3%) + Kabeerdham (Kabirdham) (0.3%) + Raipur (0.1%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "kondagaon": {
+      "name": "Kondagaon",
+      "population_2011": 576277,
+      "total_workers": 324747,
+      "work_participation_rate": 56.35,
+      "wpr_male": 59.02,
+      "wpr_female": 53.77,
+      "cultivators": 50.05,
+      "agricultural_labourers": 30.81,
+      "household_industry": 1.78,
+      "other_workers": 17.37,
+      "literacy_rate": 56.26,
+      "st_pct": 70.96,
+      "sc_pct": 3.98,
+      "urban_pct": 10.06,
+      "sex_ratio": 1032,
+      "census_parent_district": "Bastar (99.9%) + Narayanpur (0.1%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "korba": {
+      "name": "Korba",
+      "population_2011": 1205553,
+      "total_workers": 520712,
+      "work_participation_rate": 43.19,
+      "wpr_male": 54.39,
+      "wpr_female": 31.64,
+      "cultivators": 21.68,
+      "agricultural_labourers": 42.56,
+      "household_industry": 1.52,
+      "other_workers": 34.24,
+      "literacy_rate": 72.37,
+      "st_pct": 40.9,
+      "sc_pct": 10.34,
+      "urban_pct": 37.02,
+      "sex_ratio": 969,
+      "census_parent_district": "Korba"
+    },
+    "koriya": {
+      "name": "Koriya",
+      "population_2011": 229337,
+      "total_workers": 111637,
+      "work_participation_rate": 48.68,
+      "wpr_male": 56.16,
+      "wpr_female": 40.94,
+      "cultivators": 47.87,
+      "agricultural_labourers": 29.04,
+      "household_industry": 1.1,
+      "other_workers": 21.99,
+      "literacy_rate": 73.17,
+      "st_pct": 41.72,
+      "sc_pct": 8.08,
+      "urban_pct": 24.63,
+      "sex_ratio": 967,
+      "census_parent_district": "Koriya"
+    },
+    "mahasamund": {
+      "name": "Mahasamund",
+      "population_2011": 1032754,
+      "total_workers": 499260,
+      "work_participation_rate": 48.34,
+      "wpr_male": 57.01,
+      "wpr_female": 39.82,
+      "cultivators": 27.88,
+      "agricultural_labourers": 55.7,
+      "household_industry": 1.23,
+      "other_workers": 15.19,
+      "literacy_rate": 71.02,
+      "st_pct": 27.1,
+      "sc_pct": 13.52,
+      "urban_pct": 11.63,
+      "sex_ratio": 1017,
+      "census_parent_district": "Mahasamund"
+    },
+    "manendragarhchirmiribharatpur": {
+      "name": "Manendragarh-Chirmiri-Bharatpur",
+      "population_2011": 423960,
+      "total_workers": 192840,
+      "work_participation_rate": 45.49,
+      "wpr_male": 55.03,
+      "wpr_female": 35.63,
+      "cultivators": 32.97,
+      "agricultural_labourers": 31.9,
+      "household_industry": 1.86,
+      "other_workers": 33.27,
+      "literacy_rate": 69.27,
+      "st_pct": 48.82,
+      "sc_pct": 8.42,
+      "urban_pct": 35.1,
+      "sex_ratio": 969,
+      "census_parent_district": "Koriya"
+    },
+    "mohlamanpurambagarhchowki": {
+      "name": "Mohla-Manpur-Ambagarh Chowki",
+      "population_2011": 283947,
+      "total_workers": 161935,
+      "work_participation_rate": 57.03,
+      "wpr_male": 59.59,
+      "wpr_female": 54.53,
+      "cultivators": 59.83,
+      "agricultural_labourers": 30.22,
+      "household_industry": 0.82,
+      "other_workers": 9.14,
+      "literacy_rate": 75.69,
+      "st_pct": 63.27,
+      "sc_pct": 7.3,
+      "urban_pct": 3.48,
+      "sex_ratio": 1027,
+      "census_parent_district": "Rajnandgaon"
+    },
+    "mungeli": {
+      "name": "Mungeli",
+      "population_2011": 709484,
+      "total_workers": 342175,
+      "work_participation_rate": 48.23,
+      "wpr_male": 52.16,
+      "wpr_female": 44.2,
+      "cultivators": 31.21,
+      "agricultural_labourers": 57.17,
+      "household_industry": 1.43,
+      "other_workers": 10.19,
+      "literacy_rate": 64.73,
+      "st_pct": 11.2,
+      "sc_pct": 27.46,
+      "urban_pct": 9.22,
+      "sex_ratio": 975,
+      "census_parent_district": "Bilaspur (99.9%) + Kabeerdham (Kabirdham) (0.1%) + Durg (0.0%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "narayanpur": {
+      "name": "Narayanpur",
+      "population_2011": 134238,
+      "total_workers": 67403,
+      "work_participation_rate": 50.21,
+      "wpr_male": 54.2,
+      "wpr_female": 46.18,
+      "cultivators": 59.58,
+      "agricultural_labourers": 20.61,
+      "household_industry": 1.48,
+      "other_workers": 18.32,
+      "literacy_rate": 51.24,
+      "st_pct": 75.09,
+      "sc_pct": 3.95,
+      "urban_pct": 16.47,
+      "sex_ratio": 989,
+      "census_parent_district": "Narayanpur (95.3%) + Uttar Bastar Kanker (3.9%) + Bastar (0.8%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "raigarh": {
+      "name": "Raigarh",
+      "population_2011": 1111224,
+      "total_workers": 503836,
+      "work_participation_rate": 45.34,
+      "wpr_male": 57.14,
+      "wpr_female": 33.39,
+      "cultivators": 29.66,
+      "agricultural_labourers": 43.51,
+      "household_industry": 1.56,
+      "other_workers": 25.27,
+      "literacy_rate": 73.55,
+      "st_pct": 39.93,
+      "sc_pct": 11.35,
+      "urban_pct": 19.69,
+      "sex_ratio": 987,
+      "census_parent_district": "Raigarh"
+    },
+    "raipur": {
+      "name": "Raipur",
+      "population_2011": 2160306,
+      "total_workers": 859662,
+      "work_participation_rate": 39.79,
+      "wpr_male": 54.1,
+      "wpr_female": 24.93,
+      "cultivators": 12.24,
+      "agricultural_labourers": 25.28,
+      "household_industry": 2.43,
+      "other_workers": 60.05,
+      "literacy_rate": 80.52,
+      "st_pct": 4.31,
+      "sc_pct": 16.6,
+      "urban_pct": 59.1,
+      "sex_ratio": 963,
+      "census_parent_district": "Raipur (100.0%) + Durg (0.0%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "rajnandgaon": {
+      "name": "Rajnandgaon",
+      "population_2011": 892363,
+      "total_workers": 444280,
+      "work_participation_rate": 49.79,
+      "wpr_male": 56.6,
+      "wpr_female": 43.04,
+      "cultivators": 37.17,
+      "agricultural_labourers": 33.91,
+      "household_industry": 1.63,
+      "other_workers": 27.29,
+      "literacy_rate": 78.46,
+      "st_pct": 19.64,
+      "sc_pct": 10.78,
+      "urban_pct": 24.62,
+      "sex_ratio": 1010,
+      "census_parent_district": "Rajnandgaon (99.1%) + Durg (0.9%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "sakti": {
+      "name": "Sakti",
+      "population_2011": 657658,
+      "total_workers": 352561,
+      "work_participation_rate": 53.61,
+      "wpr_male": 59.62,
+      "wpr_female": 47.62,
+      "cultivators": 33.92,
+      "agricultural_labourers": 49.77,
+      "household_industry": 1.66,
+      "other_workers": 14.64,
+      "literacy_rate": 71.04,
+      "st_pct": 16.74,
+      "sc_pct": 24.29,
+      "urban_pct": 9.35,
+      "sex_ratio": 1004,
+      "census_parent_district": "Janjgir-Champa (99.6%) + Raigarh (0.3%) + Korba (0.1%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "sarangarhbilaigarh": {
+      "name": "Sarangarh-Bilaigarh",
+      "population_2011": 607979,
+      "total_workers": 289213,
+      "work_participation_rate": 47.57,
+      "wpr_male": 55.22,
+      "wpr_female": 39.95,
+      "cultivators": 33.95,
+      "agricultural_labourers": 54.63,
+      "household_industry": 1.29,
+      "other_workers": 10.13,
+      "literacy_rate": 71.0,
+      "st_pct": 13.38,
+      "sc_pct": 28.6,
+      "urban_pct": 7.14,
+      "sex_ratio": 1005,
+      "census_parent_district": "Raigarh (62.7%) + Raipur (37.3%) + Korba (0.0%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "sukma": {
+      "name": "Sukma",
+      "population_2011": 267088,
+      "total_workers": 151243,
+      "work_participation_rate": 56.63,
+      "wpr_male": 58.91,
+      "wpr_female": 54.38,
+      "cultivators": 60.8,
+      "agricultural_labourers": 28.41,
+      "household_industry": 0.98,
+      "other_workers": 9.8,
+      "literacy_rate": 35.42,
+      "st_pct": 83.03,
+      "sc_pct": 1.09,
+      "urban_pct": 10.56,
+      "sex_ratio": 1019,
+      "census_parent_district": "Dakshin Bastar Dantewada (92.4%) + Bastar (7.4%) + Bijapur (0.2%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "surajpur": {
+      "name": "Surajpur",
+      "population_2011": 788436,
+      "total_workers": 381348,
+      "work_participation_rate": 48.37,
+      "wpr_male": 54.26,
+      "wpr_female": 42.37,
+      "cultivators": 41.63,
+      "agricultural_labourers": 44.27,
+      "household_industry": 0.98,
+      "other_workers": 13.12,
+      "literacy_rate": 60.96,
+      "st_pct": 45.39,
+      "sc_pct": 5.47,
+      "urban_pct": 9.07,
+      "sex_ratio": 981,
+      "census_parent_district": "Surguja (99.3%) + Koriya (0.7%)",
+      "parent_share_note": "share of this district's 2011 population drawn from each 2011 district"
+    },
+    "surguja": {
+      "name": "Surguja",
+      "population_2011": 844330,
+      "total_workers": 416058,
+      "work_participation_rate": 49.28,
+      "wpr_male": 55.47,
+      "wpr_female": 42.96,
+      "cultivators": 41.77,
+      "agricultural_labourers": 40.33,
+      "household_industry": 1.09,
+      "other_workers": 16.81,
+      "literacy_rate": 60.86,
+      "st_pct": 57.43,
+      "sc_pct": 4.75,
+      "urban_pct": 16.19,
+      "sex_ratio": 980,
+      "census_parent_district": "Surguja"
+    }
+  },
+  "statewide_2011": {
+    "population_2011": 25545198,
+    "total_workers": 12180225,
+    "work_participation_rate": 47.68,
+    "wpr_male": 55.59,
+    "wpr_female": 39.7,
+    "cultivators": 32.88,
+    "agricultural_labourers": 41.8,
+    "household_industry": 1.54,
+    "other_workers": 23.78,
+    "literacy_rate": 70.28,
+    "st_pct": 30.62,
+    "sc_pct": 12.82,
+    "urban_pct": 23.24,
+    "sex_ratio": 991,
+    "literacy_note": "literates / population aged 7+ (PCA P_LIT / (TOT_P - P_06)); Census 2011 Chhattisgarh = 70.28%"
+  },
+  "talukas": {
+    "_note": "Census 2011 population of each current tehsil (the 164 LGD Dec-2023 sub-district polygons): villages by point location, towns by their geocoded point or else their 2011 tehsil. Totals match the state total 25,545,198. district = current (2026) district; district_2011 = Census district supplying most of the population. Duplicate names are keyed 'Name (District)'.",
+    "Balod": {
+      "population_2011": 121445,
+      "district": "Balod",
+      "district_2011": "Durg"
+    },
+    "Dondi": {
+      "population_2011": 157346,
+      "district": "Balod",
+      "district_2011": "Durg"
+    },
+    "Dondi Luhara": {
+      "population_2011": 196841,
+      "district": "Balod",
+      "district_2011": "Durg"
+    },
+    "Gunderdehi": {
+      "population_2011": 207537,
+      "district": "Balod",
+      "district_2011": "Durg"
+    },
+    "Gurur": {
+      "population_2011": 145785,
+      "district": "Balod",
+      "district_2011": "Durg"
+    },
+    "Baloda Bazar": {
+      "population_2011": 249443,
+      "district": "Baloda Bazar-Bhatapara",
+      "district_2011": "Raipur"
+    },
+    "Bhatapara": {
+      "population_2011": 204965,
+      "district": "Baloda Bazar-Bhatapara",
+      "district_2011": "Raipur"
+    },
+    "Kasdol": {
+      "population_2011": 209577,
+      "district": "Baloda Bazar-Bhatapara",
+      "district_2011": "Raipur"
+    },
+    "Palari": {
+      "population_2011": 205098,
+      "district": "Baloda Bazar-Bhatapara",
+      "district_2011": "Raipur"
+    },
+    "Simga": {
+      "population_2011": 209258,
+      "district": "Baloda Bazar-Bhatapara",
+      "district_2011": "Raipur"
+    },
+    "Balrampur": {
+      "population_2011": 109962,
+      "district": "Balrampur-Ramanujganj",
+      "district_2011": "Surguja"
+    },
+    "Rajpur": {
+      "population_2011": 107083,
+      "district": "Balrampur-Ramanujganj",
+      "district_2011": "Surguja"
+    },
+    "Ramanujganj": {
+      "population_2011": 171060,
+      "district": "Balrampur-Ramanujganj",
+      "district_2011": "Surguja"
+    },
+    "Samri (Kusmi)": {
+      "population_2011": 108898,
+      "district": "Balrampur-Ramanujganj",
+      "district_2011": "Surguja"
+    },
+    "Shankargarh": {
+      "population_2011": 73892,
+      "district": "Balrampur-Ramanujganj",
+      "district_2011": "Surguja"
+    },
+    "Wadrafnagar": {
+      "population_2011": 161333,
+      "district": "Balrampur-Ramanujganj",
+      "district_2011": "Surguja"
+    },
+    "Bakavand": {
+      "population_2011": 151956,
+      "district": "Bastar",
+      "district_2011": "Bastar"
+    },
+    "Bastanar": {
+      "population_2011": 47445,
+      "district": "Bastar",
+      "district_2011": "Bastar"
+    },
+    "Bastar": {
+      "population_2011": 290860,
+      "district": "Bastar",
+      "district_2011": "Bastar"
+    },
+    "Darbha": {
+      "population_2011": 63924,
+      "district": "Bastar",
+      "district_2011": "Bastar"
+    },
+    "Jagdalpur": {
+      "population_2011": 116043,
+      "district": "Bastar",
+      "district_2011": "Bastar"
+    },
+    "Lohandiguda": {
+      "population_2011": 73161,
+      "district": "Bastar",
+      "district_2011": "Bastar"
+    },
+    "Tokapal": {
+      "population_2011": 70860,
+      "district": "Bastar",
+      "district_2011": "Bastar"
+    },
+    "Bemetara": {
+      "population_2011": 206036,
+      "district": "Bemetara",
+      "district_2011": "Durg"
+    },
+    "Berla": {
+      "population_2011": 187853,
+      "district": "Bemetara",
+      "district_2011": "Durg"
+    },
+    "Nawagarh (Bemetara)": {
+      "population_2011": 205199,
+      "district": "Bemetara",
+      "district_2011": "Durg"
+    },
+    "Saja": {
+      "population_2011": 114079,
+      "district": "Bemetara",
+      "district_2011": "Durg"
+    },
+    "Thanakhamria": {
+      "population_2011": 79695,
+      "district": "Bemetara",
+      "district_2011": "Durg"
+    },
+    "Bhairamgarh": {
+      "population_2011": 98556,
+      "district": "Bijapur",
+      "district_2011": "Bijapur"
+    },
+    "Bhopalpattnam": {
+      "population_2011": 48421,
+      "district": "Bijapur",
+      "district_2011": "Bijapur"
+    },
+    "Bijapur": {
+      "population_2011": 61577,
+      "district": "Bijapur",
+      "district_2011": "Bijapur"
+    },
+    "Usur": {
+      "population_2011": 57868,
+      "district": "Bijapur",
+      "district_2011": "Bijapur"
+    },
+    "Bilaspur": {
+      "population_2011": 641880,
+      "district": "Bilaspur",
+      "district_2011": "Bilaspur"
+    },
+    "Bilha": {
+      "population_2011": 156766,
+      "district": "Bilaspur",
+      "district_2011": "Bilaspur"
+    },
+    "Kota": {
+      "population_2011": 225812,
+      "district": "Bilaspur",
+      "district_2011": "Bilaspur"
+    },
+    "Masturi": {
+      "population_2011": 301029,
+      "district": "Bilaspur",
+      "district_2011": "Bilaspur"
+    },
+    "Takhatpur": {
+      "population_2011": 290131,
+      "district": "Bilaspur",
+      "district_2011": "Bilaspur"
+    },
+    "Dantewada": {
+      "population_2011": 95320,
+      "district": "Dantewada",
+      "district_2011": "Dakshin Bastar Dantewada"
+    },
+    "Gidam": {
+      "population_2011": 77962,
+      "district": "Dantewada",
+      "district_2011": "Dakshin Bastar Dantewada"
+    },
+    "Katekalyan": {
+      "population_2011": 44235,
+      "district": "Dantewada",
+      "district_2011": "Dakshin Bastar Dantewada"
+    },
+    "Kuakonda": {
+      "population_2011": 66895,
+      "district": "Dantewada",
+      "district_2011": "Dakshin Bastar Dantewada"
+    },
+    "Dhamtari": {
+      "population_2011": 279833,
+      "district": "Dhamtari",
+      "district_2011": "Dhamtari"
+    },
+    "Kurud": {
+      "population_2011": 218491,
+      "district": "Dhamtari",
+      "district_2011": "Dhamtari"
+    },
+    "Magarlod": {
+      "population_2011": 121709,
+      "district": "Dhamtari",
+      "district_2011": "Dhamtari"
+    },
+    "Nagri": {
+      "population_2011": 180886,
+      "district": "Dhamtari",
+      "district_2011": "Dhamtari"
+    },
+    "Dhamdha": {
+      "population_2011": 277166,
+      "district": "Durg",
+      "district_2011": "Durg"
+    },
+    "Durg": {
+      "population_2011": 1115175,
+      "district": "Durg",
+      "district_2011": "Durg"
+    },
+    "Patan": {
+      "population_2011": 328653,
+      "district": "Durg",
+      "district_2011": "Durg"
+    },
+    "Gariaband (Bindranawagarh)": {
+      "population_2011": 93915,
+      "district": "Gariaband",
+      "district_2011": "Raipur"
+    },
+    "Chhura": {
+      "population_2011": 116381,
+      "district": "Gariaband",
+      "district_2011": "Raipur"
+    },
+    "Deobhog": {
+      "population_2011": 94212,
+      "district": "Gariaband",
+      "district_2011": "Raipur"
+    },
+    "Mainpur": {
+      "population_2011": 124720,
+      "district": "Gariaband",
+      "district_2011": "Raipur"
+    },
+    "Rajim": {
+      "population_2011": 168425,
+      "district": "Gariaband",
+      "district_2011": "Raipur"
+    },
+    "Marwahi": {
+      "population_2011": 117618,
+      "district": "Gaurela-Pendra-Marwahi",
+      "district_2011": "Bilaspur"
+    },
+    "Pendra": {
+      "population_2011": 95658,
+      "district": "Gaurela-Pendra-Marwahi",
+      "district_2011": "Bilaspur"
+    },
+    "Pendra Road (Gaurela)": {
+      "population_2011": 124067,
+      "district": "Gaurela-Pendra-Marwahi",
+      "district_2011": "Bilaspur"
+    },
+    "Akaltara": {
+      "population_2011": 173217,
+      "district": "Janjgir-Champa",
+      "district_2011": "Janjgir-Champa"
+    },
+    "Baloda": {
+      "population_2011": 104965,
+      "district": "Janjgir-Champa",
+      "district_2011": "Janjgir-Champa"
+    },
+    "Champa": {
+      "population_2011": 209315,
+      "district": "Janjgir-Champa",
+      "district_2011": "Janjgir-Champa"
+    },
+    "Janjgir": {
+      "population_2011": 154177,
+      "district": "Janjgir-Champa",
+      "district_2011": "Janjgir-Champa"
+    },
+    "Nawagarh (Janjgir-Champa)": {
+      "population_2011": 148829,
+      "district": "Janjgir-Champa",
+      "district_2011": "Janjgir-Champa"
+    },
+    "Pamgarh": {
+      "population_2011": 165757,
+      "district": "Janjgir-Champa",
+      "district_2011": "Janjgir-Champa"
+    },
+    "Bagicha": {
+      "population_2011": 142545,
+      "district": "Jashpur",
+      "district_2011": "Jashpur"
+    },
+    "Duldula": {
+      "population_2011": 52374,
+      "district": "Jashpur",
+      "district_2011": "Jashpur"
+    },
+    "Farsabahar": {
+      "population_2011": 108148,
+      "district": "Jashpur",
+      "district_2011": "Jashpur"
+    },
+    "Jashpur": {
+      "population_2011": 96360,
+      "district": "Jashpur",
+      "district_2011": "Jashpur"
+    },
+    "Kansabel": {
+      "population_2011": 107098,
+      "district": "Jashpur",
+      "district_2011": "Jashpur"
+    },
+    "Kunkuri": {
+      "population_2011": 93712,
+      "district": "Jashpur",
+      "district_2011": "Jashpur"
+    },
+    "Manora": {
+      "population_2011": 60414,
+      "district": "Jashpur",
+      "district_2011": "Jashpur"
+    },
+    "Pathalgaon": {
+      "population_2011": 191530,
+      "district": "Jashpur",
+      "district_2011": "Jashpur"
+    },
+    "Bodla": {
+      "population_2011": 187174,
+      "district": "Kabirdham",
+      "district_2011": "Kabeerdham"
+    },
+    "Kawardha": {
+      "population_2011": 225790,
+      "district": "Kabirdham",
+      "district_2011": "Kabeerdham"
+    },
+    "Pandariya": {
+      "population_2011": 257641,
+      "district": "Kabirdham",
+      "district_2011": "Kabeerdham"
+    },
+    "Sahaspur Lohara": {
+      "population_2011": 153207,
+      "district": "Kabirdham",
+      "district_2011": "Kabeerdham"
+    },
+    "Antagarh": {
+      "population_2011": 80666,
+      "district": "Kanker",
+      "district_2011": "Uttar Bastar Kanker"
+    },
+    "Bhanupratappur": {
+      "population_2011": 92693,
+      "district": "Kanker",
+      "district_2011": "Uttar Bastar Kanker"
+    },
+    "Charama": {
+      "population_2011": 106462,
+      "district": "Kanker",
+      "district_2011": "Uttar Bastar Kanker"
+    },
+    "Durgkondal": {
+      "population_2011": 65882,
+      "district": "Kanker",
+      "district_2011": "Uttar Bastar Kanker"
+    },
+    "Kanker": {
+      "population_2011": 122556,
+      "district": "Kanker",
+      "district_2011": "Uttar Bastar Kanker"
+    },
+    "Narharpur": {
+      "population_2011": 110384,
+      "district": "Kanker",
+      "district_2011": "Uttar Bastar Kanker"
+    },
+    "Pakhanjur": {
+      "population_2011": 168361,
+      "district": "Kanker",
+      "district_2011": "Uttar Bastar Kanker"
+    },
+    "Chhuikhadan": {
+      "population_2011": 74603,
+      "district": "Khairagarh-Chhuikhadan-Gandai",
+      "district_2011": "Rajnandgaon"
+    },
+    "Gandai": {
+      "population_2011": 70467,
+      "district": "Khairagarh-Chhuikhadan-Gandai",
+      "district_2011": "Rajnandgaon"
+    },
+    "Khairagarh": {
+      "population_2011": 194029,
+      "district": "Khairagarh-Chhuikhadan-Gandai",
+      "district_2011": "Rajnandgaon"
+    },
+    "Salhewara": {
+      "population_2011": 31913,
+      "district": "Khairagarh-Chhuikhadan-Gandai",
+      "district_2011": "Rajnandgaon"
+    },
+    "Bade Rajpur": {
+      "population_2011": 82898,
+      "district": "Kondagaon",
+      "district_2011": "Bastar"
+    },
+    "Farasgaon": {
+      "population_2011": 97559,
+      "district": "Kondagaon",
+      "district_2011": "Bastar"
+    },
+    "Keskal": {
+      "population_2011": 93003,
+      "district": "Kondagaon",
+      "district_2011": "Bastar"
+    },
+    "Kondagaon": {
+      "population_2011": 202654,
+      "district": "Kondagaon",
+      "district_2011": "Bastar"
+    },
+    "Makdi": {
+      "population_2011": 100163,
+      "district": "Kondagaon",
+      "district_2011": "Bastar"
+    },
+    "Katghora-1": {
+      "population_2011": 112135,
+      "district": "Korba",
+      "district_2011": "Korba"
+    },
+    "Kartala": {
+      "population_2011": 146606,
+      "district": "Korba",
+      "district_2011": "Korba"
+    },
+    "Katghora": {
+      "population_2011": 301272,
+      "district": "Korba",
+      "district_2011": "Korba"
+    },
+    "Korba": {
+      "population_2011": 368447,
+      "district": "Korba",
+      "district_2011": "Korba"
+    },
+    "Pali": {
+      "population_2011": 198769,
+      "district": "Korba",
+      "district_2011": "Korba"
+    },
+    "Poundi-Uproda": {
+      "population_2011": 78324,
+      "district": "Korba",
+      "district_2011": "Korba"
+    },
+    "Baikunthpur": {
+      "population_2011": 193199,
+      "district": "Koriya",
+      "district_2011": "Koriya"
+    },
+    "Sonhat": {
+      "population_2011": 52148,
+      "district": "Koriya",
+      "district_2011": "Koriya"
+    },
+    "Bagbahra": {
+      "population_2011": 193284,
+      "district": "Mahasamund",
+      "district_2011": "Mahasamund"
+    },
+    "Basna": {
+      "population_2011": 179140,
+      "district": "Mahasamund",
+      "district_2011": "Mahasamund"
+    },
+    "Mahasamund": {
+      "population_2011": 266517,
+      "district": "Mahasamund",
+      "district_2011": "Mahasamund"
+    },
+    "Pithora": {
+      "population_2011": 199133,
+      "district": "Mahasamund",
+      "district_2011": "Mahasamund"
+    },
+    "Saraipali": {
+      "population_2011": 194680,
+      "district": "Mahasamund",
+      "district_2011": "Mahasamund"
+    },
+    "Bharatpur": {
+      "population_2011": 64645,
+      "district": "Manendragarh-Chirmiri-Bharatpur",
+      "district_2011": "Koriya"
+    },
+    "Chirmiri": {
+      "population_2011": 10624,
+      "district": "Manendragarh-Chirmiri-Bharatpur",
+      "district_2011": "Koriya"
+    },
+    "Kelhari": {
+      "population_2011": 33956,
+      "district": "Manendragarh-Chirmiri-Bharatpur",
+      "district_2011": "Koriya"
+    },
+    "Khadganva": {
+      "population_2011": 162962,
+      "district": "Manendragarh-Chirmiri-Bharatpur",
+      "district_2011": "Koriya"
+    },
+    "Kotadol": {
+      "population_2011": 24123,
+      "district": "Manendragarh-Chirmiri-Bharatpur",
+      "district_2011": "Koriya"
+    },
+    "Manendragarh": {
+      "population_2011": 111640,
+      "district": "Manendragarh-Chirmiri-Bharatpur",
+      "district_2011": "Koriya"
+    },
+    "Ambagarh": {
+      "population_2011": 108334,
+      "district": "Mohla-Manpur-Ambagarh Chowki",
+      "district_2011": "Rajnandgaon"
+    },
+    "Aundhi": {
+      "population_2011": 33816,
+      "district": "Mohla-Manpur-Ambagarh Chowki",
+      "district_2011": "Rajnandgaon"
+    },
+    "Khadgaon": {
+      "population_2011": 21950,
+      "district": "Mohla-Manpur-Ambagarh Chowki",
+      "district_2011": "Rajnandgaon"
+    },
+    "Manpur": {
+      "population_2011": 32853,
+      "district": "Mohla-Manpur-Ambagarh Chowki",
+      "district_2011": "Rajnandgaon"
+    },
+    "Mohla": {
+      "population_2011": 86994,
+      "district": "Mohla-Manpur-Ambagarh Chowki",
+      "district_2011": "Rajnandgaon"
+    },
+    "Lormi": {
+      "population_2011": 297282,
+      "district": "Mungeli",
+      "district_2011": "Bilaspur"
+    },
+    "Mungeli": {
+      "population_2011": 236135,
+      "district": "Mungeli",
+      "district_2011": "Bilaspur"
+    },
+    "Pathariya": {
+      "population_2011": 176067,
+      "district": "Mungeli",
+      "district_2011": "Bilaspur"
+    },
+    "Narayanpur": {
+      "population_2011": 99263,
+      "district": "Narayanpur",
+      "district_2011": "Narayanpur"
+    },
+    "Orchha": {
+      "population_2011": 34975,
+      "district": "Narayanpur",
+      "district_2011": "Narayanpur"
+    },
+    "Gharghoda": {
+      "population_2011": 94225,
+      "district": "Raigarh",
+      "district_2011": "Raigarh"
+    },
+    "Kharsia": {
+      "population_2011": 147630,
+      "district": "Raigarh",
+      "district_2011": "Raigarh"
+    },
+    "Lailunga": {
+      "population_2011": 130613,
+      "district": "Raigarh",
+      "district_2011": "Raigarh"
+    },
+    "Pusour": {
+      "population_2011": 140230,
+      "district": "Raigarh",
+      "district_2011": "Raigarh"
+    },
+    "Raigarh": {
+      "population_2011": 307423,
+      "district": "Raigarh",
+      "district_2011": "Raigarh"
+    },
+    "Tamnar": {
+      "population_2011": 83483,
+      "district": "Raigarh",
+      "district_2011": "Raigarh"
+    },
+    "Udaipur (Dharamjaigarh)": {
+      "population_2011": 207620,
+      "district": "Raigarh",
+      "district_2011": "Raigarh"
+    },
+    "Abhanpur": {
+      "population_2011": 240477,
+      "district": "Raipur",
+      "district_2011": "Raipur"
+    },
+    "Arang": {
+      "population_2011": 317243,
+      "district": "Raipur",
+      "district_2011": "Raipur"
+    },
+    "Raipur": {
+      "population_2011": 1364429,
+      "district": "Raipur",
+      "district_2011": "Raipur"
+    },
+    "Tilda": {
+      "population_2011": 238157,
+      "district": "Raipur",
+      "district_2011": "Raipur"
+    },
+    "Chhuriya": {
+      "population_2011": 176937,
+      "district": "Rajnandgaon",
+      "district_2011": "Rajnandgaon"
+    },
+    "Dongargaon": {
+      "population_2011": 135474,
+      "district": "Rajnandgaon",
+      "district_2011": "Rajnandgaon"
+    },
+    "Dongargarh": {
+      "population_2011": 208886,
+      "district": "Rajnandgaon",
+      "district_2011": "Rajnandgaon"
+    },
+    "Rajnandgaon": {
+      "population_2011": 371066,
+      "district": "Rajnandgaon",
+      "district_2011": "Rajnandgaon"
+    },
+    "Adbhar": {
+      "population_2011": 57500,
+      "district": "Sakti",
+      "district_2011": "Janjgir-Champa"
+    },
+    "Baradwar": {
+      "population_2011": 74097,
+      "district": "Sakti",
+      "district_2011": "Janjgir-Champa"
+    },
+    "Dabhra": {
+      "population_2011": 166641,
+      "district": "Sakti",
+      "district_2011": "Janjgir-Champa"
+    },
+    "Hasaud": {
+      "population_2011": 64909,
+      "district": "Sakti",
+      "district_2011": "Janjgir-Champa"
+    },
+    "Jaijaipur": {
+      "population_2011": 99152,
+      "district": "Sakti",
+      "district_2011": "Janjgir-Champa"
+    },
+    "Malkharoda": {
+      "population_2011": 90805,
+      "district": "Sakti",
+      "district_2011": "Janjgir-Champa"
+    },
+    "Sakti": {
+      "population_2011": 104554,
+      "district": "Sakti",
+      "district_2011": "Janjgir-Champa"
+    },
+    "Baramkela": {
+      "population_2011": 91021,
+      "district": "Sarangarh-Bilaigarh",
+      "district_2011": "Raigarh"
+    },
+    "Bhatgaon": {
+      "population_2011": 131918,
+      "district": "Sarangarh-Bilaigarh",
+      "district_2011": "Raipur"
+    },
+    "Bilaigarh": {
+      "population_2011": 84708,
+      "district": "Sarangarh-Bilaigarh",
+      "district_2011": "Raipur"
+    },
+    "Sarangarh": {
+      "population_2011": 229604,
+      "district": "Sarangarh-Bilaigarh",
+      "district_2011": "Raigarh"
+    },
+    "Sariya": {
+      "population_2011": 60357,
+      "district": "Sarangarh-Bilaigarh",
+      "district_2011": "Raigarh"
+    },
+    "Chhindgarh": {
+      "population_2011": 52839,
+      "district": "Sukma",
+      "district_2011": "Dakshin Bastar Dantewada"
+    },
+    "Gadiras": {
+      "population_2011": 21927,
+      "district": "Sukma",
+      "district_2011": "Dakshin Bastar Dantewada"
+    },
+    "Konta": {
+      "population_2011": 105108,
+      "district": "Sukma",
+      "district_2011": "Dakshin Bastar Dantewada"
+    },
+    "Sukma": {
+      "population_2011": 46273,
+      "district": "Sukma",
+      "district_2011": "Dakshin Bastar Dantewada"
+    },
+    "Tongpal": {
+      "population_2011": 40941,
+      "district": "Sukma",
+      "district_2011": "Dakshin Bastar Dantewada"
+    },
+    "Bhaiyathan": {
+      "population_2011": 143227,
+      "district": "Surajpur",
+      "district_2011": "Surguja"
+    },
+    "Oudgi": {
+      "population_2011": 86851,
+      "district": "Surajpur",
+      "district_2011": "Surguja"
+    },
+    "Pratappur": {
+      "population_2011": 149092,
+      "district": "Surajpur",
+      "district_2011": "Surguja"
+    },
+    "Premnagar": {
+      "population_2011": 65136,
+      "district": "Surajpur",
+      "district_2011": "Surguja"
+    },
+    "Ramanujnagar": {
+      "population_2011": 125436,
+      "district": "Surajpur",
+      "district_2011": "Surguja"
+    },
+    "Surajpur": {
+      "population_2011": 229065,
+      "district": "Surajpur",
+      "district_2011": "Surguja"
+    },
+    "Ambikapur": {
+      "population_2011": 273585,
+      "district": "Surguja",
+      "district_2011": "Surguja"
+    },
+    "Batouli": {
+      "population_2011": 71626,
+      "district": "Surguja",
+      "district_2011": "Surguja"
+    },
+    "Lakhanpur": {
+      "population_2011": 131114,
+      "district": "Surguja",
+      "district_2011": "Surguja"
+    },
+    "Lundra": {
+      "population_2011": 119214,
+      "district": "Surguja",
+      "district_2011": "Surguja"
+    },
+    "Mainpat": {
+      "population_2011": 51996,
+      "district": "Surguja",
+      "district_2011": "Surguja"
+    },
+    "Sitapur": {
+      "population_2011": 118814,
+      "district": "Surguja",
+      "district_2011": "Surguja"
+    },
+    "Udaypur": {
+      "population_2011": 77981,
+      "district": "Surguja",
+      "district_2011": "Surguja"
+    }
+  }
+}

@@ -1,0 +1,322 @@
+import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { Shield, Lock, Mail, ArrowRight, Sparkles } from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { PARTY_HERO, LOCAL_FALLBACK, BRAND } from '../config/partyMedia';
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Party decorative ribbon (BJP flag colours: saffron / white / green)
+   ────────────────────────────────────────────────────────────────────────── */
+const TriColourRibbon = () => (
+  <div className="brand-flag-wave inline-flex h-1.5 w-44 overflow-hidden rounded-full shadow-md">
+    <div className="flex-1 bg-[#FF9933]" />
+    <div className="flex-1 bg-white" />
+    <div className="flex-1 bg-[#138808]" />
+  </div>
+);
+
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const userData = await login(email, password);
+      if (userData?.role === 'dial100') {
+        navigate('/dial-100-incident-reporting');
+      } else {
+        navigate('/state-map'); // state map landing
+      }
+    } catch (err) {
+      // toast handled inside AuthContext
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* Pre-computed particle layout so SSR & rerenders stay stable */
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 28 }).map((_, i) => ({
+        id: i,
+        left: `${(i * 7 + 2) % 100}%`,
+        size: 3 + ((i * 5) % 6),
+        delay: `${(i * 0.6) % 10}s`,
+        duration: `${7 + ((i * 2) % 8)}s`,
+        drift: `${((i % 2 === 0 ? 1 : -1) * (10 + (i * 5) % 40))}px`,
+        colour: i % 3 === 0 ? '#FF9933' : i % 3 === 1 ? '#FDBA74' : '#FFFFFF',
+      })),
+    []
+  );
+
+  return (
+    <div
+      className="relative min-h-screen w-full overflow-hidden flex items-center justify-center p-4 sm:p-6"
+      style={{
+        background:
+          'radial-gradient(circle at 15% 20%, #FF9933 0%, transparent 35%),' +
+          'radial-gradient(circle at 85% 80%, #C2410C 0%, transparent 40%),' +
+          'linear-gradient(135deg, #2A1100 0%, #9A3412 35%, #C2410C 65%, #EA580C 100%)',
+      }}
+    >
+      {/* ─── rising particles ─────────────────────────────────────────── */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {particles.map((p) => (
+          <span
+            key={p.id}
+            className="brand-particle absolute rounded-full"
+            style={{
+              left: p.left,
+              bottom: '-10px',
+              width: p.size,
+              height: p.size,
+              background: p.colour,
+              boxShadow: `0 0 ${p.size * 2}px ${p.colour}`,
+              '--particle-duration': p.duration,
+              '--particle-delay': p.delay,
+              '--particle-drift': p.drift,
+              opacity: 0.55,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* ─── diagonal pinstripe overlay for depth ────────────────────── */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            'repeating-linear-gradient(45deg, transparent 0, transparent 30px, rgba(255,255,255,0.5) 30px, rgba(255,255,255,0.5) 31px)',
+        }}
+      />
+
+      {/* ─── two-column split: left portrait, right login ─────────────── */}
+      <div className="relative z-10 w-full max-w-6xl">
+        <div className="relative">
+          {/* outer brand glow */}
+          <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-br from-orange-200 via-orange-400 to-orange-700 opacity-80 blur-[2px]" aria-hidden="true" />
+
+          <div className="relative grid grid-cols-1 lg:grid-cols-2 rounded-3xl overflow-hidden bg-white/95 backdrop-blur-xl border border-white/40 shadow-[0_25px_60px_-15px_rgba(124,45,18,0.55)]">
+
+            {/* ───────── LEFT: leader portrait panel ───────── */}
+            <div
+              className="relative hidden lg:flex flex-col justify-between p-10 text-white overflow-hidden min-h-[640px]"
+              style={{
+                background:
+                  'radial-gradient(circle at 20% 20%, rgba(255,153,51,0.55) 0%, transparent 45%),' +
+                  'radial-gradient(circle at 80% 80%, rgba(194,65,12,0.6) 0%, transparent 50%),' +
+                  'linear-gradient(135deg, #2A1100 0%, #9A3412 45%, #C2410C 100%)',
+              }}
+            >
+              {/* top: ribbon + party mark */}
+              <div className="relative z-10 flex items-center gap-3">
+                <TriColourRibbon />
+                <span className="text-[10px] font-bold tracking-[0.32em] uppercase text-amber-100/90">
+                  {BRAND.partyShort} · {BRAND.stateName}
+                </span>
+              </div>
+
+              {/* centre: large leader portrait */}
+              <div className="relative z-10 flex flex-col items-center text-center">
+                <div className="relative w-56 h-56 xl:w-64 xl:h-64 mb-6">
+                  <div className="absolute inset-0 rounded-full overflow-hidden brand-glow border-[4px] border-white/95 shadow-2xl">
+                    <img
+                      src={PARTY_HERO.src}
+                      alt={PARTY_HERO.alt}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        if (e.currentTarget.dataset.fallbackUsed) {
+                          e.currentTarget.style.display = 'none';
+                          return;
+                        }
+                        e.currentTarget.dataset.fallbackUsed = '1';
+                        e.currentTarget.src = LOCAL_FALLBACK;
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <h1
+                  className="text-4xl xl:text-5xl font-heading font-extrabold tracking-wider uppercase bg-clip-text text-transparent brand-gradient-shimmer"
+                  style={{
+                    backgroundImage:
+                      'linear-gradient(90deg, #FFFFFF 0%, #FFE7B3 25%, #FFFFFF 50%, #FFE7B3 75%, #FFFFFF 100%)',
+                  }}
+                >
+                  {BRAND.appName}
+                </h1>
+                <p className="mt-2 text-base text-white/95 font-semibold tracking-[0.18em] uppercase">
+                  {BRAND.leaderName}
+                </p>
+                <p className="mt-1 text-[11px] text-amber-100/90 font-medium tracking-[0.32em] uppercase">
+                  Chief Minister · {BRAND.stateName}
+                </p>
+                <div className="mx-auto mt-4 h-[2px] w-32 origin-center bg-gradient-to-r from-transparent via-orange-200 to-transparent brand-underline-pulse" />
+                <p className="mt-4 text-sm text-white/85 max-w-sm leading-relaxed">
+                  Real-time social media intelligence for the {BRAND.partyUnit}-led NDA government — mentions, sentiment, alerts &amp; grievances of the people of {BRAND.stateName}.
+                </p>
+              </div>
+
+              {/* bottom: footer tagline */}
+              <div className="relative z-10 flex items-center justify-center gap-2 text-[10px] text-amber-100/90 font-semibold tracking-wider uppercase">
+                <span>{BRAND.partyName}</span>
+                <span className="h-1 w-1 rounded-full bg-amber-200/80" />
+                <span>{BRAND.stateName}</span>
+              </div>
+            </div>
+
+            {/* ───────── RIGHT: login form panel ───────── */}
+            <div className="relative p-6 sm:p-10 lg:p-12 flex flex-col justify-center">
+              {/* compact mobile-only hero (left panel is hidden on mobile) */}
+              <div className="lg:hidden text-center mb-6">
+                <div className="relative mx-auto mb-4 w-24 h-24">
+                  <div className="absolute inset-0 rounded-full overflow-hidden brand-glow border-[3px] border-white/95">
+                    <img
+                      src={PARTY_HERO.src}
+                      alt={PARTY_HERO.alt}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        if (e.currentTarget.dataset.fallbackUsed) {
+                          e.currentTarget.style.display = 'none';
+                          return;
+                        }
+                        e.currentTarget.dataset.fallbackUsed = '1';
+                        e.currentTarget.src = LOCAL_FALLBACK;
+                      }}
+                    />
+                  </div>
+                </div>
+                <h1 className="text-2xl font-heading font-extrabold tracking-wider uppercase text-orange-900">
+                  {BRAND.appName}
+                </h1>
+                <p className="text-[11px] text-orange-700/80 font-medium tracking-[0.32em] uppercase mt-0.5">
+                  {BRAND.leaderName}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3 mb-6 pb-4 border-b border-orange-100">
+                <div className="relative">
+                  <div className="absolute -inset-1 rounded-xl bg-gradient-to-br from-amber-300 to-orange-500 blur-sm opacity-70" />
+                  <div className="relative p-2.5 rounded-xl bg-gradient-to-br from-orange-500 to-orange-700 shadow-lg">
+                    <Shield className="h-5 w-5 text-white" />
+                  </div>
+                </div>
+                <div>
+                  <h2 className="text-lg sm:text-xl font-heading font-bold text-orange-900">
+                    Secure Command Access
+                  </h2>
+                  <p className="text-[11px] text-orange-700/80 font-medium tracking-wide">
+                    {BRAND.partyUnit} · Authorised personnel only
+                  </p>
+                </div>
+                <Sparkles className="ml-auto h-4 w-4 text-amber-500 animate-pulse" />
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-5" data-testid="login-form">
+                <div className="space-y-1.5">
+                  <Label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-orange-900">
+                    Email
+                  </Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-orange-500/70 pointer-events-none" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="admin@cgwatch.local"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      autoComplete="email"
+                      data-testid="email-input"
+                      className="h-12 pl-10 border-2 border-orange-200 bg-orange-50/30 focus:border-orange-500 focus:ring-orange-500/20 text-base rounded-lg"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="password" className="text-xs font-bold uppercase tracking-wider text-orange-900">
+                    Password
+                  </Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-orange-500/70 pointer-events-none" />
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      autoComplete="current-password"
+                      data-testid="password-input"
+                      className="h-12 pl-10 border-2 border-orange-200 bg-orange-50/30 focus:border-orange-500 focus:ring-orange-500/20 text-base rounded-lg"
+                    />
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  data-testid="login-submit-btn"
+                  className="group relative w-full h-12 overflow-hidden text-base font-extrabold uppercase tracking-wider text-white border-0 rounded-lg shadow-lg shadow-orange-600/40 transition-all duration-200 hover:shadow-xl hover:shadow-orange-600/50 active:scale-[0.985] disabled:opacity-75"
+                  style={{
+                    background:
+                      'linear-gradient(90deg, #C2410C 0%, #EA580C 35%, #FF9933 65%, #FDBA74 100%)',
+                    backgroundSize: '200% 100%',
+                    animation: 'brandGradientShimmer 4s linear infinite',
+                  }}
+                >
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    {loading ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                        Authenticating…
+                      </>
+                    ) : (
+                      <>
+                        <Shield className="h-4 w-4" />
+                        Enter Command Centre
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </>
+                    )}
+                  </span>
+                </Button>
+              </form>
+
+              {/* Three quick reassurance pills */}
+              <div className="mt-5 grid grid-cols-3 gap-2 text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide">
+                <div className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md bg-orange-50 text-orange-700 border border-orange-100">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Encrypted
+                </div>
+                <div className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md bg-amber-50 text-amber-800 border border-amber-100">
+                  <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
+                  24×7 Watch
+                </div>
+                <div className="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md bg-rose-50 text-rose-700 border border-rose-100">
+                  <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse" />
+                  Audit-Logged
+                </div>
+              </div>
+
+              <p className="mt-6 text-center text-[10px] text-orange-700/60">
+                © {new Date().getFullYear()} {BRAND.appName} · Secure intelligence platform
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Login;

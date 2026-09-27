@@ -1,0 +1,740 @@
+{
+  "1": {
+    "electors_male": 87251,
+    "electors_female": 89315,
+    "electors_other": 6,
+    "electors_total": 176572,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (124 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "2": {
+    "electors_male": 68042,
+    "electors_female": 66708,
+    "electors_other": 2,
+    "electors_total": 134752,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (195 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "3": {
+    "electors_male": 84047,
+    "electors_female": 84029,
+    "electors_other": 5,
+    "electors_total": 168081,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (104 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "4": {
+    "electors_male": 117990,
+    "electors_female": 119070,
+    "electors_other": 4,
+    "electors_total": 237064,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (70 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "5": {
+    "electors_male": 118916,
+    "electors_female": 117803,
+    "electors_other": 1,
+    "electors_total": 236720,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (83 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "6": {
+    "electors_male": 116219,
+    "electors_female": 115383,
+    "electors_other": 5,
+    "electors_total": 231607,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (102 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "7": {
+    "electors_male": 110218,
+    "electors_female": 108245,
+    "electors_other": 7,
+    "electors_total": 218470,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (73 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "8": {
+    "electors_male": 108606,
+    "electors_female": 109656,
+    "electors_other": 3,
+    "electors_total": 218265,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (292 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "9": {
+    "electors_male": 96333,
+    "electors_female": 97334,
+    "electors_other": 3,
+    "electors_total": 193670,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (232 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "10": {
+    "electors_male": 126666,
+    "electors_female": 129775,
+    "electors_other": 13,
+    "electors_total": 256454,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (237 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "11": {
+    "electors_male": 99070,
+    "electors_female": 102158,
+    "electors_other": 1,
+    "electors_total": 201229,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (431 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "12": {
+    "electors_male": 117665,
+    "electors_female": 119355,
+    "electors_other": 17,
+    "electors_total": 237037,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (749 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "13": {
+    "electors_male": 100378,
+    "electors_female": 104634,
+    "electors_other": 2,
+    "electors_total": 205014,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (611 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "14": {
+    "electors_male": 110775,
+    "electors_female": 115604,
+    "electors_other": 1,
+    "electors_total": 226380,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (479 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "15": {
+    "electors_male": 101729,
+    "electors_female": 102661,
+    "electors_other": 1,
+    "electors_total": 204391,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (129 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "16": {
+    "electors_male": 128965,
+    "electors_female": 128365,
+    "electors_other": 20,
+    "electors_total": 257350,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (82 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "17": {
+    "electors_male": 130568,
+    "electors_female": 132876,
+    "electors_other": 4,
+    "electors_total": 263448,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (78 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "18": {
+    "electors_male": 107527,
+    "electors_female": 107959,
+    "electors_other": 5,
+    "electors_total": 215491,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (59 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "19": {
+    "electors_male": 103998,
+    "electors_female": 108720,
+    "electors_other": 3,
+    "electors_total": 212721,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (104 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "20": {
+    "electors_male": 108908,
+    "electors_female": 112216,
+    "electors_other": 0,
+    "electors_total": 221124,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (108 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "21": {
+    "electors_male": 129042,
+    "electors_female": 126777,
+    "electors_other": 21,
+    "electors_total": 255840,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (211 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "22": {
+    "electors_male": 108462,
+    "electors_female": 106299,
+    "electors_other": 9,
+    "electors_total": 214770,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (112 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "23": {
+    "electors_male": 113428,
+    "electors_female": 114915,
+    "electors_other": 8,
+    "electors_total": 228351,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (108 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "24": {
+    "electors_male": 96785,
+    "electors_female": 100949,
+    "electors_other": 2,
+    "electors_total": 197736,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (216 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "25": {
+    "electors_male": 108771,
+    "electors_female": 110066,
+    "electors_other": 3,
+    "electors_total": 218840,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (230 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "26": {
+    "electors_male": 116043,
+    "electors_female": 112348,
+    "electors_other": 6,
+    "electors_total": 228397,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (90 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "27": {
+    "electors_male": 129260,
+    "electors_female": 124402,
+    "electors_other": 6,
+    "electors_total": 253668,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (110 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "28": {
+    "electors_male": 123514,
+    "electors_female": 120164,
+    "electors_other": 1,
+    "electors_total": 243679,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (133 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "29": {
+    "electors_male": 154181,
+    "electors_female": 152097,
+    "electors_other": 12,
+    "electors_total": 306290,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (183 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "30": {
+    "electors_male": 124247,
+    "electors_female": 126842,
+    "electors_other": 28,
+    "electors_total": 251117,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (93 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "31": {
+    "electors_male": 125740,
+    "electors_female": 122839,
+    "electors_other": 34,
+    "electors_total": 248613,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (116 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "32": {
+    "electors_male": 154519,
+    "electors_female": 150834,
+    "electors_other": 13,
+    "electors_total": 305366,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (254 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "33": {
+    "electors_male": 112735,
+    "electors_female": 109227,
+    "electors_other": 2,
+    "electors_total": 221964,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (319 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "34": {
+    "electors_male": 107653,
+    "electors_female": 104631,
+    "electors_other": 13,
+    "electors_total": 212297,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (305 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "35": {
+    "electors_male": 108301,
+    "electors_female": 105774,
+    "electors_other": 1,
+    "electors_total": 214076,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (316 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "36": {
+    "electors_male": 116139,
+    "electors_female": 117746,
+    "electors_other": 2,
+    "electors_total": 233887,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (212 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "37": {
+    "electors_male": 126663,
+    "electors_female": 122242,
+    "electors_other": 2,
+    "electors_total": 248907,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (295 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "38": {
+    "electors_male": 111679,
+    "electors_female": 108451,
+    "electors_other": 3,
+    "electors_total": 220133,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (367 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "39": {
+    "electors_male": 102364,
+    "electors_female": 102669,
+    "electors_other": 0,
+    "electors_total": 205033,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (74 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "40": {
+    "electors_male": 110520,
+    "electors_female": 113927,
+    "electors_other": 3,
+    "electors_total": 224450,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (131 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "41": {
+    "electors_male": 106877,
+    "electors_female": 110438,
+    "electors_other": 8,
+    "electors_total": 217323,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (66 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "42": {
+    "electors_male": 102008,
+    "electors_female": 106680,
+    "electors_other": 9,
+    "electors_total": 208697,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (104 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "43": {
+    "electors_male": 151276,
+    "electors_female": 150370,
+    "electors_other": 2,
+    "electors_total": 301648,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (237 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "44": {
+    "electors_male": 181287,
+    "electors_female": 180336,
+    "electors_other": 3,
+    "electors_total": 361626,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (124 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "45": {
+    "electors_male": 139755,
+    "electors_female": 140869,
+    "electors_other": 0,
+    "electors_total": 280624,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (158 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "46": {
+    "electors_male": 125993,
+    "electors_female": 126740,
+    "electors_other": 12,
+    "electors_total": 252745,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (84 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "47": {
+    "electors_male": 116772,
+    "electors_female": 117879,
+    "electors_other": 12,
+    "electors_total": 234663,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (63 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "48": {
+    "electors_male": 180678,
+    "electors_female": 168576,
+    "electors_other": 62,
+    "electors_total": 349316,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (55 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "49": {
+    "electors_male": 147232,
+    "electors_female": 144240,
+    "electors_other": 66,
+    "electors_total": 291538,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (53 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "50": {
+    "electors_male": 100545,
+    "electors_female": 101509,
+    "electors_other": 96,
+    "electors_total": 202150,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (54 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "51": {
+    "electors_male": 129093,
+    "electors_female": 130804,
+    "electors_other": 51,
+    "electors_total": 259948,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (58 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "52": {
+    "electors_male": 115688,
+    "electors_female": 115634,
+    "electors_other": 5,
+    "electors_total": 231327,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (48 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "53": {
+    "electors_male": 106315,
+    "electors_female": 107621,
+    "electors_other": 0,
+    "electors_total": 213936,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (66 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "54": {
+    "electors_male": 112163,
+    "electors_female": 116167,
+    "electors_other": 5,
+    "electors_total": 228335,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (118 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "55": {
+    "electors_male": 111278,
+    "electors_female": 115244,
+    "electors_other": 3,
+    "electors_total": 226525,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (68 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "56": {
+    "electors_male": 94489,
+    "electors_female": 98826,
+    "electors_other": 2,
+    "electors_total": 193317,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (419 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "57": {
+    "electors_male": 104465,
+    "electors_female": 104188,
+    "electors_other": 2,
+    "electors_total": 208655,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (233 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "58": {
+    "electors_male": 107600,
+    "electors_female": 112422,
+    "electors_other": 6,
+    "electors_total": 220028,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (374 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "59": {
+    "electors_male": 109699,
+    "electors_female": 114364,
+    "electors_other": 0,
+    "electors_total": 224063,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (1053 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "60": {
+    "electors_male": 107611,
+    "electors_female": 113124,
+    "electors_other": 2,
+    "electors_total": 220737,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (1092 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "61": {
+    "electors_male": 121582,
+    "electors_female": 122565,
+    "electors_other": 7,
+    "electors_total": 244154,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (528 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "62": {
+    "electors_male": 107695,
+    "electors_female": 109222,
+    "electors_other": 0,
+    "electors_total": 216917,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (402 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "63": {
+    "electors_male": 109677,
+    "electors_female": 110595,
+    "electors_other": 5,
+    "electors_total": 220277,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (427 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "64": {
+    "electors_male": 111645,
+    "electors_female": 116024,
+    "electors_other": 21,
+    "electors_total": 227690,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (153 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "65": {
+    "electors_male": 84596,
+    "electors_female": 83978,
+    "electors_other": 3,
+    "electors_total": 168577,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (436 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "66": {
+    "electors_male": 125629,
+    "electors_female": 125288,
+    "electors_other": 10,
+    "electors_total": 250927,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (357 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "67": {
+    "electors_male": 121121,
+    "electors_female": 123474,
+    "electors_other": 13,
+    "electors_total": 244608,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (179 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "68": {
+    "electors_male": 126061,
+    "electors_female": 124704,
+    "electors_other": 3,
+    "electors_total": 250768,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (49 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "69": {
+    "electors_male": 123427,
+    "electors_female": 123703,
+    "electors_other": 2,
+    "electors_total": 247132,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (72 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "70": {
+    "electors_male": 135168,
+    "electors_female": 131544,
+    "electors_other": 2,
+    "electors_total": 266714,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (45 service electors listed separately for this AC)",
+    "as_of": "2023-11-17"
+  },
+  "71": {
+    "electors_male": 157725,
+    "electors_female": 158554,
+    "electors_other": 0,
+    "electors_total": 316279,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (61 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "72": {
+    "electors_male": 164770,
+    "electors_female": 166843,
+    "electors_other": 2,
+    "electors_total": 331615,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (56 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "73": {
+    "electors_male": 110249,
+    "electors_female": 109488,
+    "electors_other": 0,
+    "electors_total": 219737,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (88 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "74": {
+    "electors_male": 105648,
+    "electors_female": 104123,
+    "electors_other": 4,
+    "electors_total": 209775,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (175 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "75": {
+    "electors_male": 103737,
+    "electors_female": 107729,
+    "electors_other": 2,
+    "electors_total": 211468,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (237 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "76": {
+    "electors_male": 102059,
+    "electors_female": 100738,
+    "electors_other": 0,
+    "electors_total": 202797,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (212 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "77": {
+    "electors_male": 95115,
+    "electors_female": 96293,
+    "electors_other": 0,
+    "electors_total": 191408,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (174 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "78": {
+    "electors_male": 82789,
+    "electors_female": 85077,
+    "electors_other": 0,
+    "electors_total": 167866,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (142 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "79": {
+    "electors_male": 88611,
+    "electors_female": 87553,
+    "electors_other": 8,
+    "electors_total": 176172,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (89 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "80": {
+    "electors_male": 98587,
+    "electors_female": 104329,
+    "electors_other": 0,
+    "electors_total": 202916,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (551 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "81": {
+    "electors_male": 87195,
+    "electors_female": 95118,
+    "electors_other": 2,
+    "electors_total": 182315,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (629 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "82": {
+    "electors_male": 100325,
+    "electors_female": 106230,
+    "electors_other": 3,
+    "electors_total": 206558,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (504 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "83": {
+    "electors_male": 91159,
+    "electors_female": 97677,
+    "electors_other": 2,
+    "electors_total": 188838,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (299 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "84": {
+    "electors_male": 92138,
+    "electors_female": 98775,
+    "electors_other": 4,
+    "electors_total": 190917,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (373 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "85": {
+    "electors_male": 81265,
+    "electors_female": 86560,
+    "electors_other": 2,
+    "electors_total": 167827,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (92 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "86": {
+    "electors_male": 98855,
+    "electors_female": 107238,
+    "electors_other": 29,
+    "electors_total": 206122,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (104 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "87": {
+    "electors_male": 83539,
+    "electors_female": 94041,
+    "electors_other": 1,
+    "electors_total": 177581,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (44 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "88": {
+    "electors_male": 90127,
+    "electors_female": 102312,
+    "electors_other": 1,
+    "electors_total": 192440,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (366 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "89": {
+    "electors_male": 81542,
+    "electors_female": 87661,
+    "electors_other": 8,
+    "electors_total": 169211,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (246 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "90": {
+    "electors_male": 78484,
+    "electors_female": 88355,
+    "electors_other": 0,
+    "electors_total": 166839,
+    "source": "ECI Index Card Assembly - 2023 (CEO Chhattisgarh), Part II 'Electors', general electors (incl. overseas/NRI) excluding service electors (73 service electors listed separately for this AC)",
+    "as_of": "2023-11-07"
+  },
+  "_meta": {
+    "description": "AC-wise general electors (male + female + third gender, including overseas/NRI electors, excluding service electors) from the ECI 'Index Card Assembly - 2023' for each of the 90 ACs, i.e. the electoral roll used at the Nov 2023 general election (poll on 7 Nov 2023 for 20 ACs and 17 Nov 2023 for 70 ACs; as_of per AC is its poll date). These are 2023 election figures, not the latest roll: AC-wise figures from the SIR 2025-26 final roll (published 21 Feb 2026, qualifying date 1 Jan 2026, state total 1,87,30,914 electors per the CEO Chhattisgarh press note of 21 Feb 2026) could not be located in a machine-readable or published AC-wise table. The CEO press note gives only district-wise totals, and the ECI voters-portal statutory reports are per-part downloads. Each published total equals male + female + third gender. Adding service electors reproduces the Index Card 'Total' (e.g. AC 1: 176,572 + 124 = 176,696).",
+    "source": "https://ceochhattisgarh.nic.in/assets/pdf%20files/AllACsIndex%20Card.pdf (fetched 2026-09-26; archived copy https://web.archive.org/web/20250511095229/https://ceochhattisgarh.nic.in/assets/pdf%20files/AllACsIndex%20Card.pdf)",
+    "as_of": "2023-11-17",
+    "state_totals": {
+      "male": 10135261,
+      "female": 10256887,
+      "third_gender": 752,
+      "total": 20392900,
+      "service_voters": 19907
+    },
+    "latest_roll_reference": {
+      "final_roll_published": "2026-02-21",
+      "qualifying_date": "2026-01-01",
+      "state_total_electors": 18730914,
+      "source": "https://ceochhattisgarh.nic.in/assets/pdf%20files/PN21.02.2026FinalPublicationofERollChhattisgarh.pdf"
+    }
+  }
+}

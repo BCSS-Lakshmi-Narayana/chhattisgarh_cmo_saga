@@ -1,0 +1,1003 @@
+{
+  "_meta": {
+    "purpose": "Official social-media accounts of Chhattisgarh leaders, parties and government bodies. Merge into politicalData.js / politicalEntities.js so the sentiment pipeline recognises a leader when a post names the handle and when the leader/party is the AUTHOR.",
+    "researched": "2026-09-26. X bios read directly via api.fxtwitter.com (public profile JSON); Instagram/Facebook/YouTube read via their public og: metadata; cross-checked with Wikidata (P2002/P2003/P2013/P2397), official websites (dprcg.gov.in, cmo.cg.gov.in, opchoudhary.org, amitjogi.in) and search results.",
+    "status": "CONFIRMED = official source (government/party site link, Wikidata + matching bio, or X 'government' affiliation badge + matching bio); LIKELY = one decent source (usually the profile's own bio naming the person and office). Fan pages, parody accounts, namesakes and anything weaker than LIKELY are left out; notable look-alikes are called out in 'note'.",
+    "keys": "people are keyed by cg_leaders.json id; other sitting MLAs 'ac:<lowercase alphanumeric ECI AC name>'; parties by party id; 'government' holds non-person official accounts (DPR, Vidhan Sabha). The CM's Office accounts are filed under vishnu-deo-sai, as Goa files @goacm under the CM.",
+    "maintenance": "When a handle changes, edit it here with a source URL, then run `npm run test:sentiment`."
+  },
+  "people": {
+    "vishnu-deo-sai": [
+      {
+        "platform": "x",
+        "handle": "vishnudsai",
+        "status": "CONFIRMED",
+        "source": "Wikidata Q7935991 P2002; bio \"मुख्यमंत्री, छत्तीसगढ़ शासन\" via https://api.fxtwitter.com/vishnudsai"
+      },
+      {
+        "platform": "x",
+        "handle": "ChhattisgarhCMO",
+        "status": "CONFIRMED",
+        "source": "https://dprcg.gov.in (links it); X government badge; bio \"Chief Minister's Office, Govt. of Chhattisgarh\"",
+        "note": "CM's Office account"
+      },
+      {
+        "platform": "facebook",
+        "handle": "ChhattisgarhCMO",
+        "status": "CONFIRMED",
+        "source": "https://cmo.cg.gov.in/ and https://dprcg.gov.in link it",
+        "note": "CM's Office"
+      },
+      {
+        "platform": "instagram",
+        "handle": "chhattisgarhcmo",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/chhattisgarhcmo/",
+        "note": "CM's Office (422K followers)"
+      },
+      {
+        "platform": "youtube",
+        "handle": "ChhattisgarhCMO",
+        "status": "LIKELY",
+        "source": "https://www.youtube.com/@ChhattisgarhCMO",
+        "note": "CM's Office channel UCNgQXeaaxnF-cCQFC4iMr9w"
+      },
+      {
+        "platform": "instagram",
+        "handle": "vishnudeosai",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/vishnudeosai/",
+        "note": "699K followers; matches X display name"
+      },
+      {
+        "platform": "facebook",
+        "handle": "vishnudeosai1",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/vishnudeosai1/",
+        "note": "page bio \"मुख्यमंत्री, छत्तीसगढ़ शासन\"; NOT facebook.com/vishnudeosai (redirects to an unrelated personal profile)"
+      },
+      {
+        "platform": "youtube",
+        "handle": "VishnuDeoSaiOfficial",
+        "status": "LIKELY",
+        "source": "https://www.youtube.com/@VishnuDeoSaiOfficial",
+        "note": "channel UCKA5Q29KElWOnkeqwUn1ZjQ, \"official YouTube channel of Vishnu Deo Sai, Chief Minister\""
+      }
+    ],
+    "arun-sao": [
+      {
+        "platform": "x",
+        "handle": "ArunSao3",
+        "status": "CONFIRMED",
+        "source": "Wikidata Q64011476 P2002; X government badge; bio \"Deputy Chief Minister of Chhattisgarh and MLA, Lormi\""
+      },
+      {
+        "platform": "facebook",
+        "handle": "arunsaobjp",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/arunsaobjp/",
+        "note": "page bio \"उप-मुख्यमंत्री, छत्तीसगढ़ शासन, विधायक- लोरमी\""
+      }
+    ],
+    "vijay-sharma": [
+      {
+        "platform": "x",
+        "handle": "vijaysharmacg",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/vijaysharmacg (profile bio); https://x.com/vijaysharmacg; bio links vijaysharmacg.in",
+        "note": "bio \"Deputy Chief Minister - Chhattisgarh, MLA from Kawardha\""
+      },
+      {
+        "platform": "instagram",
+        "handle": "vijaysharmacg",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/vijaysharmacg/",
+        "note": "216K followers; same handle as X"
+      }
+    ],
+    "ramvichar-netam": [
+      {
+        "platform": "x",
+        "handle": "ramvicharnetam",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/ramvicharnetam (profile bio)",
+        "note": "bio names Tribal Affairs/Agriculture Minister, Ramanujganj"
+      },
+      {
+        "platform": "instagram",
+        "handle": "ramvicharnetam",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/ramvicharnetam/"
+      },
+      {
+        "platform": "facebook",
+        "handle": "RamvicharNetamB.J.P",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/RamvicharNetamB.J.P/",
+        "note": "linked from his X profile; page bio names ministry"
+      }
+    ],
+    "dayaldas-baghel": [
+      {
+        "platform": "x",
+        "handle": "DayalDasBaghel",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/DayalDasBaghel (profile bio)",
+        "note": "bio: Food Minister, MLA Navagarh"
+      }
+    ],
+    "kedar-kashyap": [
+      {
+        "platform": "x",
+        "handle": "KedarKashyapBJP",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/KedarKashyapBJP (profile bio)",
+        "note": "bio \"Cabinet Minister CG Govt. MLA Narayanpur\""
+      },
+      {
+        "platform": "instagram",
+        "handle": "kedar_kashyap",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/kedar_kashyap/"
+      },
+      {
+        "platform": "facebook",
+        "handle": "kedarkashyapofficial",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/kedarkashyapofficial/",
+        "note": "page bio \"Cabinet Minister - Govt. of CG\""
+      }
+    ],
+    "lakhan-lal-dewangan": [
+      {
+        "platform": "x",
+        "handle": "LakhanLalDewan1",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/LakhanLalDewan1 (profile bio)",
+        "note": "bio \"कैबिनेट मंत्री छत्तीसगढ़ शासन, विधायक कोरबा\""
+      },
+      {
+        "platform": "facebook",
+        "handle": "lakhanlal.dewangan",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/lakhanlal.dewangan/",
+        "note": "same bio as X"
+      }
+    ],
+    "shyam-bihari-jaiswal": [
+      {
+        "platform": "x",
+        "handle": "ShyamBihariBjp",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/ShyamBihariBjp (profile bio)",
+        "note": "bio names Health Minister, MLA Manendragarh"
+      },
+      {
+        "platform": "instagram",
+        "handle": "shyambiharibjp",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/shyambiharibjp/"
+      },
+      {
+        "platform": "facebook",
+        "handle": "sbjaiswalbjp",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/sbjaiswalbjp/",
+        "note": "page bio names Health ministry"
+      }
+    ],
+    "op-choudhary": [
+      {
+        "platform": "x",
+        "handle": "OPChoudhary_Ind",
+        "status": "CONFIRMED",
+        "source": "https://opchoudhary.org/ (official site links it); bio \"Finance Minister CG Govt, MLA-Raigarh\""
+      },
+      {
+        "platform": "facebook",
+        "handle": "OPChoudhary.India",
+        "status": "CONFIRMED",
+        "source": "https://opchoudhary.org/"
+      },
+      {
+        "platform": "instagram",
+        "handle": "opchoudhary.india",
+        "status": "CONFIRMED",
+        "source": "https://opchoudhary.org/"
+      },
+      {
+        "platform": "youtube",
+        "handle": "OPChoudhary",
+        "status": "CONFIRMED",
+        "source": "https://opchoudhary.org/"
+      }
+    ],
+    "laxmi-rajwade": [
+      {
+        "platform": "x",
+        "handle": "LaxmiRajwade21",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/LaxmiRajwade21 (profile bio)",
+        "note": "bio \"कैबिनेट मंत्री छत्तीसगढ़ शासन, विधायक भटगांव\""
+      },
+      {
+        "platform": "facebook",
+        "handle": "laxmirajwadeofficial",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/laxmirajwadeofficial/",
+        "note": "page bio names WCD ministry; a second page facebook.com/laxmirajwadebjp also exists (older, smaller)"
+      }
+    ],
+    "tank-ram-verma": [
+      {
+        "platform": "x",
+        "handle": "tankramvermabjp",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/tankramvermabjp (profile bio)",
+        "note": "bio \"कैबिनेट मंत्री, छत्तीसगढ़ शासन | विधायक बलौदाबाज़ार\""
+      },
+      {
+        "platform": "instagram",
+        "handle": "tankramvermabjp",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/tankramvermabjp/"
+      }
+    ],
+    "gajendra-yadav": [
+      {
+        "platform": "x",
+        "handle": "GajendraYdvBJP",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/GajendraYdvBJP (profile bio)",
+        "note": "bio names School Education/Law, MLA Durg City. NOT @G_a_j_j_u"
+      },
+      {
+        "platform": "facebook",
+        "handle": "gajendrayadavbjp",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/gajendrayadavbjp/",
+        "note": "NOT instagram/facebook \"gajainderydvbjp\" = Delhi BJP MLA Gajender Yadav (Mehrauli)"
+      }
+    ],
+    "rajesh-agrawal": [
+      {
+        "platform": "x",
+        "handle": "RajeshAgBJP",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/RajeshAgBJP (profile bio)",
+        "note": "bio \"Minister of Tourism ... MLA from Ambikapur\""
+      },
+      {
+        "platform": "instagram",
+        "handle": "rajeshagrawalbjp",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/rajeshagrawalbjp/"
+      },
+      {
+        "platform": "facebook",
+        "handle": "RajeshAgrawal01",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/RajeshAgrawal01/",
+        "note": "same bio as X"
+      }
+    ],
+    "guru-khushwant-saheb": [
+      {
+        "platform": "x",
+        "handle": "Khushwantguru",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/Khushwantguru (profile bio)",
+        "note": "bio names Skill Development minister, MLA Arang"
+      },
+      {
+        "platform": "facebook",
+        "handle": "GuruKhushwantSaheb",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/GuruKhushwantSaheb/"
+      }
+    ],
+    "raman-singh": [
+      {
+        "platform": "x",
+        "handle": "drramansingh",
+        "status": "CONFIRMED",
+        "source": "Wikidata Q3521181 P2002; bio \"विधायक, राजनांदगांव। विधानसभा अध्यक्ष, छत्तीसगढ़\""
+      },
+      {
+        "platform": "facebook",
+        "handle": "drramansingh.official",
+        "status": "CONFIRMED",
+        "source": "Wikidata Q3521181 P2013; page bio names Speaker"
+      },
+      {
+        "platform": "youtube",
+        "handle": "UCCIETBboAyOQ_Mgk5HukbnQ",
+        "status": "LIKELY",
+        "source": "Wikidata Q3521181 P2397",
+        "note": "YouTube channel id"
+      }
+    ],
+    "kiran-singh-deo": [
+      {
+        "platform": "x",
+        "handle": "KiranDeoBJP",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/KiranDeoBJP (profile bio)",
+        "note": "bio \"प्रदेश अध्यक्ष - भाजपा छत्तीसगढ़, विधायक जगदलपुर\""
+      },
+      {
+        "platform": "facebook",
+        "handle": "KiranDeoBJP",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/KiranDeoBJP/",
+        "note": "same bio"
+      },
+      {
+        "platform": "instagram",
+        "handle": "kirandeobjp",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/kirandeobjp/"
+      }
+    ],
+    "akhilesh-soni": [
+      {
+        "platform": "x",
+        "handle": "AkhileshSoniBJP",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/AkhileshSoniBJP (profile bio)",
+        "note": "bio \"State General Secretary BJP Chhattisgarh\""
+      }
+    ],
+    "smriti-irani": [
+      {
+        "platform": "x",
+        "handle": "smritiirani",
+        "status": "CONFIRMED",
+        "source": "Wikidata Q7546539 P2002; bio \"National General Secretary, @BJP4India\""
+      },
+      {
+        "platform": "instagram",
+        "handle": "smritiiraniofficial",
+        "status": "LIKELY",
+        "source": "Wikidata Q7546539 P2003"
+      },
+      {
+        "platform": "facebook",
+        "handle": "Smriti.Irani.Official",
+        "status": "LIKELY",
+        "source": "Wikidata Q7546539 P2013"
+      }
+    ],
+    "charan-das-mahant": [
+      {
+        "platform": "x",
+        "handle": "DrCharandas",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/DrCharandas (profile bio)",
+        "note": "bio \"Leader Of Opposition & Ex.Speaker Chhattisgarh Vidhansabha\""
+      },
+      {
+        "platform": "facebook",
+        "handle": "Dr.CharanDasMahant",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/Dr.CharanDasMahant/",
+        "note": "linked from X profile"
+      },
+      {
+        "platform": "instagram",
+        "handle": "dr.charandasmahant",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/dr.charandasmahant/",
+        "note": "not @charandasmahant (small unrelated/fan account)"
+      }
+    ],
+    "deepak-baij": [
+      {
+        "platform": "x",
+        "handle": "DeepakBaijINC",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/DeepakBaijINC (profile bio)",
+        "note": "bio \"President, Chhattisgarh Pradesh Congress Committee\""
+      },
+      {
+        "platform": "facebook",
+        "handle": "deepakbaijinc",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/deepakbaijinc/",
+        "note": "page bio \"अध्यक्ष, छत्तीसगढ़ प्रदेश कांग्रेस कमेटी\""
+      },
+      {
+        "platform": "instagram",
+        "handle": "deepak_baij",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/deepak_baij/"
+      }
+    ],
+    "bhupesh-baghel": [
+      {
+        "platform": "x",
+        "handle": "bhupeshbaghel",
+        "status": "CONFIRMED",
+        "source": "Wikidata Q4902181 P2002; bio \"Former Chief Minister, Chhattisgarh\""
+      },
+      {
+        "platform": "facebook",
+        "handle": "BhupeshBaghelCG",
+        "status": "CONFIRMED",
+        "source": "linked from the verified @bhupeshbaghel X profile; https://www.facebook.com/BhupeshBaghelCG/",
+        "note": "NOTE: x.com/BhupeshBaghelCG is a FAN CLUB, not his"
+      },
+      {
+        "platform": "instagram",
+        "handle": "bhupeshbaghelinc",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/bhupeshbaghelinc/",
+        "note": "NOT instagram.com/bhupeshbaghel (unrelated \"Bhupendra Singh\")"
+      }
+    ],
+    "ts-singh-deo": [
+      {
+        "platform": "x",
+        "handle": "TS_SinghDeo",
+        "status": "CONFIRMED",
+        "source": "Wikidata Q55081536 P2002 (ts_singhdeo); bio \"Former Deputy Chief Minister, Chhattisgarh\""
+      },
+      {
+        "platform": "facebook",
+        "handle": "tssinghdeosurguja",
+        "status": "CONFIRMED",
+        "source": "Wikidata Q55081536 P2013; linked from X profile"
+      }
+    ],
+    "lakheshwar-baghel": [
+      {
+        "platform": "facebook",
+        "handle": "LakheshwarBaghel.official",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/LakheshwarBaghel.official/",
+        "note": "page bio \"official facebook page of Mr. Lakheswar Baghel MLA Bastar\""
+      }
+    ],
+    "umesh-patel": [
+      {
+        "platform": "x",
+        "handle": "umeshpatelcgpyc",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/umeshpatelcgpyc (profile bio)",
+        "note": "bio \"MLA Kharsia\""
+      }
+    ],
+    "devendra-yadav": [
+      {
+        "platform": "x",
+        "handle": "Devendra_1925",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/Devendra_1925 (profile bio)",
+        "note": "bio \"MLA, Bhilai Nagar\"; NOT @devendrayadvinc (Delhi PCC chief Devender Yadav)"
+      },
+      {
+        "platform": "facebook",
+        "handle": "dyadav.bhilai.official",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/dyadav.bhilai.official/"
+      },
+      {
+        "platform": "instagram",
+        "handle": "devendra.yadav.official",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/devendra.yadav.official/"
+      }
+    ],
+    "kawasi-lakhma": [
+      {
+        "platform": "x",
+        "handle": "KawasiLakhma",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/KawasiLakhma (profile bio)",
+        "note": "bio \"Official Account, former Cabinet Minister CG GOVT, Mla konta-90\""
+      }
+    ],
+    "tuleshwar-markam": [
+      {
+        "platform": "x",
+        "handle": "MarkamTuleGGP",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/MarkamTuleGGP (profile bio)",
+        "note": "bio \"National President - Gondwana Ganatantra Party\"; very small account (~44 followers)"
+      }
+    ],
+    "amit-jogi": [
+      {
+        "platform": "x",
+        "handle": "amitjogi",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/amitjogi (profile bio)",
+        "note": "bio \"President, JCC(J)\", links amitjogi.in"
+      },
+      {
+        "platform": "facebook",
+        "handle": "amitjogi",
+        "status": "CONFIRMED",
+        "source": "http://amitjogi.in (official site links it)"
+      }
+    ],
+    "renu-jogi": [
+      {
+        "platform": "x",
+        "handle": "renu_jogi",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/renu_jogi (profile bio)",
+        "note": "bio \"MLA Elected From Kota\" (outdated); low activity"
+      }
+    ],
+    "narendra-modi": [
+      {
+        "platform": "x",
+        "handle": "narendramodi",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/narendramodi (profile bio)"
+      },
+      {
+        "platform": "x",
+        "handle": "PMOIndia",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/PMOIndia (profile bio)",
+        "note": "PMO"
+      }
+    ],
+    "amit-shah": [
+      {
+        "platform": "x",
+        "handle": "AmitShah",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/AmitShah (profile bio)"
+      }
+    ],
+    "nitin-nabin": [
+      {
+        "platform": "x",
+        "handle": "NitinNabin",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/NitinNabin (profile bio); https://www.bjp.org/shri-nitin-nabin",
+        "note": "bio \"National President, Bharatiya Janata Party\""
+      }
+    ],
+    "rahul-gandhi": [
+      {
+        "platform": "x",
+        "handle": "RahulGandhi",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/RahulGandhi (profile bio)"
+      }
+    ],
+    "mallikarjun-kharge": [
+      {
+        "platform": "x",
+        "handle": "kharge",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/kharge (profile bio)"
+      }
+    ],
+    "sukhdeo-bhagat": [
+      {
+        "platform": "x",
+        "handle": "sukhdeobhagat",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/sukhdeobhagat (profile bio)",
+        "note": "bio \"MP (Lok Sabha Lohardaga), AICC In-Charge Of Chhattisgarh\""
+      },
+      {
+        "platform": "facebook",
+        "handle": "sukhdeobhagat",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/sukhdeobhagat/"
+      }
+    ],
+    "arvind-kejriwal": [
+      {
+        "platform": "x",
+        "handle": "ArvindKejriwal",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/ArvindKejriwal (profile bio)"
+      }
+    ],
+    "mayawati": [
+      {
+        "platform": "x",
+        "handle": "Mayawati",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/Mayawati (profile bio)",
+        "note": "bio \"National President, Bahujan Samaj Party\""
+      }
+    ],
+    "mp-surguja": [
+      {
+        "platform": "x",
+        "handle": "ChintamaniMhraj",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/ChintamaniMhraj (profile bio); X government badge; bio links sansad.in"
+      },
+      {
+        "platform": "facebook",
+        "handle": "Chintamani.Maharaj",
+        "status": "CONFIRMED",
+        "source": "Wikidata Q56043461 P2013; page bio \"लोकसभा सांसद ... सरगुजा\""
+      }
+    ],
+    "mp-raigarh": [
+      {
+        "platform": "x",
+        "handle": "Radheshyam99891",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/Radheshyam99891 (profile bio)",
+        "note": "bio \"सांसद रायगढ़ लोकसभा (छ ग)\""
+      },
+      {
+        "platform": "instagram",
+        "handle": "radheshyamrathiabjp",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/radheshyamrathiabjp/"
+      }
+    ],
+    "mp-janjgir-champa": [
+      {
+        "platform": "x",
+        "handle": "kamleshjangde15",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/kamleshjangde15 (profile bio)",
+        "note": "bio \"सांसद जांजगीर चांपा लोकसभा\""
+      }
+    ],
+    "mp-korba": [
+      {
+        "platform": "x",
+        "handle": "jyotsnamahant",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/jyotsnamahant (profile bio); X government badge",
+        "note": "bio \"Member Of Parliament - Korba\""
+      },
+      {
+        "platform": "facebook",
+        "handle": "JyotsnaCharandasMahant",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/JyotsnaCharandasMahant/"
+      }
+    ],
+    "mp-bilaspur": [
+      {
+        "platform": "x",
+        "handle": "tokhansahu_bjp",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/tokhansahu_bjp (profile bio); X government badge",
+        "note": "bio \"Union Minister of State for Housing & Urban Affairs; MP Bilaspur\". Wikidata still lists defunct \"Tokhansahu2\""
+      },
+      {
+        "platform": "facebook",
+        "handle": "tokhan.sahu.bjp",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/tokhan.sahu.bjp/"
+      },
+      {
+        "platform": "instagram",
+        "handle": "tokhansahu_bjp",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/tokhansahu_bjp/"
+      }
+    ],
+    "mp-rajnandgaon": [
+      {
+        "platform": "x",
+        "handle": "santoshpandey44",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/santoshpandey44 (profile bio); X government badge",
+        "note": "bio \"सांसद, राजनांदगांव लोकसभा\". NOT @Santoshpandemla (UP ex-MLA)"
+      }
+    ],
+    "mp-durg": [
+      {
+        "platform": "x",
+        "handle": "VijayBaghelcg",
+        "status": "CONFIRMED",
+        "source": "Wikidata Q64011470 P2002; X government badge; bio \"सांसद, दुर्ग लोकसभा क्षेत्र\""
+      },
+      {
+        "platform": "facebook",
+        "handle": "vijaybaghelcg",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/vijaybaghelcg/"
+      }
+    ],
+    "mp-raipur": [
+      {
+        "platform": "x",
+        "handle": "brijmohan_ag",
+        "status": "CONFIRMED",
+        "source": "Wikidata Q4967995 P2002; bio \"MP, Raipur Loksabha\"",
+        "note": "NOT @Brijmohancg (stale 2014-era account)"
+      },
+      {
+        "platform": "facebook",
+        "handle": "brijmohan.ag",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/brijmohan.ag/",
+        "note": "page bio \"Official Facebook Page of Shri Brijmohan Agrawal | MP, Raipur\""
+      }
+    ],
+    "mp-mahasamund": [
+      {
+        "platform": "x",
+        "handle": "RoopkumariBJP",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/RoopkumariBJP (profile bio)",
+        "note": "bio \"सांसद, लोकसभा महासमुंद; राष्ट्रीय अध्यक्ष भाजपा महिला मोर्चा\""
+      }
+    ],
+    "mp-bastar": [
+      {
+        "platform": "x",
+        "handle": "Mahesh_ji_bjp",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/Mahesh_ji_bjp (profile bio)",
+        "note": "bio \"Member of Parliament (Loksabha), Bastar\""
+      }
+    ],
+    "mp-kanker": [
+      {
+        "platform": "x",
+        "handle": "BhojrajNag",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/BhojrajNag (profile bio)",
+        "note": "bio still reads \"सांसद प्रत्याशी - कांकेर\" (2024 candidate)"
+      }
+    ],
+    "mp-rs-laxmi-verma": [
+      {
+        "platform": "x",
+        "handle": "LaxmiVermaBJP",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/LaxmiVermaBJP (profile bio)",
+        "note": "bio \"सांसद, राज्यसभा\", links laxmiverma.in"
+      }
+    ],
+    "mp-rs-phulo-devi-netam": [
+      {
+        "platform": "x",
+        "handle": "NetamPhulodevi",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/NetamPhulodevi (profile bio); X government badge",
+        "note": "bio \"MP - Rajya Sabha (Second Term), State President Mahila Congress Chhattisgarh\""
+      },
+      {
+        "platform": "facebook",
+        "handle": "NetamPhulodevi",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/NetamPhulodevi/"
+      }
+    ],
+    "mp-rs-rajeev-shukla": [
+      {
+        "platform": "x",
+        "handle": "ShuklaRajiv",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/ShuklaRajiv (profile bio); X government badge",
+        "note": "bio \"MP - Rajya Sabha, VP - BCCI\""
+      }
+    ],
+    "mp-rs-ranjeet-ranjan": [
+      {
+        "platform": "x",
+        "handle": "Ranjeet4India",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/Ranjeet4India (profile bio); X government badge",
+        "note": "bio \"Member of Parliament, Rajya Sabha\""
+      },
+      {
+        "platform": "x",
+        "handle": "ranjeet_inc",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/ranjeet_inc (profile bio)",
+        "note": "her older Lok Sabha-era (Supaul) account, low activity"
+      },
+      {
+        "platform": "facebook",
+        "handle": "RanjeetRanjanIndia",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/RanjeetRanjanIndia/",
+        "note": "page bio \"MP Rajya Sabha, Chhattisgarh\""
+      }
+    ],
+    "ac:bilaspur": [
+      {
+        "platform": "x",
+        "handle": "amaragrawalBJP",
+        "status": "CONFIRMED",
+        "source": "Wikidata Q17775174 P2002; bio \"MLA #Bilaspur (C.G.), Ex Cabinet Minister\"",
+        "note": "Amar Agrawal (BJP)"
+      },
+      {
+        "platform": "instagram",
+        "handle": "amaragrawalbilaspur",
+        "status": "LIKELY",
+        "source": "Wikidata Q17775174 P2003",
+        "note": "Amar Agrawal"
+      },
+      {
+        "platform": "facebook",
+        "handle": "AmarAgrawalOFFICIAL",
+        "status": "CONFIRMED",
+        "source": "Wikidata Q17775174 P2013; page bio \"MLA BILASPUR (C.G.)\"",
+        "note": "Amar Agrawal"
+      }
+    ]
+  },
+  "parties": {
+    "bjp": [
+      {
+        "platform": "x",
+        "handle": "BJP4CGState",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/BJP4CGState (profile bio); bio \"Official account of BJP Chhattisgarh State\", links cgstate.bjp.org"
+      },
+      {
+        "platform": "instagram",
+        "handle": "bjp4cgstate",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/bjp4cgstate/"
+      },
+      {
+        "platform": "facebook",
+        "handle": "BJP4CGState",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/BJP4CGState/"
+      }
+    ],
+    "inc": [
+      {
+        "platform": "x",
+        "handle": "INCChhattisgarh",
+        "status": "CONFIRMED",
+        "source": "https://api.fxtwitter.com/INCChhattisgarh (profile bio); tagged as \"@incchhattisgarh\" in MLA Devendra Yadav's bio",
+        "note": "NOT @INCCG (tiny unofficial account)"
+      },
+      {
+        "platform": "facebook",
+        "handle": "INCChhattisgarh",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/INCChhattisgarh/"
+      },
+      {
+        "platform": "instagram",
+        "handle": "incchhattisgarh",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/incchhattisgarh/"
+      },
+      {
+        "platform": "youtube",
+        "handle": "INCChhattisgarh",
+        "status": "LIKELY",
+        "source": "https://www.youtube.com/@INCChhattisgarh",
+        "note": "channel UCuStuA6u4whYCYdx8f6CNLQ"
+      },
+      {
+        "platform": "x",
+        "handle": "SevadalCG",
+        "status": "CONFIRMED",
+        "source": "https://x.com/SevadalCG (profile bio verified 2026-09-26)",
+        "note": "Chhattisgarh Pradesh Congress Sevadal (official)"
+      },
+      {
+        "platform": "x",
+        "handle": "ChhattisgarhPMC",
+        "status": "CONFIRMED",
+        "source": "https://x.com/ChhattisgarhPMC (profile bio verified 2026-09-26)",
+        "note": "Chhattisgarh Pradesh Mahila Congress (official)"
+      },
+      {
+        "platform": "x",
+        "handle": "CGSCCONGRESS",
+        "status": "CONFIRMED",
+        "source": "https://x.com/CGSCCONGRESS (profile bio verified 2026-09-26)",
+        "note": "Chhattisgarh PCC SC Department (official)"
+      },
+      {
+        "platform": "x",
+        "handle": "CG_Ki_congress",
+        "status": "CONFIRMED",
+        "source": "https://x.com/CG_Ki_congress (profile bio verified 2026-09-26)",
+        "note": "Chhattisgarh Pradesh Kisan Congress (official)"
+      },
+      {
+        "platform": "x",
+        "handle": "obccongresscg",
+        "status": "CONFIRMED",
+        "source": "https://x.com/obccongresscg (profile bio verified 2026-09-26)",
+        "note": "Chhattisgarh Pradesh OBC Congress (official)"
+      },
+      {
+        "platform": "x",
+        "handle": "IYCChhattisgarh",
+        "status": "CONFIRMED",
+        "source": "https://x.com/IYCChhattisgarh (profile bio verified 2026-09-26)",
+        "note": "Chhattisgarh Youth Congress (official)"
+      },
+      {
+        "platform": "x",
+        "handle": "SVerma_INC",
+        "status": "CONFIRMED",
+        "source": "https://x.com/SVerma_INC (profile bio verified 2026-09-26)",
+        "note": "Surendra Verma, Senior Spokesperson, PCC Chhattisgarh"
+      },
+      {
+        "platform": "x",
+        "handle": "drshivdahariya",
+        "status": "CONFIRMED",
+        "source": "https://x.com/drshivdahariya (profile bio verified 2026-09-26)",
+        "note": "Dr. Shiv Kumar Dahariya, former Congress cabinet minister"
+      }
+    ],
+    "aap": [
+      {
+        "platform": "x",
+        "handle": "AAPChhattisgarh",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/AAPChhattisgarh (profile bio)",
+        "note": "bio \"Official Account Of @AamAadmiParty Chhattisgarh\""
+      },
+      {
+        "platform": "facebook",
+        "handle": "AAPChhattisgarh",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/AAPChhattisgarh/"
+      },
+      {
+        "platform": "instagram",
+        "handle": "aapchhattisgarh",
+        "status": "LIKELY",
+        "source": "https://www.instagram.com/aapchhattisgarh/"
+      }
+    ],
+    "jccj": [
+      {
+        "platform": "x",
+        "handle": "officialjccj",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/officialjccj (profile bio)",
+        "note": "bio \"official account of Janta Congress Chhattisgarh Jogi Party\", links jantacongress.in"
+      },
+      {
+        "platform": "facebook",
+        "handle": "jantacongressjogi",
+        "status": "LIKELY",
+        "source": "https://www.facebook.com/jantacongressjogi/"
+      }
+    ],
+    "ggp": [],
+    "bsp": []
+  },
+  "government": {
+    "dpr-chhattisgarh": [
+      {
+        "platform": "x",
+        "handle": "DPRChhattisgarh",
+        "status": "CONFIRMED",
+        "source": "https://dprcg.gov.in (links it); X government badge",
+        "note": "Directorate of Public Relations (\"Jansampark CG\")"
+      },
+      {
+        "platform": "facebook",
+        "handle": "DPRChhattisgarh",
+        "status": "CONFIRMED",
+        "source": "https://dprcg.gov.in"
+      }
+    ],
+    "cg-vidhan-sabha": [
+      {
+        "platform": "x",
+        "handle": "cgvidhansabha",
+        "status": "LIKELY",
+        "source": "https://api.fxtwitter.com/cgvidhansabha (profile bio)",
+        "note": "bio \"Official Account Of Chhattisgarh Legislative Assembly\", links cgvidhansabha.gov.in"
+      }
+    ]
+  }
+}

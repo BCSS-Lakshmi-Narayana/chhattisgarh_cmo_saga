@@ -1,0 +1,626 @@
+[
+  {
+    "platform": "x",
+    "identifier": "@IBC24News",
+    "display_name": "IBC24 News",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@IBC24InNews",
+    "display_name": "IBC24",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@ibc24bastar",
+    "display_name": "IBC24 Bastar",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@ibc24surguja",
+    "display_name": "IBC24 Surguja",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/IBC24News",
+    "display_name": "IBC24 News",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@ibc24.in",
+    "display_name": "IBC24",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@haribhoomicom",
+    "display_name": "Haribhoomi",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@haribhoomitv",
+    "display_name": "Haribhoomi TV",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/Haribhoomi",
+    "display_name": "Haribhoomi",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@inhnewsindia",
+    "display_name": "INH 24x7 (Haribhoomi group, Raipur)",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@Inh24X7",
+    "display_name": "INH 24x7",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/inhnewsindia",
+    "display_name": "INH 24x7",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@inhnewsindia",
+    "display_name": "INH 24x7",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@PatrikaRaipur",
+    "display_name": "Patrika Raipur / Chhattisgarh",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/patrikachhattisgarh/",
+    "display_name": "Patrika Chhattisgarh",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@patrika_chhattisgarh",
+    "display_name": "Patrika Chhattisgarh",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@Nai_Dunia",
+    "display_name": "Naidunia (MP + Chhattisgarh)",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/p/NaiDuniya-Raipur-100063691134505/",
+    "display_name": "Naidunia Raipur",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@lalluram_news",
+    "display_name": "Lalluram",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/c/LalluramNews",
+    "display_name": "Lalluram",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/lalluram.india",
+    "display_name": "Lalluram",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@lalluramnews",
+    "display_name": "Lalluram",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@grandnewsindia",
+    "display_name": "Grand News",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@GrandnewsHD",
+    "display_name": "Grand News",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/grandnewsindia",
+    "display_name": "Grand News",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@grandnewshd",
+    "display_name": "Grand News",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@cg24news",
+    "display_name": "CG24 News (Raipur)",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/cg24news/",
+    "display_name": "CG 24 News Channel",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@swarajchannel",
+    "display_name": "Swaraj Express SMBC (MP/CG)",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "UCjyLPYDYfH-DvxerhRS3h4Q",
+    "display_name": "Swaraj Express SMBC",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/SwarajExpressSMBC/",
+    "display_name": "Swaraj Express SMBC",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@ZeeMPCG",
+    "display_name": "Zee MP-Chhattisgarh",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@ZeeMadhyaPradeshChhattisgarh",
+    "display_name": "Zee Madhya Pradesh Chhattisgarh",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/ZeeMPCG/",
+    "display_name": "Zee Madhya Pradesh Chhattisgarh",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@News18CG",
+    "display_name": "News18 Chhattisgarh",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@News18MPChhattisgarh",
+    "display_name": "News18 MP Chhattisgarh",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/News18CG/",
+    "display_name": "News18 Chhattisgarh",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@News24_MPCG",
+    "display_name": "News24 MP-CG",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/c/News24MPChhattisgarh",
+    "display_name": "News 24 MP & Chhattisgarh",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@ETVBharatCG",
+    "display_name": "ETV Bharat Chhattisgarh",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/c/ETVBharatChhattisgarh",
+    "display_name": "ETV Bharat Chhattisgarh",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/ETVBharatChattisgarh",
+    "display_name": "ETV Bharat Chhattisgarh",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@etvbharatcg",
+    "display_name": "ETV Bharat Chhattisgarh",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@TheHitavada1911",
+    "display_name": "The Hitavada (Nagpur/Raipur, English)",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@TheHitavada1911",
+    "display_name": "The Hitavada",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/hitavada",
+    "display_name": "The Hitavada",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@thehitavada",
+    "display_name": "The Hitavada",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@newsdeshbandhu",
+    "display_name": "Deshbandhu (Raipur Hindi daily)",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/c/DBLive",
+    "display_name": "DB Live (Deshbandhu)",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/dbliveofficial",
+    "display_name": "DB Live (Deshbandhu)",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@dblive.official",
+    "display_name": "DB Live (Deshbandhu)",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/TCP24News/",
+    "display_name": "TCP 24 News (Raipur)",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@BansalNews_",
+    "display_name": "Bansal News (MP/CG)",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/bansalnewsofficial",
+    "display_name": "Bansal News",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/Bansalnewsdigital",
+    "display_name": "Bansal News",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@bansalnewsmpcg",
+    "display_name": "Bansal News MP CG",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@cg_wall",
+    "display_name": "CGWALL (Bilaspur)",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@cgwall",
+    "display_name": "CGWALL",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/cgwallweb",
+    "display_name": "CGWALL",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@cgwall_news",
+    "display_name": "CGWALL",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@newpowergame",
+    "display_name": "NPG.News",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@NPGNewsLive",
+    "display_name": "NPG News Live",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@TheSootr",
+    "display_name": "The Sootr (MP/CG)",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@TheSootr",
+    "display_name": "The Sootr",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/thesootr",
+    "display_name": "The Sootr",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@thesootr",
+    "display_name": "The Sootr",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@ChhattisgarhCMO",
+    "display_name": "CMO Chhattisgarh",
+    "category": "political"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/ChhattisgarhCMO",
+    "display_name": "CMO Chhattisgarh",
+    "category": "political"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@chhattisgarhcmo",
+    "display_name": "CMO Chhattisgarh",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@DPRChhattisgarh",
+    "display_name": "Jansampark CG (DPR Chhattisgarh)",
+    "category": "political"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/DPRChhattisgarh",
+    "display_name": "DPR Chhattisgarh",
+    "category": "political"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@dpr.chhattisgarh",
+    "display_name": "Jansampark Chhattisgarh",
+    "category": "political"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@DPRChhattisgarh",
+    "display_name": "Jansampark CG",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@CG_Police",
+    "display_name": "Chhattisgarh Police",
+    "category": "political"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/CGPoliceDept/",
+    "display_name": "Chhattisgarh Police",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@Official_CGPSC",
+    "display_name": "CGPSC (Public Service Commission)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@CEOChhattisgarh",
+    "display_name": "Chief Electoral Officer, Chhattisgarh",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@vishnudsai",
+    "display_name": "Vishnu Deo Sai (CM)",
+    "category": "political"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/vishnudeosai1/",
+    "display_name": "Vishnu Deo Sai",
+    "category": "political"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@VishnuDeoSaiOfficial",
+    "display_name": "Vishnu Deo Sai",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@ArunSao3",
+    "display_name": "Arun Sao (Deputy CM, PWD/Urban Dev)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@OfficeofArunSao",
+    "display_name": "Office of Arun Sao",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@vijaysharmacg",
+    "display_name": "Vijay Sharma (Deputy CM, Home)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@OPChoudhary_Ind",
+    "display_name": "O P Choudhary (Finance Minister)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@ramvicharnetam",
+    "display_name": "Ramvichar Netam (Agriculture Minister)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@LaxmiRajwade21",
+    "display_name": "Laxmi Rajwade (Women & Child Dev. Minister)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@drramansingh",
+    "display_name": "Dr Raman Singh (Speaker)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@KiranDeoBJP",
+    "display_name": "Kiran Singh Deo (BJP state president)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@brijmohan_ag",
+    "display_name": "Brijmohan Agrawal (Raipur MP)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@BJP4CGState",
+    "display_name": "BJP Chhattisgarh",
+    "category": "political"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/BJP4CGState/",
+    "display_name": "BJP Chhattisgarh",
+    "category": "political"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@bjp4cgstate",
+    "display_name": "BJP Chhattisgarh",
+    "category": "political"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "UCmOLCWK7GAokTNWL5obzgBg",
+    "display_name": "BJP Chhattisgarh",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@INCChhattisgarh",
+    "display_name": "INC Chhattisgarh (CGPCC)",
+    "category": "political"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/INCChhattisgarh/",
+    "display_name": "Indian National Congress - Chhattisgarh",
+    "category": "political"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@INCChhattisgarh",
+    "display_name": "INC Chhattisgarh",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@IYCChhattisgarh",
+    "display_name": "Chhattisgarh Youth Congress",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@bhupeshbaghel",
+    "display_name": "Bhupesh Baghel (former CM, INC)",
+    "category": "political"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@bhupeshbaghelinc",
+    "display_name": "Bhupesh Baghel",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@DeepakBaijINC",
+    "display_name": "Deepak Baij (CGPCC President)",
+    "category": "political"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@deepak_baij",
+    "display_name": "Deepak Baij",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@DrCharandas",
+    "display_name": "Dr Charan Das Mahant (Leader of Opposition)",
+    "category": "political"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/Dr.CharanDasMahant/",
+    "display_name": "Dr Charan Das Mahant",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@TS_SinghDeo",
+    "display_name": "T S Singh Deo (former Deputy CM, INC)",
+    "category": "political"
+  }
+]
