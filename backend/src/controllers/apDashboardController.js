@@ -588,7 +588,25 @@ const getAPAlertsSummary = async (req, res) => {
     const [byLevel, recent] = await Promise.all([
       Alert.aggregate([
         ...basePipeline,
-        { $group: { _id: '$risk_level', count: { $sum: 1 } } }
+        // Also flag neutral alerts so the dashboard can show them apart from
+        // positive ones. Risk follows sentiment (positive -> low, neutral ->
+        // low, negative -> high), so 'low' lumps praise together with routine
+        // neutral chatter; splitting it is the only way to tell them apart.
+        {
+          $group: {
+            _id: {
+              level: '$risk_level',
+              neutral: {
+                $in: [
+                  { $ifNull: ['$llm_analysis.target_sentiment',
+                    { $ifNull: ['$llm_analysis.bsk_sentiment', ''] }] },
+                  SENTIMENT_ALIASES.neutral,
+                ],
+              },
+            },
+            count: { $sum: 1 },
+          },
+        }
       ]),
       Alert.aggregate([
         ...basePipeline,
@@ -624,8 +642,15 @@ const getAPAlertsSummary = async (req, res) => {
       ])
     ]);
 
-    const summary = { high: 0, medium: 0, low: 0, critical: 0 };
-    byLevel.forEach(r => { if (r._id) summary[r._id] = (summary[r._id] || 0) + r.count; });
+    // `neutral` is carved out of `low` rather than added alongside it, so the
+    // buckets stay mutually exclusive and still sum to total.
+    const summary = { high: 0, medium: 0, low: 0, critical: 0, neutral: 0 };
+    byLevel.forEach((r) => {
+      const level = r._id && r._id.level;
+      if (!level) return;
+      if (r._id.neutral && level === 'low') summary.neutral += r.count;
+      else summary[level] = (summary[level] || 0) + r.count;
+    });
     summary.total = Object.values(summary).reduce((s, v) => s + v, 0);
 
     const payload = { summary, recent };

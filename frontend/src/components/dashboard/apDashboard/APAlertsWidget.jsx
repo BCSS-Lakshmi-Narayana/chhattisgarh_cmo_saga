@@ -14,7 +14,25 @@ const RISK_COLORS = {
   high: 'text-orange-600 bg-orange-50 border-orange-200',
   medium: 'text-yellow-600 bg-yellow-50 border-yellow-200',
   low: 'text-emerald-600 bg-emerald-50 border-emerald-200',
+  neutral: 'text-slate-500 bg-slate-50 border-slate-200',
 };
+
+// Risk follows sentiment exactly — see backend/scripts/test_sentiment_risk_sync.js:
+//   positive -> low (15),  neutral -> low (20),  negative -> high (75)
+// So the pipeline only ever produces 'low' and 'high'. 'medium' and 'critical'
+// can exist only on rows analysed before that rule landed, which is why this
+// panel used to show two permanently-zero cards. They are now rendered only
+// when they actually hold something.
+const RISK_META = {
+  critical: { label: 'Critical', hint: 'Legacy' },
+  high: { label: 'High', hint: 'Negative' },
+  medium: { label: 'Medium', hint: 'Legacy' },
+  low: { label: 'Low', hint: 'Positive' },
+  // Carved out of `low` by the API so routine neutral chatter is not counted
+  // as praise. Grey on purpose — it is not a good signal or a bad one.
+  neutral: { label: 'Neutral', hint: 'No stance' },
+};
+const ALWAYS_SHOWN = ['high', 'neutral', 'low'];
 
 const APAlertsWidget = ({ data, loading }) => {
   const navigate = useNavigate();
@@ -48,19 +66,34 @@ const APAlertsWidget = ({ data, loading }) => {
         </span>
       </div>
 
-      {/* Grid count */}
-      <div className="grid grid-cols-4 gap-2 mb-4 flex-shrink-0">
-        {['critical', 'high', 'medium', 'low'].map((level) => {
-          const count = summary[level] || 0;
-          const style = RISK_COLORS[level] || 'text-slate-600 bg-slate-50 border-slate-200';
-          return (
-            <div key={level} className={`border rounded-lg p-2 text-center ${style}`}>
-              <div className="text-[10px] capitalize font-semibold opacity-85">{level}</div>
-              <div className="text-sm font-bold mt-0.5">{count}</div>
-            </div>
-          );
-        })}
-      </div>
+      {/* Risk breakdown. Dead buckets are hidden rather than shown as zeros. */}
+      {(() => {
+        const levels = ['critical', 'high', 'medium', 'neutral', 'low']
+          .filter((l) => ALWAYS_SHOWN.includes(l) || (summary[l] || 0) > 0);
+        return (
+          <div
+            className="grid gap-2 mb-4 flex-shrink-0"
+            style={{ gridTemplateColumns: `repeat(${levels.length}, minmax(0, 1fr))` }}
+          >
+            {levels.map((level) => {
+              const count = summary[level] || 0;
+              const meta = RISK_META[level] || { label: level, hint: '' };
+              const style = RISK_COLORS[level] || 'text-slate-600 bg-slate-50 border-slate-200';
+              return (
+                <div
+                  key={level}
+                  title={level === 'neutral' ? 'Neutral — no stance for or against' : `${meta.label} risk — ${meta.hint}`}
+                  className={`border rounded-lg px-2 py-1.5 text-center ${style}`}
+                >
+                  <div className="text-[10px] font-semibold opacity-85">{meta.label}</div>
+                  <div className="text-base font-bold leading-tight">{count}</div>
+                  <div className="text-[8px] font-medium opacity-70 leading-tight">{meta.hint}</div>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })()}
 
       <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2 flex-shrink-0">
         Recent Alerts
