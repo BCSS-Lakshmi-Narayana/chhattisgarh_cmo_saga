@@ -2168,34 +2168,37 @@ const startMonitoring = async () => {
         return pB - pA; // Descending order
       });
 
+      // Events are scanned even when there are no monitored sources — they
+      // search by their own keywords and do not depend on the Source list.
+      // This used to `return` here, so a deployment with zero active sources
+      // silently never scanned any event.
       if (sources.length === 0) {
         //console.log("No active sources to monitor");
         nextIntervalMinutes = 1;
-        return;
-      }
+      } else {
+        //console.log(`Monitoring ${sources.length} sources...`);
 
-      //console.log(`Monitoring ${sources.length} sources...`);
+        // Parallel execution with concurrency limit to prevent one platform from blocking others
+        const CONCURRENCY_LIMIT = 5;
 
-      // Parallel execution with concurrency limit to prevent one platform from blocking others
-      const CONCURRENCY_LIMIT = 5;
+        for (let i = 0; i < sources.length; i += CONCURRENCY_LIMIT) {
+          const batch = sources.slice(i, i + CONCURRENCY_LIMIT);
+          // console.log(`[Monitor] Processing batch ${Math.floor(i / CONCURRENCY_LIMIT) + 1}/${Math.ceil(sources.length / CONCURRENCY_LIMIT)} (${batch.length} sources)`);
 
-      for (let i = 0; i < sources.length; i += CONCURRENCY_LIMIT) {
-        const batch = sources.slice(i, i + CONCURRENCY_LIMIT);
-        // console.log(`[Monitor] Processing batch ${Math.floor(i / CONCURRENCY_LIMIT) + 1}/${Math.ceil(sources.length / CONCURRENCY_LIMIT)} (${batch.length} sources)`);
+          await Promise.all(batch.map(async (source) => {
+            // Double check in-memory source against DB to honor "Pause" instantly
+            const currentSource = await Source.findOne({ id: source.id });
+            if (!currentSource || !currentSource.is_active) {
+              return;
+            }
 
-        await Promise.all(batch.map(async (source) => {
-          // Double check in-memory source against DB to honor "Pause" instantly
-          const currentSource = await Source.findOne({ id: source.id });
-          if (!currentSource || !currentSource.is_active) {
-            return;
-          }
-
-          try {
-            await scanSourceOnce(source);
-          } catch (err) {
-            // console.error(`[Monitor] Error scanning source ${source.display_name}: ${err.message}`);
-          }
-        }));
+            try {
+              await scanSourceOnce(source);
+            } catch (err) {
+              // console.error(`[Monitor] Error scanning source ${source.display_name}: ${err.message}`);
+            }
+          }));
+        }
       }
       await autoArchiveEndedEvents();
       const activeEvents = await getActiveEvents();
@@ -2203,7 +2206,15 @@ const startMonitoring = async () => {
       for (const event of activeEvents) {
         const pollMinutes = event.polling_interval_minutes || Math.max(3, Math.floor((settings.monitoring_interval_minutes || 5) / 2));
         if (!shouldPollEvent(event, pollMinutes)) continue;
-        await scanEventOnce({ event, settings });
+        // Per-event guard: scanEventOnce stamps last_polled_at only at the very
+        // end, so an unhandled throw here used to abort the whole cycle — the
+        // other events, the media backfill and the interval calculation with
+        // it — and the event would retry from scratch on every loop, for ever.
+        try {
+          await scanEventOnce({ event, settings });
+        } catch (err) {
+          console.error(`[Monitor] Event scan failed for "${event.name}": ${err.message}`);
+        }
       }
 
       if (rapidApiKey && Date.now() - lastMediaBackfillAt > MEDIA_BACKFILL_INTERVAL_MS) {

@@ -22,7 +22,15 @@ export const PARTY_PALETTE = {
 export const DEFAULT_PARTY_STYLE = PARTY_PALETTE.IND;
 
 /* Legend / tab order: ruling alliance first, then opposition, then others. */
-export const PARTY_ORDER = ['BJP', 'INC', 'GGP', 'JCC(J)', 'AAP', 'BSP', 'IND', 'VACANT'];
+// Only parties that actually hold a seat in the current assembly. JCC(J),
+// AAP, BSP, IND and VACANT were removed — they held 0 of the 90 seats, so
+// they were dead options in every filter and a dead row in the map legend.
+// The palette keeps their entries so partyStyle() stays safe.
+// Parties with more than two seats in the current assembly.
+// BJP 54 · INC 35 are kept; GGP holds 1 and was dropped, as were JCC(J),
+// AAP, BSP, IND and VACANT, which hold none. PARTY_PALETTE still carries
+// every code so partyStyle() keeps working wherever they appear in data.
+export const PARTY_ORDER = ['BJP', 'INC'];
 
 export const PARTY_FULL_NAMES = {
   BJP: 'Bharatiya Janata Party',
