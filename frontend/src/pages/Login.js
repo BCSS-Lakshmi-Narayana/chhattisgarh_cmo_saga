@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Shield, Lock, Mail, ArrowRight, Sparkles } from 'lucide-react';
+import { Shield, Lock, Mail, ArrowRight, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -22,6 +22,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -232,7 +233,7 @@ const Login = () => {
                     <Input
                       id="email"
                       type="email"
-                      placeholder="admin@cgwatch.local"
+                      placeholder="Enter your email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -251,15 +252,27 @@ const Login = () => {
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-orange-500/70 pointer-events-none" />
                     <Input
                       id="password"
-                      type="password"
-                      placeholder="••••••••••••"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Enter your password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       autoComplete="current-password"
                       data-testid="password-input"
-                      className="h-12 pl-10 border-2 border-orange-200 bg-orange-50/30 focus:border-orange-500 focus:ring-orange-500/20 text-base rounded-lg"
+                      className="h-12 pl-10 pr-11 border-2 border-orange-200 bg-orange-50/30 focus:border-orange-500 focus:ring-orange-500/20 text-base rounded-lg"
                     />
+                    {/* type="button" is required — a bare <button> inside a form
+                        defaults to type="submit" and would submit on every toggle. */}
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((v) => !v)}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      aria-pressed={showPassword}
+                      data-testid="toggle-password-btn"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-orange-500/70 hover:text-orange-700 focus:outline-none focus:text-orange-700 transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
                   </div>
                 </div>
 
