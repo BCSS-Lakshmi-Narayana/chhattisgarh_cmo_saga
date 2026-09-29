@@ -99,6 +99,7 @@ app.use('/api/geo-intel', require('./routes/geoIntelRoutes'));
 app.use('/api/campaign-suggestions', require('./routes/campaignSuggestionRoutes'));
 app.use('/api/viral-campaigns', require('./routes/viralCampaignRoutes'));
 app.use('/api/dashboard', require('./routes/apDashboardRoutes'));
+app.use('/api/cm-dashboard', require('./routes/cmDashboardRoutes'));
 app.use('/api/voter-profiles', require('./routes/voterProfileRoutes'));
 app.use('/api/booth-imports', require('./routes/boothImportRoutes'));
 app.use('/api/web-articles', require('./routes/webArticleRoutes'));

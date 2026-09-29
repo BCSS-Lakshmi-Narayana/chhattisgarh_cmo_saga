@@ -172,7 +172,11 @@ const Alerts = () => {
   const [availableKeywords, setAvailableKeywords] = useState([]);
   const [sourceCategoryFilter, setSourceCategoryFilter] = useState('all');
   // Supportive / Opposing / Neutral — the stance badge (see lib/sentiment.js).
-  const [stanceFilter, setStanceFilter] = useState('all');
+  // Seeded from the URL so a figure elsewhere can link to its evidence:
+  //   /alerts?stance=opposing&from=…&to=…
+  const [stanceFilter, setStanceFilter] = useState(
+    () => new URLSearchParams(window.location.search).get('stance') || 'all',
+  );
   // ?leader=<constituency>: alerts whose post tags / names that seat's MLA
   // or names the seat (the MLA detail page's "Open in Alerts").
   const [leaderSeat, setLeaderSeat] = useState(() => new URLSearchParams(window.location.search).get('leader') || '');

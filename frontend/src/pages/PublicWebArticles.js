@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { CalendarDays, Check, ChevronDown, ExternalLink, Globe, Newspaper, Search, RefreshCw, Loader2, Filter, AlertTriangle, X } from 'lucide-react';
 import api from '../lib/api';
 import { Card, CardContent } from '../components/ui/card';
@@ -75,11 +76,23 @@ const PublicWebArticles = () => {
 
   // Monitored Database Feed States
   const [dbArticles, setDbArticles] = useState([]);
-  const [dbSearch, setDbSearch] = useState('');
-  const [dbCategory, setDbCategory] = useState('all');
+  /**
+   * Filters can arrive in the URL so a figure elsewhere in the app can link to
+   * the rows behind it:
+   *   ?stance=opposing&from=2026-09-01&to=2026-09-29&district=Bilaspur
+   * `stance` is the client-relative verdict (political_stance), NOT the raw
+   * `sentiment` tone, which defaults to 'neutral' on unscored articles.
+   */
+  const [searchParams] = useSearchParams();
+  const [dbSearch, setDbSearch] = useState(() => searchParams.get('search') || '');
+  const [dbStance, setDbStance] = useState(() => searchParams.get('stance') || 'all');
+  const [dbCategory, setDbCategory] = useState(() => searchParams.get('category') || 'all');
   const [dbDistrict, setDbDistrict] = useState('all');
   const [dbLanguage, setDbLanguage] = useState('all');
-  const [dbDateRange, setDbDateRange] = useState({ start: '', end: '' });
+  const [dbDateRange, setDbDateRange] = useState(() => ({
+    start: searchParams.get('from') || '',
+    end: searchParams.get('to') || '',
+  }));
   const [isDbLoading, setIsDbLoading] = useState(false);
   const [isDbLoadingMore, setIsDbLoadingMore] = useState(false);
   const [dbPagination, setDbPagination] = useState({ page: 1, pages: 1, total: 0, limit: 20 });
@@ -126,6 +139,7 @@ const PublicWebArticles = () => {
           search: dbSearch || undefined,
           district: dbDistrict !== 'all' ? dbDistrict : undefined,
           category: dbCategory !== 'all' ? dbCategory : undefined,
+          stance: dbStance !== 'all' ? dbStance : undefined,
           language: dbLanguage !== 'all' ? dbLanguage : undefined,
           startDate: dbDateRange.start || undefined,
           endDate: dbDateRange.end || undefined,
@@ -141,7 +155,7 @@ const PublicWebArticles = () => {
       setIsDbLoading(false);
       setIsDbLoadingMore(false);
     }
-  }, [dbSearch, dbCategory, dbDistrict, dbLanguage, dbDateRange]);
+  }, [dbSearch, dbStance, dbCategory, dbDistrict, dbLanguage, dbDateRange]);
 
   // ── Live news search API ──
   const runLiveSearch = useCallback(async (overrideQuery) => {
@@ -177,7 +191,7 @@ const PublicWebArticles = () => {
       runLiveSearch(SUGGESTED_QUERIES[0]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, dbSearch, dbCategory, dbDistrict, dbLanguage, dbDateRange, fetchDbArticles]);
+  }, [activeTab, dbSearch, dbStance, dbCategory, dbDistrict, dbLanguage, dbDateRange, fetchDbArticles]);
 
   const liveSources = useMemo(() => {
     const items = liveArticles.map((article) => article.source);

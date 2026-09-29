@@ -122,6 +122,9 @@ const newsArticleSchema = new mongoose.Schema({
   collection: 'newsarticles',
 });
 
+// The CM brief and every date-ranged news query filter on published_date;
+// without this the collection was scanned in full on each request.
+newsArticleSchema.index({ published_date: -1 });
 newsArticleSchema.index({ scraped_at: -1 });
 newsArticleSchema.index({ category: 1 });
 newsArticleSchema.index({ language: 1 });

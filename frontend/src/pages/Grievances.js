@@ -882,13 +882,29 @@ const Grievances = () => {
     // the same distinct-values endpoint IntelligenceDashboard.jsx already
     // uses, so the dropdown only ever offers topics that exist in the data.
     const [grievanceTopics, setGrievanceTopics] = useState([]);
+    // Two taxonomies are tagged on a mention: the SUBJECT it is about
+    // (analysis.topic — Education, Water Supply, the campaign taxonomy the CM
+    // brief groups by) and the INTENT behind it (analysis.grievance_type —
+    // Public Complaint, Political Criticism). The dropdown used to offer only
+    // intent, so a subject reported on elsewhere in the platform could not be
+    // selected here. Kept in separate groups so the distinction is visible.
+    const [topicGroups, setTopicGroups] = useState({ subjects: [], intents: [] });
     useEffect(() => {
         let cancelled = false;
         api.get('/grievances/topics')
             .then((res) => {
-                if (!cancelled) setGrievanceTopics(Array.isArray(res.data?.topics) ? res.data.topics : []);
+                if (cancelled) return;
+                setGrievanceTopics(Array.isArray(res.data?.topics) ? res.data.topics : []);
+                setTopicGroups({
+                    subjects: Array.isArray(res.data?.subjects) ? res.data.subjects : [],
+                    intents: Array.isArray(res.data?.intents) ? res.data.intents : [],
+                });
             })
-            .catch(() => { if (!cancelled) setGrievanceTopics([]); });
+            .catch(() => {
+                if (cancelled) return;
+                setGrievanceTopics([]);
+                setTopicGroups({ subjects: [], intents: [] });
+            });
         return () => { cancelled = true; };
     }, []);
     const [openGReportCode, setOpenGReportCode] = useState('');
@@ -2144,7 +2160,18 @@ const Grievances = () => {
                     <div className="relative shrink-0">
                         <select value={topicFilter || ''} onChange={(e) => updateURLParams({ grievance_type: e.target.value || null, topic: null })} className="appearance-none bg-white border border-slate-200 rounded-md pl-6 pr-6 py-1 h-7 text-xs text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400 cursor-pointer">
                             <option value="">All Topics</option>
-                            {grievanceTopics.map(t => <option key={t} value={t}>{t}</option>)}
+                            {topicGroups.subjects.length > 0 && (
+                                <optgroup label="Subject">
+                                    {topicGroups.subjects.map(t => <option key={`s-${t}`} value={t}>{t}</option>)}
+                                </optgroup>
+                            )}
+                            {topicGroups.intents.length > 0 && (
+                                <optgroup label="Type of post">
+                                    {topicGroups.intents.map(t => <option key={`i-${t}`} value={t}>{t}</option>)}
+                                </optgroup>
+                            )}
+                            {topicGroups.subjects.length === 0 && topicGroups.intents.length === 0
+                                && grievanceTopics.map(t => <option key={t} value={t}>{t}</option>)}
                         </select>
                         <Tag className="absolute left-1.5 top-1/2 -translate-y-1/2 h-3 w-3 text-slate-400 pointer-events-none" />
                         <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 h-3 w-3 text-slate-400 pointer-events-none" />

@@ -1,4 +1,5 @@
 const ALL_PAGES = [
+  { path: '/cm-dashboard', name: 'Intelligence Brief', icon: 'Gauge' },
   { path: '/dashboard', name: 'Dashboard', icon: 'LayoutDashboard' },
   { path: '/state-map', name: 'Chhattisgarh Map', icon: 'Globe' },
   { path: '/alerts', name: 'Alerts', icon: 'AlertTriangle' },
