@@ -44,6 +44,28 @@ const newsSentimentClause = (value) => {
 };
 
 /**
+ * STANCE toward the government, which is NOT the same thing as `sentiment`.
+ * `sentiment` is the raw tone of the report and defaults to 'neutral', so it
+ * reads as neutral on every article rssAnalysisService has not scored yet.
+ * The client-relative verdict lives on `political_stance`, using the same
+ * vocabulary as mentions and alerts (lib/sentiment.js).
+ *
+ * Used by the CM brief's evidence links: a drill-down must return the same
+ * rows the figure was counted from, which raw sentiment would not.
+ */
+const NEWS_STANCE_VALUES = {
+  supportive: ['pro_target', 'pro_target_indirect'],
+  opposing: ['anti_target', 'anti_target_indirect'],
+  neutral: ['neutral'],
+  unrelated: ['unrelated'],
+};
+const newsStanceClause = (value) => {
+  const wanted = NEWS_STANCE_VALUES[String(value || '').toLowerCase()];
+  if (!wanted) return null;
+  return { political_stance: { $in: wanted } };
+};
+
+/**
  * A 'YYYY-MM-DD' bound is a calendar day with no timezone, so it anchors to
  * that day in UTC; a full ISO timestamp is an exact instant the browser already
  * resolved and is honoured verbatim. The end bound used to be snapped with
@@ -107,6 +129,7 @@ exports.getArticles = async (req, res) => {
       source_type,
       language,
       sentiment,
+      stance,
       startDate,
       endDate,
     } = req.query;
@@ -157,6 +180,13 @@ exports.getArticles = async (req, res) => {
     // scope and search clauses above instead of replacing them.
     if (sentiment && sentiment !== 'all') {
       const clause = newsSentimentClause(sentiment);
+      if (clause) filter.$and = (filter.$and || []).concat([clause]);
+    }
+
+    // Stance toward the government — what the CM brief counts and what its
+    // evidence links drill into. Composes with everything above.
+    if (stance && stance !== 'all') {
+      const clause = newsStanceClause(stance);
       if (clause) filter.$and = (filter.$and || []).concat([clause]);
     }
 

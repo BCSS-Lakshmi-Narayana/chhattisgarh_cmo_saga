@@ -12,7 +12,21 @@
 
 const axios = require('axios');
 
-const OLLAMA_URL = (process.env.OLLAMA_URL || 'http://32.192.131.130:11434').replace(/\/+$/, '');
+/**
+ * Host comes from the environment. This file used to fall back to a specific
+ * remote GPU box, which every other Ollama caller here does NOT do — see
+ * campaignSuggestionService, rag/embeddingService and the backfill scripts,
+ * which all read OLLAMA_URL then OLLAMA_BASE_URL then localhost. With both
+ * vars unset that split the deployment: this path talked to a remote machine
+ * while the rest talked to localhost, and nothing said so. Same order as the
+ * rest of the codebase now.
+ */
+const OLLAMA_URL = (
+  process.env.OLLAMA_URL || process.env.OLLAMA_BASE_URL || 'http://localhost:11434'
+).replace(/\/+$/, '');
+if (!process.env.OLLAMA_URL && !process.env.OLLAMA_BASE_URL) {
+  console.warn('[ollama] OLLAMA_URL is not set; defaulting to', OLLAMA_URL);
+}
 const MODEL = process.env.OLLAMA_MODEL || 'qwen2.5:7b';
 const DEFAULT_TIMEOUT = parseInt(process.env.OLLAMA_TIMEOUT_MS || '45000', 10);
 

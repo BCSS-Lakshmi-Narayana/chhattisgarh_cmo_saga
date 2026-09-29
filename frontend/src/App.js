@@ -11,6 +11,7 @@ import { BRAND, LOCAL_LOGO } from './config/partyMedia';
 
 // Lazy load heavy pages
 const Dashboard = lazy(() => import('./pages/DashboardNew'));
+const CMDashboard = lazy(() => import('./pages/CMDashboard'));
 const Sources = lazy(() => import('./pages/Sources'));
 const ContentFeed = lazy(() => import('./pages/ContentFeed'));
 const YouTubeMonitor = lazy(() => import('./pages/YouTubeMonitor'));
@@ -99,6 +100,7 @@ function App() {
                     }
                   >
                     <Route index element={<Navigate to="/state-map" replace />} />
+                    <Route path="cm-dashboard" element={<CMDashboard />} />
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="sources" element={<Sources />} />
                     <Route path="content" element={<ContentFeed />} />

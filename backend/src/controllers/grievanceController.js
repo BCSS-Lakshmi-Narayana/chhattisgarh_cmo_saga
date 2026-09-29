@@ -312,6 +312,13 @@ const buildListQuery = (params = {}, options = {}) => {
     if (effectiveTopic && effectiveTopic !== 'all') {
         const topicRegex = new RegExp(`${escapeRegex(effectiveTopic)}`, 'i');
         const topicOr = [
+            // The campaign taxonomy (services/campaignTaxonomy.js): Education,
+            // Corruption, Water Supply, ... This clause was missing, so any
+            // filter built on a campaign topic — including every evidence link
+            // from the CM brief, which groups by exactly this field — matched
+            // nothing. `grievance_type` below is a DIFFERENT taxonomy of intent
+            // (Public Complaint, Political Criticism, Normal).
+            { 'analysis.topic': topicRegex },
             { 'analysis.grievance_type': topicRegex },
             { 'analysis.category': topicRegex },
             { 'grievance_workflow.category': topicRegex },
@@ -2045,16 +2052,41 @@ const getSentimentLeaders = async (req, res) => {
     }
 };
 
+/**
+ * Topics for the Mentions filter dropdown.
+ *
+ * Two taxonomies are tagged on a mention and both are real:
+ *   analysis.grievance_type  INTENT   — Public Complaint, Political Criticism,
+ *                                       Government Praise, Hate Speech …
+ *   analysis.topic           SUBJECT  — Education, Water Supply, Corruption,
+ *                                       Governance & Administration …
+ *                                       (services/campaignTaxonomy.js)
+ *
+ * The dropdown offered only the first, so a subject the rest of the platform
+ * reports on — the CM brief groups its Issue Tracker by `analysis.topic` —
+ * could not be selected here, and the two pages named the same data
+ * differently. Both are returned now; the filter already searches both fields.
+ *
+ * 'Normal' and 'Not a Grievance' are excluded because they are the absence of a
+ * classification, not a topic anyone would filter to.
+ */
 const getDistinctTopics = async (req, res) => {
     try {
-        const topics = await Grievance.distinct('analysis.grievance_type', {
-            is_active: true,
-            // `$ne` was declared twice here, so only `$ne: ''` survived and nulls
-            // were never actually excluded. Folded into the single $nin.
-            'analysis.grievance_type': { $exists: true, $nin: [null, '', 'Normal', 'Not a Grievance'] }
-        });
-        topics.sort();
-        res.status(200).json({ topics });
+        const EXCLUDED = [null, '', 'Normal', 'Not a Grievance', 'None'];
+        const [intents, subjects] = await Promise.all([
+            Grievance.distinct('analysis.grievance_type', {
+                is_active: true,
+                // `$ne` was declared twice here, so only `$ne: ''` survived and
+                // nulls were never actually excluded. Folded into one $nin.
+                'analysis.grievance_type': { $exists: true, $nin: EXCLUDED },
+            }),
+            Grievance.distinct('analysis.topic', {
+                is_active: true,
+                'analysis.topic': { $exists: true, $nin: EXCLUDED },
+            }),
+        ]);
+        const topics = [...new Set([...subjects, ...intents])].sort();
+        res.status(200).json({ topics, subjects: subjects.sort(), intents: intents.sort() });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

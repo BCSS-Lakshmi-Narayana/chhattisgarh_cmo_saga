@@ -5,25 +5,14 @@ import { useNotification } from '../context/NotificationContext';
 import { useRbac } from '../contexts/RbacContext';
 import AccessDenied from './AccessDenied';
 import {
-  LayoutDashboard,
-  AlertTriangle,
-  BarChart3,
-  Settings,
   LogOut,
   Menu,
-  Globe,
-  CalendarDays,
   BellOff,
-  MessageSquare,
-  UserSearch,
-  TrendingUp,
-  Newspaper,
-  Map,
-  Sparkles
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import { PARTY_HERO, LOCAL_FALLBACK, BRAND } from '../config/partyMedia';
+import { APP_NAVIGATION } from '../config/navigation';
 import { roleLabel } from '../lib/roleLabels';
 
 const Layout = () => {
@@ -72,21 +61,9 @@ const Layout = () => {
     navigate('/login');
   };
 
-  const allNavigation = [
-    { name: BRAND.stateName, href: '/state-map', icon: Globe },
-    { name: 'Geo Intel', href: '/geographic-intelligence', icon: Map },
-    { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Mentions', href: '/grievances', icon: MessageSquare },
-    { name: 'Web Articles', href: '/public-web-articles', icon: Newspaper },
-    { name: 'Alerts', href: '/alerts', icon: AlertTriangle },
-    { name: 'Reports', href: '/intelligence-dashboard', icon: BarChart3 },
-    { name: 'AI Campaigns', href: '/ai-suggestions', icon: Sparkles },
-    { name: 'Events', href: '/events', icon: CalendarDays },
-    { name: 'Search', href: '/global-search', icon: Globe },
-    // { name: 'Search Analytics', href: '/search-analytics', icon: TrendingUp },
-    //{ name: 'Profile', href: '/person-of-interest', icon: UserSearch },
-    { name: 'Settings', href: '/settings', icon: Settings }
-  ];
+  // Defined once in config/navigation.js so the sidebar and the Chief
+  // Minister's brief cannot drift apart or list the same page twice.
+  const allNavigation = APP_NAVIGATION;
 
   const roleFilteredNavigation = user?.role === 'dial100'
     ? allNavigation.filter((item) => item.href === '/dial-100-incident-reporting')
@@ -100,7 +77,8 @@ const Layout = () => {
     location.pathname.startsWith('/reports/generate/') ||
     location.pathname === '/sources' ||
     location.pathname === '/telegram' ||
-    location.pathname === '/settings';
+    location.pathname === '/settings' ||
+    location.pathname === '/cm-dashboard';
 
   return (
     <div className="h-screen w-full flex flex-col bg-background overflow-hidden relative print:h-auto print:overflow-visible">

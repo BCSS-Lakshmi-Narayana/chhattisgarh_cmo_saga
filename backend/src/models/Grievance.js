@@ -522,6 +522,8 @@ grievanceSchema.index({ workflow_status: 1, post_date: -1 });
 grievanceSchema.index({ platform: 1, workflow_status: 1, post_date: -1 });
 grievanceSchema.index({ whatsapp_message_sid: 1 }, { unique: true, sparse: true });
 grievanceSchema.index({ post_date: -1 });
+// Exact shape of the CM brief's window query: active rows inside a date range.
+grievanceSchema.index({ is_active: 1, post_date: -1 });
 grievanceSchema.index({ detected_date: -1 });
 grievanceSchema.index({ 'posted_by.handle': 1 });
 grievanceSchema.index({ 'complaint.report_number': 1 });
