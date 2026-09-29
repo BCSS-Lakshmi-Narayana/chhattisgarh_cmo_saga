@@ -215,14 +215,6 @@ const STANCE_WORD = { pro: 'Supportive', neutral: 'Neutral', anti: 'Opposing', u
  * than passing the internal key through and silently filtering nothing.
  */
 const STANCE_PARAM = { pro: 'supportive', neutral: 'neutral', anti: 'opposing' };
-/**
- * Coverage carries the same stance keys as everything else (`pro` / `anti`),
- * NOT the raw sentiment words. These maps were keyed on positive/negative, so
- * every lookup missed and every article rendered as "Not scored" — including
- * the ones that had been scored.
- */
-const NEWS_TONE = { pro: 'positive', anti: 'negative', neutral: 'neutral', unrelated: 'muted' };
-const NEWS_WORD = { pro: 'Supportive', anti: 'Opposing', neutral: 'Neutral', unrelated: 'Unrelated' };
 
 /**
  * Headline counter. The footer carries the source split, because the figure
@@ -1098,32 +1090,42 @@ export default function CMDashboard() {
           </div>
           </div>
 
-          <Card Icon={Newspaper} title="Media Coverage" className="xl:col-span-4"
+          <Card Icon={Newspaper} title="Media Stance" className="xl:col-span-4"
             action={<ViewAll to="/public-web-articles" />}>
-            <ul className="divide-y divide-slate-100">
-              {(data?.recent_news || []).slice(0, 5).map((a, i) => (
-                <li key={`${a.title}-${i}`} className="py-2 first:pt-0">
-                  <div className="flex items-start justify-between gap-2.5">
-                    <div className="min-w-0">
-                      {a.url ? (
-                        <a href={a.url} target="_blank" rel="noreferrer"
-                          className="text-[12px] font-medium text-slate-800 hover:text-indigo-600 line-clamp-2">
-                          {a.title}
-                        </a>
-                      ) : (
-                        <div className="text-[12px] font-medium text-slate-800 line-clamp-2">{a.title}</div>
-                      )}
-                      <div className="text-[10.5px] text-slate-400 mt-0.5">{a.source} · {fmtDay(a.date)}</div>
-                    </div>
-                    <Link to={links.articles(a.stance && STANCE_PARAM[a.stance]
-                      ? { stance: STANCE_PARAM[a.stance] } : {})}>
-                      <Pill tone={NEWS_TONE[a.stance] || 'muted'}>{NEWS_WORD[a.stance] || 'Unscored'}</Pill>
+            {/* Outlets ranked by how they are covering us, most hostile first.
+                Each row opens that outlet's opposing articles. */}
+            <ul className="space-y-2.5">
+              {(data?.narrative?.outlets || []).slice(0, 7).map((o) => {
+                const scored = o.positive + o.neutral + o.negative;
+                return (
+                  <li key={o.outlet}>
+                    <Link to={links.articles({ source: o.outlet, stance: 'opposing' })}
+                      className="group block">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[12px] text-slate-700 truncate group-hover:text-indigo-600">
+                          {o.outlet}
+                        </span>
+                        <span className="text-[12px] font-semibold tabular-nums shrink-0"
+                          style={{ color: netColor(o.net) }}>
+                          {o.net > 0 ? '+' : ''}{o.net}
+                        </span>
+                      </div>
+                      <div className="mt-1 flex items-center gap-2">
+                        <div className="flex-1 min-w-0">
+                          <StanceBar pro={o.positive} anti={o.negative} compact h={5} />
+                        </div>
+                        <span className="text-[10.5px] text-slate-400 tabular-nums shrink-0">
+                          {o.negative} of {scored}
+                        </span>
+                      </div>
                     </Link>
-                  </div>
+                  </li>
+                );
+              })}
+              {!(data?.narrative?.outlets || []).length && (
+                <li className="py-8 text-center text-[12px] text-slate-400">
+                  No outlet has enough scored coverage yet.
                 </li>
-              ))}
-              {!(data?.recent_news || []).length && (
-                <li className="py-8 text-center text-[12px] text-slate-400">No coverage in this period.</li>
               )}
             </ul>
           </Card>
