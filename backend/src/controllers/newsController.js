@@ -130,6 +130,7 @@ exports.getArticles = async (req, res) => {
       language,
       sentiment,
       stance,
+      source,
       startDate,
       endDate,
     } = req.query;
@@ -171,6 +172,17 @@ exports.getArticles = async (req, res) => {
     }
     if (source_type && source_type !== 'all') {
       filter.source_type = source_type;
+    }
+    /**
+     * The outlet that PUBLISHED the article. `search` above also matches
+     * source_name, but it matches titles and keywords too, so it cannot be
+     * used to isolate one outlet — the CM brief's media list links here and
+     * must land on exactly the articles it counted. Anchored so
+     * "Dainik Bhaskar" does not also pull "Dainik Bhaskar - Chhattisgarh".
+     */
+    if (source && source !== 'all') {
+      const escaped = String(source).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      filter.source_name = new RegExp(`^${escaped}$`, 'i');
     }
     if (language && language !== 'all') {
       filter.language = language;
