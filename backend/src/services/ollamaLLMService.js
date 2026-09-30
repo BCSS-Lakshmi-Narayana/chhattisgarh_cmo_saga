@@ -158,10 +158,44 @@ async function ping(timeoutMs = 5000) {
   };
 }
 
+/**
+ * Keep-warm scheduler — this GPU host is shared with 3-4 other applications
+ * under OLLAMA_MAX_LOADED_MODELS=2 (confirmed on the box: a 15GB T4, several
+ * other 6-7GB models). OLLAMA_KEEP_ALIVE is already 24h server-side, so our
+ * model is NOT evicted by idling — it's evicted by the LRU slot-cap when a
+ * third distinct model gets requested by one of those other apps. Whichever
+ * model was used longest ago loses the slot.
+ *
+ * A periodic no-op "touch" — Ollama's documented preload call: /api/generate
+ * with a model and no prompt loads/refreshes it without running inference —
+ * keeps ours as the most-recently-used one, so it's someone else's model that
+ * gets evicted instead of ours. This is what turns the ~20-45s cold load into
+ * a background non-event instead of something a CM brief request pays for.
+ */
+const KEEPALIVE_ENABLED = String(process.env.OLLAMA_KEEPALIVE_ENABLED ?? 'true').toLowerCase() !== 'false';
+const KEEPALIVE_MINUTES = Math.max(1, parseInt(process.env.OLLAMA_KEEPALIVE_MINUTES || '3', 10));
+
+async function touch() {
+  try {
+    await axios.post(`${OLLAMA_URL}/api/generate`, { model: MODEL, keep_alive: '24h' }, {
+      timeout: 10000,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (err) {
+    console.warn('[ollama] keep-warm touch failed:', err.message);
+  }
+}
+
+if (KEEPALIVE_ENABLED) {
+  const timer = setInterval(touch, KEEPALIVE_MINUTES * 60 * 1000);
+  timer.unref?.();
+  touch();
+}
+
 module.exports = {
   chatCompletion,
   chatJson,
   extractJson,
   ping,
-  _config: { OLLAMA_URL, MODEL, DEFAULT_TIMEOUT },
+  _config: { OLLAMA_URL, MODEL, DEFAULT_TIMEOUT, KEEPALIVE_ENABLED, KEEPALIVE_MINUTES },
 };
