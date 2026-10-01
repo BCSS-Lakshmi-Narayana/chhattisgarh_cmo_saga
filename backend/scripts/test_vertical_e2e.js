@@ -87,6 +87,25 @@ ok('every leader has an alignment the report can use',
     MH.leaders.every((l) => ['ally', 'opposition'].includes(l.alignment)));
 ok('handles are unique', new Set(MH.leaders.map((l) => l.handle.toLowerCase())).size === 9);
 
+/* Alliance and alignment must agree, or sentiment comes out with the wrong
+ * sign. Only Fadnavis is BJP — the other three on our side are Shiv Sena and
+ * NCP, allies by coalition rather than by party, which is exactly the case
+ * someone would "correct" to `opposition` by looking only at the party. */
+ok('every leader records an alliance', MH.leaders.every((l) => l.alliance));
+for (const l of MH.leaders) {
+    const expected = l.alliance === 'mahayuti' ? 'ally' : 'opposition';
+    t(`${l.name} (${l.party}, ${l.alliance}) → ${expected}`, l.alignment, expected);
+}
+t('the governing alliance has four of the nine',
+    MH.leaders.filter((l) => l.alliance === 'mahayuti').length, 4);
+t('only one of them is actually BJP',
+    MH.leaders.filter((l) => l.party === 'bjp').length, 1);
+/* Raj Thackeray allied with Uddhav Thackeray in Dec 2025. Before that the BJP
+ * was courting MNS, so a stale source flips him to `ally` and inverts every
+ * figure under his name. */
+t('Raj Thackeray is opposition, not ally',
+    MH.leaders.find((l) => l.key === 'mh-raj-thackeray').alignment, 'opposition');
+
 /* The spellings in the manager's message must all resolve, or most of the
  * corpus is invisible. This is the check that would have caught it. */
 const MANAGER_SPELLINGS = [
