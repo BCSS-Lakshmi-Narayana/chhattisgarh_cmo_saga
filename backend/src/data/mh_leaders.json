@@ -3,10 +3,12 @@
     "purpose": "The nine Maharashtra leaders requested for the campaign report. Vertical 'mh'. This file is the only roster for that vertical — it is NOT merged into the Chhattisgarh roster.",
     "researched": "2026-10-01. Every handle was fetched live from api.fxtwitter.com and its bio read before being recorded. Follower and post counts are from that fetch and will drift.",
     "why_not_from_memory": "A model's training data is stale on exactly the facts that matter here. Asked from memory, the Deputy CM comes out as Ajit Pawar; Sunetra Pawar has held the office since 31 Jan 2026. Every role below was confirmed from the account's own bio or from current reporting.",
-    "alignment_note": "`alignment` is relative to the HOST deployment's client, which is the BJP. That is not an editorial position — it is what the scoring pipeline requires. Every verdict this system stores is client-relative, so leaderPopularityController.alignToPerson flips the sign for anyone marked `opposition` before display. Without a correct value here, 'positive sentiment for Sharad Pawar' would mean 'good for the BJP', i.e. the opposite of what a reader assumes. Maharashtra happens to make this clean: the BJP leads the governing Mahayuti, so ally/opposition maps onto government/opposition exactly.",
+    "alignment_note": "`alignment` is relative to the HOST deployment's client, which is the BJP. That is not an editorial position — it is what the scoring pipeline requires. Every verdict this system stores is client-relative, so leaderPopularityController.alignToPerson flips the sign for anyone marked `opposition` before display. Without a correct value here, 'positive sentiment for Sharad Pawar' would mean 'good for the BJP', i.e. the opposite of what a reader assumes.",
+    "alliances_verified": "2026-10-01, from current reporting — not from model knowledge, which is stale on all of this.",
+    "alliance_mahayuti": "The governing alliance: BJP + Shiv Sena (Shinde faction) + NCP (Ajit Pawar faction). ALL THREE ARE `ally`. Only Fadnavis is actually BJP — Eknath Shinde and Shrikant Shinde are Shiv Sena, Sunetra Pawar is NCP. They are our side by ALLIANCE, not by party, and `alignment: ally` is a statement about which camp a post helps, never about party membership.",
+    "alliance_mva_and_others": "Opposition: NCP (Sharadchandra Pawar) — Sharad and Rohit Pawar; Shiv Sena (UBT) — Aaditya Thackeray; and MNS — Raj Thackeray, who formally allied with Uddhav Thackeray on 24 Dec 2025 (joint Shiv Sena Bhavan appearance 4 Jan 2026) on a Marathi-first platform explicitly aimed at the BJP-led Mahayuti and the Shinde Sena. Manoj Jarange Patil belongs to no alliance at all; he is marked `opposition` only because his agitation targets the sitting government.",
     "name_variants": "The manager's message spells these 'Aditya Thakre', 'Raj Thakre' and 'Manoj Jayrange Patil'. The account bios spell them 'Aaditya Thackeray', 'Raj Thackeray' and 'Manoj jarange patil'. Both forms, plus Devanagari, are in `aliases` — a monitor keyed on one spelling misses most of the corpus."
   },
-
   "leaders": [
     {
       "key": "mh-fadnavis",
@@ -18,9 +20,15 @@
       "followers": 5863057,
       "posts": 93095,
       "bio": "Chief Minister of Maharashtra | RamSevak | KarSevak | Maharashtra's Sevak | रामसेवक । कारसेवक | महाराष्ट्र सेवक",
-      "aliases": ["Devendra Fadnavis", "Fadnavis", "देवेंद्र फडणवीस", "फडणवीस"],
+      "aliases": [
+        "Devendra Fadnavis",
+        "Fadnavis",
+        "देवेंद्र फडणवीस",
+        "फडणवीस"
+      ],
       "verified_on": "2026-10-01",
-      "note": "Largest account in the set at 5.86M followers."
+      "note": "Largest account in the set at 5.86M followers.",
+      "alliance": "mahayuti"
     },
     {
       "key": "mh-eknath-shinde",
@@ -32,9 +40,13 @@
       "followers": 1111710,
       "posts": 27705,
       "bio": "Eknath Shinde - एकनाथ शिंदे | Dy. Chief Minister, Maharashtra | Minister of Urban Development, Housing & Public Works (Public Ent.)",
-      "aliases": ["Eknath Shinde", "एकनाथ शिंदे"],
+      "aliases": [
+        "Eknath Shinde",
+        "एकनाथ शिंदे"
+      ],
       "verified_on": "2026-10-01",
-      "note": "⚠ 'Shinde' alone is ambiguous — it is also Dr Shrikant Shinde, his son, who is separately on this list. Never match on the surname."
+      "note": "⚠ 'Shinde' alone is ambiguous — it is also Dr Shrikant Shinde, his son, who is separately on this list. Never match on the surname.",
+      "alliance": "mahayuti"
     },
     {
       "key": "mh-sunetra-pawar",
@@ -46,9 +58,14 @@
       "followers": 34296,
       "posts": 4604,
       "bio": "Sunetra Ajit Pawar | Deputy Chief Minister- Maharashtra • Ex-Member of Parliament- Rajya Sabha",
-      "aliases": ["Sunetra Pawar", "Sunetra Ajit Pawar", "सुनेत्रा पवार"],
+      "aliases": [
+        "Sunetra Pawar",
+        "Sunetra Ajit Pawar",
+        "सुनेत्रा पवार"
+      ],
       "verified_on": "2026-10-01",
-      "note": "Took office 31 Jan 2026, replacing Ajit Pawar; first woman in the role. Resigned her Rajya Sabha seat on taking it. By far the smallest following of the three government principals (34K) — low volume here is expected, not a collection fault."
+      "note": "Took office 31 Jan 2026, replacing Ajit Pawar; first woman in the role. Resigned her Rajya Sabha seat on taking it. By far the smallest following of the three government principals (34K) — low volume here is expected, not a collection fault.",
+      "alliance": "mahayuti"
     },
     {
       "key": "mh-shrikant-shinde",
@@ -60,9 +77,15 @@
       "followers": 149614,
       "posts": 18120,
       "bio": "Dr Shrikant Lata Eknath Shinde | Member of Parliament, Kalyan Loksabha, Maharashtra, India",
-      "aliases": ["Shrikant Shinde", "Srikanth Shinde", "Dr Shrikant Shinde", "श्रीकांत शिंदे"],
+      "aliases": [
+        "Shrikant Shinde",
+        "Srikanth Shinde",
+        "Dr Shrikant Shinde",
+        "श्रीकांत शिंदे"
+      ],
       "verified_on": "2026-10-01",
-      "note": "The manager's list spells him 'Srikanth'; his own bio spells it 'Shrikant'. Both are aliases. Son of Eknath Shinde — see the surname warning there."
+      "note": "The manager's list spells him 'Srikanth'; his own bio spells it 'Shrikant'. Both are aliases. Son of Eknath Shinde — see the surname warning there.",
+      "alliance": "mahayuti"
     },
     {
       "key": "mh-sharad-pawar",
@@ -74,9 +97,14 @@
       "followers": 2902160,
       "posts": 10509,
       "bio": "President of Nationalist Congress Party - Sharadchandra Pawar",
-      "aliases": ["Sharad Pawar", "Sharadchandra Pawar", "शरद पवार"],
+      "aliases": [
+        "Sharad Pawar",
+        "Sharadchandra Pawar",
+        "शरद पवार"
+      ],
       "verified_on": "2026-10-01",
-      "note": "⚠ 'Pawar' alone matches four people on this list — Sharad, Sunetra, Rohit, and Ajit Pawar who is not on it. The NCP split means the surname spans both camps. Full names only."
+      "note": "⚠ 'Pawar' alone matches four people on this list — Sharad, Sunetra, Rohit, and Ajit Pawar who is not on it. The NCP split means the surname spans both camps. Full names only.",
+      "alliance": "mva"
     },
     {
       "key": "mh-rohit-pawar",
@@ -88,8 +116,12 @@
       "followers": 784772,
       "posts": 27532,
       "bio": "Committed to a better Maharashtra & @NCPspeaks MLA from Karjat-Jamkhed CEO Baramati Agro",
-      "aliases": ["Rohit Pawar", "रोहित पवार"],
-      "verified_on": "2026-10-01"
+      "aliases": [
+        "Rohit Pawar",
+        "रोहित पवार"
+      ],
+      "verified_on": "2026-10-01",
+      "alliance": "mva"
     },
     {
       "key": "mh-aaditya-thackeray",
@@ -101,23 +133,34 @@
       "followers": 3424249,
       "posts": 23036,
       "bio": "Voicing the Youth, President, Yuva Sena. President- Mumbai District Football Association",
-      "aliases": ["Aaditya Thackeray", "Aditya Thackeray", "Aditya Thakre", "आदित्य ठाकरे"],
+      "aliases": [
+        "Aaditya Thackeray",
+        "Aditya Thackeray",
+        "Aditya Thakre",
+        "आदित्य ठाकरे"
+      ],
       "verified_on": "2026-10-01",
-      "note": "His bio spells it 'Aaditya' with two a's; the manager wrote 'Aditya Thakre'. Both recorded."
+      "note": "His bio spells it 'Aaditya' with two a's; the manager wrote 'Aditya Thakre'. Both recorded.",
+      "alliance": "mva"
     },
     {
       "key": "mh-raj-thackeray",
       "name": "Raj Thackeray",
       "role": "President, Maharashtra Navnirman Sena",
       "party": "mns",
+      "alliance": "mva-aligned",
       "alignment": "opposition",
       "handle": "RajThackeray",
       "followers": 1854526,
       "posts": 1514,
       "bio": "Official Twitter Handle Of Raj Thackeray",
-      "aliases": ["Raj Thackeray", "Raj Thakre", "राज ठाकरे"],
+      "aliases": [
+        "Raj Thackeray",
+        "Raj Thakre",
+        "राज ठाकरे"
+      ],
       "verified_on": "2026-10-01",
-      "note": "⚠ ALIGNMENT TO CONFIRM. MNS is outside the governing Mahayuti, so `opposition` is the defensible default, but Raj Thackeray's positioning has moved repeatedly. Worth a human check before the first report goes out — it decides the sign of every sentiment figure under his name. Also note only 1,514 posts for 1.85M followers: he is read far more than he posts, so mention volume will dwarf his own output."
+      "note": "ALIGNMENT CONFIRMED 2026-10-01. Previously flagged as uncertain — MNS had been courted by the BJP and Raj Thackeray said in 2024 that MNS would be part of a BJP-led government. That is no longer the position: he and Uddhav Thackeray announced a formal alliance on 24 Dec 2025 and appeared together at Shiv Sena Bhavan on 4 Jan 2026, on a Marathi-first platform aimed squarely at the Mahayuti and the Shinde Sena. He is opposition, and now shares a front with Aaditya Thackeray. Also note only 1,514 posts for 1.85M followers: he is read far more than he posts, so mention volume will dwarf his own output."
     },
     {
       "key": "mh-jarange-patil",
@@ -129,23 +172,66 @@
       "followers": 483,
       "posts": 13,
       "bio": "एक मराठा लाख मराठा #manojjarangepatil #maratha #मराठा_आरक्षण #मराठा_क्रांती_मोर्चा #मनोज_जरांगे_पाटील",
-      "aliases": ["Manoj Jarange", "Manoj Jarange Patil", "Jarange Patil", "Manoj Jayrange Patil", "मनोज जरांगे", "मनोज जरांगे पाटील"],
+      "aliases": [
+        "Manoj Jarange",
+        "Manoj Jarange Patil",
+        "Jarange Patil",
+        "Manoj Jayrange Patil",
+        "मनोज जरांगे",
+        "मनोज जरांगे पाटील"
+      ],
       "verified_on": "2026-10-01",
-      "note": "⚠ HANDLE MONITORING WILL NOT WORK FOR HIM. 483 followers and 13 posts ever, for the most prominent figure in the Maratha agitation. X is not where he operates — he works through rallies, fasts and television. His coverage is in what OTHERS post about him, so he must be tracked by KEYWORD, not by handle. `alignment: opposition` reflects that he agitates against the sitting government; he belongs to no party."
+      "note": "⚠ HANDLE MONITORING WILL NOT WORK FOR HIM. 483 followers and 13 posts ever, for the most prominent figure in the Maratha agitation. X is not where he operates — he works through rallies, fasts and television. His coverage is in what OTHERS post about him, so he must be tracked by KEYWORD, not by handle. `alignment: opposition` reflects that he agitates against the sitting government; he belongs to no party.",
+      "alliance": "none"
     }
   ],
-
   "districts": [
-    "Mumbai City", "Mumbai Suburban", "Thane", "Palghar", "Raigad", "Ratnagiri", "Sindhudurg",
-    "Pune", "Satara", "Sangli", "Solapur", "Kolhapur",
-    "Nashik", "Ahilyanagar", "Ahmednagar", "Dhule", "Jalgaon", "Nandurbar",
-    "Chhatrapati Sambhajinagar", "Aurangabad", "Jalna", "Beed", "Latur", "Dharashiv", "Osmanabad",
-    "Nanded", "Parbhani", "Hingoli",
-    "Nagpur", "Wardha", "Bhandara", "Gondia", "Chandrapur", "Gadchiroli",
-    "Amravati", "Akola", "Yavatmal", "Buldhana", "Washim"
+    "Mumbai City",
+    "Mumbai Suburban",
+    "Thane",
+    "Palghar",
+    "Raigad",
+    "Ratnagiri",
+    "Sindhudurg",
+    "Pune",
+    "Satara",
+    "Sangli",
+    "Solapur",
+    "Kolhapur",
+    "Nashik",
+    "Ahilyanagar",
+    "Ahmednagar",
+    "Dhule",
+    "Jalgaon",
+    "Nandurbar",
+    "Chhatrapati Sambhajinagar",
+    "Aurangabad",
+    "Jalna",
+    "Beed",
+    "Latur",
+    "Dharashiv",
+    "Osmanabad",
+    "Nanded",
+    "Parbhani",
+    "Hingoli",
+    "Nagpur",
+    "Wardha",
+    "Bhandara",
+    "Gondia",
+    "Chandrapur",
+    "Gadchiroli",
+    "Amravati",
+    "Akola",
+    "Yavatmal",
+    "Buldhana",
+    "Washim"
   ],
   "_districts_note": "39 entries for 36 districts: three were renamed and BOTH names still appear in posts and headlines — Aurangabad → Chhatrapati Sambhajinagar, Osmanabad → Dharashiv, Ahmednagar → Ahilyanagar. Dropping the old names would lose a large share of Marathwada coverage.",
-
-  "state_aliases": ["maharashtra", "maharastra", "maharashtra", "mh"],
+  "state_aliases": [
+    "maharashtra",
+    "maharastra",
+    "maharashtra",
+    "mh"
+  ],
   "state_native": "महाराष्ट्र"
 }
