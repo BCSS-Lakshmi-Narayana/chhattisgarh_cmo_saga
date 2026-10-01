@@ -32,6 +32,8 @@ const crypto = require('crypto');
 const Source = require('../src/models/Source');
 const Keyword = require('../src/models/Keyword');
 const User = require('../src/models/User');
+const PagePermission = require('../src/models/PagePermission');
+const { ALL_PAGES, PAGE_FEATURES } = require('../src/config/rbacConfig');
 const MH = require('../src/data/mh_leaders.json');
 
 const argv = process.argv.slice(2);
@@ -60,6 +62,48 @@ const coreKeywords = () => MH.leaders.flatMap((l) => {
 
 /** EXTENDED adds every spelling variant, including the manager's own. */
 const extendedKeywords = () => MH.leaders.flatMap((l) => l.aliases);
+
+/* ─── page permissions ───────────────────────────────────────────────
+ * Creating the User row is not enough. RBAC denies every page to a login
+ * with no PagePermission document, so the account logs in successfully and
+ * then sees "Access Denied" on all of them — the vertical filter never even
+ * gets a chance to run. seed_mla_mp_accounts.js already grants these for the
+ * MLA/MP logins; the same mechanism is reused here rather than reinvented.
+ *
+ * Everything EXCEPT /access-management: that is the super-admin console for
+ * managing other people's logins, and this account has no business there.
+ */
+const ADMIN_ONLY = new Set(['/access-management']);
+
+const buildPermissions = () => {
+    const permissions = {};
+    for (const page of ALL_PAGES) {
+        if (ADMIN_ONLY.has(page.path)) continue;
+        permissions[page.path] = {
+            enabled: true,
+            features: (PAGE_FEATURES[page.path] || []).map((f) => f.id),
+        };
+    }
+    return permissions;
+};
+
+const grantPages = async (userId) => {
+    const permissions = buildPermissions();
+    await PagePermission.updateOne(
+        { user_id: userId },
+        {
+            $set: {
+                allowed_pages: Object.keys(permissions),
+                permissions,
+                updated_by: SEED_ACTOR,
+                updated_at: new Date(),
+            },
+            $setOnInsert: { user_id: userId },
+        },
+        { upsert: true },
+    );
+    return Object.keys(permissions);
+};
 
 (async () => {
     const dbName = process.env.DB_NAME ? String(process.env.DB_NAME).trim() : undefined;
@@ -115,14 +159,16 @@ const extendedKeywords = () => MH.leaders.flatMap((l) => l.aliases);
     if (USER_EMAIL) {
         const password = USER_PASSWORD || crypto.randomBytes(9).toString('base64url');
         const found = await User.findOne({ email: USER_EMAIL });
+        let userId = found ? found.id : null;
         if (found) {
             console.log(`User: ${USER_EMAIL} exists — setting verticals to ['${VERTICAL}']`);
             if (!DRY_RUN) { found.verticals = [VERTICAL]; await found.save(); }
         } else {
             console.log(`User: creating ${USER_EMAIL} with verticals ['${VERTICAL}']`);
+            userId = crypto.randomUUID();
             if (!DRY_RUN) {
                 await User.create({
-                    id: crypto.randomUUID(),
+                    id: userId,
                     email: USER_EMAIL,
                     full_name: 'Maharashtra Report',
                     password: await bcrypt.hash(password, 10),
@@ -132,6 +178,14 @@ const extendedKeywords = () => MH.leaders.flatMap((l) => l.aliases);
                 });
             }
             if (!USER_PASSWORD) console.log(`  password (shown once): ${password}`);
+        }
+
+        // Without this the login succeeds and every page answers 403.
+        if (!DRY_RUN && userId) {
+            const granted = await grantPages(userId);
+            console.log(`  granted ${granted.length} pages (all except ${[...ADMIN_ONLY].join(', ')})`);
+        } else if (DRY_RUN) {
+            console.log(`  would grant ${Object.keys(buildPermissions()).length} pages`);
         }
         console.log('');
     } else {
