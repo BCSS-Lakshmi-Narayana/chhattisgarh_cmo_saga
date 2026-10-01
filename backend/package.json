@@ -49,7 +49,13 @@
     "seed:keywords": "node scripts/seed_state_keywords_and_fetch.js",
     "seed:sources": "node scripts/seed_sources.js",
     "seed:tracking": "node scripts/seed_grievance_tracking.js",
-    "backfill:alert-analysis": "node scripts/backfill_alert_analysis.js"
+    "backfill:alert-analysis": "node scripts/backfill_alert_analysis.js",
+    "test:vertical": "node scripts/test_vertical_isolation.js",
+    "test:vertical:e2e": "node scripts/test_vertical_e2e.js",
+    "test:vertical:db": "node scripts/test_vertical_isolation.js --db && node scripts/test_vertical_e2e.js --db",
+    "seed:mh": "node scripts/seed_mh_vertical.js",
+    "report:mh": "node scripts/mh_daily_report.js",
+    "backfill:vertical": "node scripts/backfill_vertical_cg.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.983.0",

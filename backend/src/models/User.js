@@ -85,6 +85,22 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  /**
+   * Which client dataset(s) this login may see — see config/verticals.js.
+   *
+   * Separate from `is_scoped`, which narrows a user to a CONSTITUENCY inside
+   * one client's data. This narrows which CLIENT's data they see at all, and
+   * the two are unrelated: a Maharashtra user has no Chhattisgarh seat.
+   *
+   * Empty / unset is read as ['cg'] — every account that exists today predates
+   * this field and belongs to the Chhattisgarh client. Defaulting to "all"
+   * would hand the second client's entire dataset to every existing login on
+   * the day this ships, including superadmins.
+   */
+  verticals: {
+    type: [String],
+    default: undefined,
+  },
   is_active: {
     type: Boolean,
     default: true

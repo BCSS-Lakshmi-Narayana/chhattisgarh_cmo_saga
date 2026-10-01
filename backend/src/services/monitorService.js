@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
+const { DEFAULT_VERTICAL } = require('../config/verticals');
 const { TwitterApi } = require('twitter-api-v2');
 const blugateClient = require('./blugateClient');
 const youtubeChannels = require('./youtubeChannelService');
@@ -300,6 +301,7 @@ const monitorYoutubeSource = async (source) => {
 
       const content = new Content({
         source_id: source.id,
+        vertical: source.vertical || DEFAULT_VERTICAL,
         platform: 'youtube',
         content_id: videoId,
         content_url: `https://www.youtube.com/watch?v=${videoId}`,
@@ -606,6 +608,7 @@ const monitorXSource = async (source, options = {}) => {
 
       const content = new Content({
         source_id: source.id,
+        vertical: source.vertical || DEFAULT_VERTICAL,
         platform: 'x',
         content_id: tweet.id,
         content_url: tweet.url,
@@ -1150,6 +1153,7 @@ const monitorInstagramSource = async (source, accessToken) => {
           // ── CREATE new content ────────────────────────────────────────────
           content = new Content({
             source_id: source.id,
+            vertical: source.vertical || DEFAULT_VERTICAL,
             platform: 'instagram',
             content_id: contentId,
             content_url: contentUrl || `https://www.instagram.com/p/${shortcode || contentId}/`,
@@ -1262,6 +1266,7 @@ const monitorInstagramSource = async (source, accessToken) => {
 
           const storyContent = new Content({
             source_id: source.id,
+            vertical: source.vertical || DEFAULT_VERTICAL,
             platform: 'instagram',
             content_type: 'story',
             content_id: storyId,
@@ -1398,6 +1403,7 @@ const monitorFacebookSource = async (source, accessToken, options = {}) => {
 
         content = new Content({
           source_id: source.id,
+          vertical: source.vertical || DEFAULT_VERTICAL,
           platform: 'facebook',
           content_id: post.id,
           content_url: post.url,
@@ -1679,6 +1685,11 @@ const buildAlertData = async ({ content, analysis, velocity, source }) => {
   parts.push(analysis.detailedDescription || buildDetailedDescription(analysis, content.platform));
   const description = parts.join('\n\n');
   return {
+    // An alert inherits the vertical of the post that caused it. Without this
+    // it would take the schema default (`cg`) and a Maharashtra post would
+    // raise an alert in the live Chhattisgarh client's alert list — the exact
+    // leak the vertical split exists to prevent.
+    vertical: content.vertical || (source && source.vertical) || DEFAULT_VERTICAL,
     content_id: content.id,
     analysis_id: analysis.analysis_id,
     alert_type: velocity ? 'velocity' : (analysis.is_keyword_match ? 'keyword_risk' : 'ai_risk'),

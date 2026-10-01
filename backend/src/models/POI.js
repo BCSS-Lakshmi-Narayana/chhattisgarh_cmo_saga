@@ -133,6 +133,10 @@ poiSchema.index({ 'socialMedia.handle': 1 });
 poiSchema.index({ 'socialMedia.displayName': 1 });
 poiSchema.index({ name: 'text', firNo: 'text', briefSummary: 'text' });
 poiSchema.index({ status: 1 });
-poiSchema.index({ createdAt: -1 });
+poiSchema.index({ createdAt: -1 });// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+poiSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('POI', poiSchema);

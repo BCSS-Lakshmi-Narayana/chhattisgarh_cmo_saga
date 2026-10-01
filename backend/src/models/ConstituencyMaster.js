@@ -73,5 +73,9 @@ constituencyMasterSchema.pre('save', function preSave(next) {
 });
 
 constituencyMasterSchema.statics.normKey = normKey;
+// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+constituencyMasterSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
 
 module.exports = mongoose.model('ConstituencyMaster', constituencyMasterSchema);

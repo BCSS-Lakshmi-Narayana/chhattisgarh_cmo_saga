@@ -103,6 +103,10 @@ const suggestionReportSchema = new mongoose.Schema({
 suggestionReportSchema.index({ grievance_id: 1 });
 suggestionReportSchema.index({ unique_code: 1 });
 suggestionReportSchema.index({ created_at: -1 });
-suggestionReportSchema.index({ platform: 1, created_at: -1 });
+suggestionReportSchema.index({ platform: 1, created_at: -1 });// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+suggestionReportSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('SuggestionReport', suggestionReportSchema);

@@ -27,6 +27,10 @@ const tempContentSchema = new mongoose.Schema({
   collection: 'temp_content'
 });
 
-tempContentSchema.index({ tenant_name: 1, status: 1, created_at: 1 });
+tempContentSchema.index({ tenant_name: 1, status: 1, created_at: 1 });// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+tempContentSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('TempContent', tempContentSchema);

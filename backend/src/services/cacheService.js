@@ -45,7 +45,30 @@ const getLocal = (key) => {
   return entry.value;
 };
 
+/**
+ * Every cache key is namespaced by the verticals of the request that asks for
+ * it.
+ *
+ * Without this, isolation holds in the database and then leaks straight back
+ * out through the cache: a Chhattisgarh user warms `geo:districts:v1:...`, the
+ * Maharashtra user asks for the same key a second later and is served
+ * Chhattisgarh's rows — never touching Mongo, so no query filter can help.
+ *
+ * Done here rather than at the 93 call sites, for the same reason the query
+ * filter is a plugin: a namespace that depends on 93 people remembering is not
+ * a namespace.
+ *
+ * Outside a request there is no context and the key is left alone, so the
+ * background jobs' own cache entries keep their existing names.
+ */
+const { currentVerticals } = require('../config/verticals');
+const nsKey = (key) => {
+  const v = currentVerticals();
+  return v ? `v:${v.join('+')}|${key}` : String(key);
+};
+
 const get = async (key) => {
+  key = nsKey(key);
   try {
     const client = await getRedisClient();
     if (client && redisReady) {
@@ -59,6 +82,7 @@ const get = async (key) => {
 };
 
 const set = async (key, value, ttlSeconds) => {
+  key = nsKey(key);
   try {
     const client = await getRedisClient();
     if (client && redisReady) {
@@ -71,6 +95,7 @@ const set = async (key, value, ttlSeconds) => {
 };
 
 const del = async (key) => {
+  key = nsKey(key);
   localCache.delete(key);
   try {
     const client = await getRedisClient();

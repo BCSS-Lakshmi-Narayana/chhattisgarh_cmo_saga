@@ -53,5 +53,9 @@ const boothSchema = new mongoose.Schema({
 boothSchema.index({ constituency_key: 1, import_id: 1, part: 1 }, { unique: true });
 // Year-scoped booth lookups (grid, year-over-year diff).
 boothSchema.index({ constituency_key: 1, roll_year: 1, part: 1 });
+// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+boothSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
 
 module.exports = mongoose.model('Booth', boothSchema);

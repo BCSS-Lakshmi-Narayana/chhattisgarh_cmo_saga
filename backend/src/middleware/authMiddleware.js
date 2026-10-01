@@ -3,6 +3,7 @@ const User = require('../models/User');
 const { hasAnyRole, normalizeRole } = require('../utils/authIdentity');
 const { buildScope } = require('./scopeMiddleware');
 const { getJwtSecret } = require('../config/jwtSecret');
+const { verticalsForUser, setVerticals } = require('../config/verticals');
 
 const protect = async (req, res, next) => {
   let token;
@@ -28,6 +29,12 @@ const protect = async (req, res, next) => {
       // mapped to their current names, so every role check downstream sees one
       // vocabulary and a later save() passes the enum.
       req.user.role = normalizeRole(req.user.role);
+
+      // Which client's data this login may see. Set before any controller
+      // runs, so every query made for this request is already filtered —
+      // including the raw-driver reads, which take it from the same store.
+      req.verticals = verticalsForUser(req.user);
+      setVerticals(req.verticals);
 
       req.scope = buildScope(req.user);
 

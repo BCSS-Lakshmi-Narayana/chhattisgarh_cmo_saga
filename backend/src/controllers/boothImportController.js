@@ -21,6 +21,7 @@
  */
 
 const mongoose = require('mongoose');
+const { DEFAULT_VERTICAL } = require('../config/verticals');
 const BoothRollImport = require('../models/BoothRollImport');
 const Booth = require('../models/Booth');
 const BoothVoter = require('../models/BoothVoter');
@@ -350,6 +351,13 @@ const uploadParts = async (req, res) => {
                 // The native driver, deliberately: normalizeVoter already emits
                 // the exact stored shape, so Mongoose casting is pure overhead
                 // (measured 1.4× slower) on the hottest path in the pipeline.
+                //
+                // ⚠ Going round Mongoose also goes round the vertical stamp,
+                // which every other write in the app gets from a schema hook.
+                // Stamped here by hand: an unstamped row is invisible to every
+                // user, including the one who just imported it.
+                const importVertical = (req.verticals && req.verticals[0]) || DEFAULT_VERTICAL;
+                for (const d of docs) { if (!d.vertical) d.vertical = importVertical; }
                 for (let i = 0; i < docs.length; i += INSERT_CHUNK) {
                     await BoothVoter.collection.insertMany(docs.slice(i, i + INSERT_CHUNK), { ordered: false });
                 }

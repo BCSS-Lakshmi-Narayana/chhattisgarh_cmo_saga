@@ -28,6 +28,10 @@ const ongoingEventSchema = new mongoose.Schema({
     }
 });
 
-ongoingEventSchema.index({ bucket: 1, createdAt: -1 });
+ongoingEventSchema.index({ bucket: 1, createdAt: -1 });// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+ongoingEventSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('OngoingEvent', ongoingEventSchema);

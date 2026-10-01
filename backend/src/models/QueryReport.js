@@ -114,6 +114,10 @@ const queryReportSchema = new mongoose.Schema({
 queryReportSchema.index({ grievance_id: 1 });
 queryReportSchema.index({ unique_code: 1 });
 queryReportSchema.index({ status: 1, created_at: -1 });
-queryReportSchema.index({ platform: 1, created_at: -1 });
+queryReportSchema.index({ platform: 1, created_at: -1 });// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+queryReportSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('QueryReport', queryReportSchema);

@@ -110,5 +110,9 @@ liveStreamSchema.pre('save', function (next) {
 });
 
 liveStreamSchema.index({ is_active: 1, status: 1 });
+// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+liveStreamSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
 
 module.exports = mongoose.model('LiveStream', liveStreamSchema);

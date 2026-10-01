@@ -90,6 +90,10 @@ reportSchema.index({ generated_at: 1 });
 // ─── Search indexes ───
 reportSchema.index({ 'target_user_details.handle': 1 });
 reportSchema.index({ 'target_user_details.name': 1 });
-reportSchema.index({ serial_number: 1 });
+reportSchema.index({ serial_number: 1 });// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+reportSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('Report', reportSchema);

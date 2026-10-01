@@ -89,6 +89,10 @@ const dial100IncidentSchema = new mongoose.Schema({
   }
 });
 
-dial100IncidentSchema.index({ date: 1, category: 1, slNo: 1 });
+dial100IncidentSchema.index({ date: 1, category: 1, slNo: 1 });// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+dial100IncidentSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('Dial100Incident', dial100IncidentSchema);

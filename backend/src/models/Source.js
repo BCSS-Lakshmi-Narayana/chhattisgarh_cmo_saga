@@ -107,4 +107,9 @@ sourceSchema.index({ is_active: 1, created_at: -1 }); // is_active filter + defa
 sourceSchema.index({ platform: 1, created_at: -1 }); // platform filter + default sort
 sourceSchema.index({ constituency: 1 }, { sparse: true }); // scope filter
 
+// Two clients share this database. Every read made for a logged-in user is
+// filtered to their vertical; `cg` is the default, so existing rows stay
+// Chhattisgarh. See utils/verticalScope.js.
+sourceSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
 module.exports = mongoose.model('Source', sourceSchema);

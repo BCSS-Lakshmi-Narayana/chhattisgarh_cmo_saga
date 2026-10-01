@@ -159,6 +159,7 @@ const ACCIDENT_RX = /accident|mishap|collision|\bcrash|हादसा|हाद
 const ADMIN_BLAME_RX = /negligen|administration|government|govt|sarkar|pothole|compensation|लापरवाही|प्रशासन|सरकार|गड्ढ|खड्ड|जर्जर|बदहाल|मुआवज/i;
 
 const { hasStateSignal } = require('../utils/stateSignal');
+const { DEFAULT_VERTICAL } = require('../config/verticals');
 
 const CEREMONIAL_RX = /(श्रद्धांजलि|श्रद्धा सुमन|जयंती|पुण्यतिथि|पुण्य तिथि|बलिदान दिवस|शहादत दिवस|शोक संवेदना|निधन|tribute|condolence|birth anniversary|death anniversary|jayanti|punyatithi|homage|rest in peace|\brip\b)/i;
 
@@ -278,7 +279,7 @@ const pickPrimaryTarget = (mentions) => {
 
 /* ─── public API ───────────────────────────────────────────────────── */
 
-const buildPoliticalContext = (text, { taggedKeyword = '', authorHandle = '', platform = '' } = {}) => {
+const buildPoliticalContext = (text, { taggedKeyword = '', authorHandle = '', platform = '', vertical = DEFAULT_VERTICAL } = {}) => {
     const raw = String(text || '');
     const lower = raw.toLowerCase();
 
@@ -341,7 +342,9 @@ const buildPoliticalContext = (text, { taggedKeyword = '', authorHandle = '', pl
     // Tributes, condolences, anniversaries: praise there is courtesy, not a
     // political position (see the ceremonial guard in politicalSentimentService).
     const ceremonial = CEREMONIAL_RX.test(raw);
-    const hasStateContext = hasStateSignal(`${raw} ${taggedKeyword || ''}`, mentions);
+    // The vertical picks WHICH client's state rules apply. Omitted ⇒ the host
+    // client, so every existing caller behaves exactly as before.
+    const hasStateContext = hasStateSignal(`${raw} ${taggedKeyword || ''}`, mentions, vertical);
     const targetRelevance = computeTargetRelevance(mentions, taggedKeyword);
     const primary = pickPrimaryTarget(mentions);
     const mode = decideMode({ mentions, targetRelevance, hasCivic });

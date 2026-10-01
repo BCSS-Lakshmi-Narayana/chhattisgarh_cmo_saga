@@ -36,6 +36,10 @@ const criticismContactSchema = new mongoose.Schema({
   collection: 'criticism_contacts'
 });
 
-criticismContactSchema.index({ is_active: 1, name: 1 });
+criticismContactSchema.index({ is_active: 1, name: 1 });// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+criticismContactSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('CriticismContact', criticismContactSchema);

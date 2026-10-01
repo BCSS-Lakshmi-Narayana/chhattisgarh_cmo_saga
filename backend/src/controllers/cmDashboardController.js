@@ -29,6 +29,7 @@
  *    before a change is claimed.
  * 3. UNUSED WORKFLOWS ARE REPORTED AS UNUSED, not presented as a backlog.
  */
+const { scopedCollection } = require('../utils/verticalScope');
 
 const mongoose = require('mongoose');
 const SOURCES_LIST = require('../data/sources_list.json');
@@ -122,7 +123,7 @@ const getCMBrief = async (req, res) => {
     const prevFrom = new Date(now - days * 2 * 86400000);
 
     const [mentions, articles, alerts] = await Promise.all([
-      db.collection('grievances').find(
+      scopedCollection(db, 'grievances').find(
         { post_date: { $gte: prevFrom }, is_active: { $ne: false } },
         { projection: {
           post_date: 1, platform: 1, tweet_url: 1, engagement: 1, workflow_status: 1,
@@ -131,7 +132,7 @@ const getCMBrief = async (req, res) => {
           'analysis.mentioned_entities': 1, 'detected_location.district': 1,
         } }
       ).toArray(),
-      db.collection('newsarticles').find(
+      scopedCollection(db, 'newsarticles').find(
         { published_date: { $gte: prevFrom } },
         { projection: {
           published_date: 1, sentiment: 1, category: 1, language: 1,
@@ -142,7 +143,7 @@ const getCMBrief = async (req, res) => {
           'detected_location.district': 1,
         } }
       ).toArray(),
-      db.collection('alerts').find(
+      scopedCollection(db, 'alerts').find(
         { created_at: { $gte: from } },
         { projection: {
           created_at: 1, alert_type: 1, risk_level: 1, status: 1, title: 1,
@@ -439,12 +440,12 @@ const getCMBrief = async (req, res) => {
     /* ── module status: the outcome of every module, and what is dark ──── */
     const closedGrievances = curM.filter((d) => ['closed', 'action_taken'].includes(d.workflow_status)).length;
     const [evActive, campaigns, pois, commentCount, engagers, acCount] = await Promise.all([
-      db.collection('events').countDocuments({ status: 'active' }),
-      db.collection('campaign_suggestions').countDocuments({}),
-      db.collection('pois').countDocuments({}),
-      db.collection('comments').countDocuments({}),
-      db.collection('engageranalyses').countDocuments({}),
-      db.collection('constituencymasters').countDocuments({}),
+      scopedCollection(db, 'events').countDocuments({ status: 'active' }),
+      scopedCollection(db, 'campaign_suggestions').countDocuments({}),
+      scopedCollection(db, 'pois').countDocuments({}),
+      scopedCollection(db, 'comments').countDocuments({}),
+      scopedCollection(db, 'engageranalyses').countDocuments({}),
+      scopedCollection(db, 'constituencymasters').countDocuments({}),
     ]);
 
     const modules = [

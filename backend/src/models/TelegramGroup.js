@@ -80,6 +80,10 @@ telegramGroupSchema.pre('save', function (next) {
     next();
 });
 
-telegramGroupSchema.index({ status: 1 });
+telegramGroupSchema.index({ status: 1 });// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+telegramGroupSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('TelegramGroup', telegramGroupSchema);

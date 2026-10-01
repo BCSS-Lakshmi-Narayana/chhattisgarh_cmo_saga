@@ -140,6 +140,10 @@ newsArticleSchema.index({ campaign_topic: 1, published_date: -1 });
 newsArticleSchema.index({ needs_review: 1, published_date: -1 });
 newsArticleSchema.index({ pipeline_analyzed_at: 1, scraped_at: -1 });
 newsArticleSchema.index({ 'detected_location.constituency': 1 }, { sparse: true });
-newsArticleSchema.index({ 'detected_location.attempted_at': 1 }, { sparse: true });
+newsArticleSchema.index({ 'detected_location.attempted_at': 1 }, { sparse: true });// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+newsArticleSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('NewsArticle', newsArticleSchema);

@@ -100,6 +100,10 @@ viralCampaignSchema.index({ status: 1, created_at: -1 });
 viralCampaignSchema.pre('save', function setUpdatedAt(next) {
   this.updated_at = new Date();
   next();
-});
+});// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+viralCampaignSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('ViralCampaign', viralCampaignSchema);

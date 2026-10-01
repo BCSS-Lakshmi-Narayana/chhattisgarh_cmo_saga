@@ -82,5 +82,9 @@ boothRollImportSchema.index({ constituency_key: 1, status: 1 });
 boothRollImportSchema.index({ constituency_key: 1, roll_year: 1, status: 1 });
 // Sweeper for staging sessions abandoned by a closed tab.
 boothRollImportSchema.index({ status: 1, created_at: 1 });
+// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+boothRollImportSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
 
 module.exports = mongoose.model('BoothRollImport', boothRollImportSchema);
