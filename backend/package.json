@@ -55,7 +55,8 @@
     "test:vertical:db": "node scripts/test_vertical_isolation.js --db && node scripts/test_vertical_e2e.js --db",
     "seed:mh": "node scripts/seed_mh_vertical.js",
     "report:mh": "node scripts/mh_daily_report.js",
-    "backfill:vertical": "node scripts/backfill_vertical_cg.js"
+    "backfill:vertical": "node scripts/backfill_vertical_cg.js",
+    "test:vertical:http": "node scripts/test_vertical_http.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.983.0",
