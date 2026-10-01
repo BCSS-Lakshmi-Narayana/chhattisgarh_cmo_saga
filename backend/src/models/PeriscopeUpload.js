@@ -59,6 +59,10 @@ const periscopeUploadSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
-});
+});// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+periscopeUploadSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('PeriscopeUpload', periscopeUploadSchema);

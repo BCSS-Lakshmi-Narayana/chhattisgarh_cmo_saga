@@ -1,3 +1,4 @@
+const { scopedCollection } = require('../utils/verticalScope');
 const mongoose = require('mongoose');
 const NewsArticle = require('../models/NewsArticle');
 const ConstituencyMaster = require('../models/ConstituencyMaster');
@@ -449,8 +450,8 @@ exports.getStats = async (req, res) => {
 exports.getRssKeywords = async (req, res) => {
   try {
     const mongoose = require('mongoose');
-    const col = mongoose.connection.db.collection('rsskeywords');
-    const metaCol = mongoose.connection.db.collection('rsskeywords_meta');
+    const col = scopedCollection(mongoose.connection.db, 'rsskeywords');
+    const metaCol = scopedCollection(mongoose.connection.db, 'rsskeywords_meta');
 
     const defaultKeywordsList = [
       // Full names only: bare 'sai', 'sao' or 'baghel' match thousands of
@@ -531,8 +532,8 @@ exports.addRssKeyword = async (req, res) => {
       return res.status(400).json({ message: 'Keyword is required' });
     }
 
-    const col = mongoose.connection.db.collection('rsskeywords');
-    const langCol = mongoose.connection.db.collection('rsslanguages');
+    const col = scopedCollection(mongoose.connection.db, 'rsskeywords');
+    const langCol = scopedCollection(mongoose.connection.db, 'rsslanguages');
 
     // Accept any configured language code (not just en/mr). Validate against the
     // languages collection so a keyword can never be filed under a bucket that
@@ -576,7 +577,7 @@ exports.deleteRssKeyword = async (req, res) => {
     if (!keyword) {
       return res.status(400).json({ message: 'Keyword is required' });
     }
-    const col = mongoose.connection.db.collection('rsskeywords');
+    const col = scopedCollection(mongoose.connection.db, 'rsskeywords');
     await col.deleteOne({ keyword: keyword.toLowerCase().trim() });
     res.json({ message: 'Keyword deleted successfully' });
   } catch (err) {
@@ -592,8 +593,8 @@ exports.deleteRssKeyword = async (req, res) => {
 exports.getRssLanguages = async (req, res) => {
   try {
     const mongoose = require('mongoose');
-    const col = mongoose.connection.db.collection('rsslanguages');
-    const metaCol = mongoose.connection.db.collection('rsslanguages_meta');
+    const col = scopedCollection(mongoose.connection.db, 'rsslanguages');
+    const metaCol = scopedCollection(mongoose.connection.db, 'rsslanguages_meta');
 
     // One-time bootstrap of the languages the system ships
     // with. Same idempotent-marker pattern as keywords: seed once into an empty
@@ -642,7 +643,7 @@ exports.addRssLanguage = async (req, res) => {
       return res.status(400).json({ message: 'Could not derive a language code — please provide one (e.g. "hi").' });
     }
 
-    const col = mongoose.connection.db.collection('rsslanguages');
+    const col = scopedCollection(mongoose.connection.db, 'rsslanguages');
     const existing = await col.findOne({ code: cleanCode });
     if (existing) {
       return res.status(409).json({ message: 'A language with this code already exists' });
@@ -665,8 +666,8 @@ exports.deleteRssLanguage = async (req, res) => {
       return res.status(400).json({ message: 'Language code is required' });
     }
 
-    const langCol = mongoose.connection.db.collection('rsslanguages');
-    const kwCol = mongoose.connection.db.collection('rsskeywords');
+    const langCol = scopedCollection(mongoose.connection.db, 'rsslanguages');
+    const kwCol = scopedCollection(mongoose.connection.db, 'rsskeywords');
 
     await langCol.deleteOne({ code });
     // Cascade: remove keywords filed under this language so none are left

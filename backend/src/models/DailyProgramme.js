@@ -88,6 +88,10 @@ dailyProgrammeSchema.pre('save', function (next) {
 
 // Compound index for efficient date + category queries
 dailyProgrammeSchema.index({ date: 1, category: 1 });
-dailyProgrammeSchema.index({ date: 1, category: 1, slNo: 1 });
+dailyProgrammeSchema.index({ date: 1, category: 1, slNo: 1 });// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+dailyProgrammeSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('DailyProgramme', dailyProgrammeSchema);

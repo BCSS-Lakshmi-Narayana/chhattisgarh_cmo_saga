@@ -74,6 +74,10 @@ searchHistorySchema.index({ user_id: 1, search_type: 1, searched_at: -1 });
 searchHistorySchema.index({ user_id: 1, platform: 1, searched_at: -1 });
 searchHistorySchema.index({ user_id: 1, search_type: 1, platform: 1, searched_at: -1 });
 searchHistorySchema.index({ user_id: 1, query_normalized: 1, searched_at: -1 });
-searchHistorySchema.index({ user_id: 1, query: 'text', results_search_text: 'text' });
+searchHistorySchema.index({ user_id: 1, query: 'text', results_search_text: 'text' });// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+searchHistorySchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('SearchHistory', searchHistorySchema);

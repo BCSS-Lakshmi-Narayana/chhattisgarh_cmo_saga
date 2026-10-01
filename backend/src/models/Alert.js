@@ -287,4 +287,9 @@ alertSchema.add({
 });
 alertSchema.index({ campaign_topic: 1, published_at: -1 });
 
+// Two clients share this database. Every read made for a logged-in user is
+// filtered to their vertical; `cg` is the default, so existing rows stay
+// Chhattisgarh. See utils/verticalScope.js.
+alertSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
 module.exports = mongoose.model('Alert', alertSchema);

@@ -163,6 +163,10 @@ const grievanceWorkflowReportSchema = new mongoose.Schema({
 grievanceWorkflowReportSchema.index({ grievance_id: 1 });
 grievanceWorkflowReportSchema.index({ unique_code: 1 });
 grievanceWorkflowReportSchema.index({ status: 1, created_at: -1 });
-grievanceWorkflowReportSchema.index({ platform: 1, created_at: -1 });
+grievanceWorkflowReportSchema.index({ platform: 1, created_at: -1 });// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+grievanceWorkflowReportSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('GrievanceWorkflowReport', grievanceWorkflowReportSchema);

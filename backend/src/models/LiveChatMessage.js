@@ -130,5 +130,9 @@ if (RETENTION_DAYS > 0) {
         { expireAfterSeconds: Math.round(RETENTION_DAYS * 24 * 60 * 60), name: 'ytlive_ttl' }
     );
 }
+// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+liveChatMessageSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
 
 module.exports = mongoose.model('LiveChatMessage', liveChatMessageSchema);

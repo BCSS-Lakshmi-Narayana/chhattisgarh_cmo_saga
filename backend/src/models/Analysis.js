@@ -119,4 +119,9 @@ const analysisSchema = new mongoose.Schema({
 
 analysisSchema.index({ content_id: 1 }, { unique: true });
 
+// Two clients share this database. Every read made for a logged-in user is
+// filtered to their vertical; `cg` is the default, so existing rows stay
+// Chhattisgarh. See utils/verticalScope.js.
+analysisSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
 module.exports = mongoose.model('Analysis', analysisSchema);

@@ -100,6 +100,10 @@ const criticismReportSchema = new mongoose.Schema({
 criticismReportSchema.index({ grievance_id: 1 });
 criticismReportSchema.index({ unique_code: 1 });
 criticismReportSchema.index({ created_at: -1 });
-criticismReportSchema.index({ platform: 1, created_at: -1 });
+criticismReportSchema.index({ platform: 1, created_at: -1 });// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+criticismReportSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('CriticismReport', criticismReportSchema);

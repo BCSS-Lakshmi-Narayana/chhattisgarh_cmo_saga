@@ -56,6 +56,7 @@
  *   ANALYSIS_PENDING_WINDOW_HOURS  optional age-out for pending records. 0/unset
  *                              means never age out (the intended behaviour).
  */
+const { scopedCollection } = require('../utils/verticalScope');
 
 const mongoose = require('mongoose');
 
@@ -88,7 +89,7 @@ let startAt = envStart;
 const initDisplayGate = async () => {
   if (envStart) return startAt;
   try {
-    const col = mongoose.connection.db.collection(FLAG_COLLECTION);
+    const col = scopedCollection(mongoose.connection.db, FLAG_COLLECTION);
     await col.updateOne(
       { key: FLAG_KEY },
       { $setOnInsert: { key: FLAG_KEY, value: new Date(), created_at: new Date() } },
@@ -196,7 +197,7 @@ const alertGate = async () => {
     const db = mongoose.connection.db;
     const since = { created_at: { $gte: startAt } };
 
-    const candidates = await db.collection('alerts')
+    const candidates = await scopedCollection(db, 'alerts')
       .find(WINDOW_HOURS > 0
         ? { $and: [since, { created_at: { $gte: new Date(Date.now() - WINDOW_HOURS * 3600 * 1000) } }] }
         : since)
@@ -209,7 +210,7 @@ const alertGate = async () => {
     if (pending.length) {
       const contentIds = [...new Set(pending.map((a) => a.content_id).filter(Boolean))];
       const analyses = contentIds.length
-        ? await db.collection('analyses')
+        ? await scopedCollection(db, 'analyses')
             .find({ content_id: { $in: contentIds } })
             .project({ content_id: 1, 'llm_analysis.political_stance': 1, 'llm_analysis.stance': 1 })
             .toArray()

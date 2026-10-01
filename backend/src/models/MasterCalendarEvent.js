@@ -20,6 +20,10 @@ masterCalendarEventSchema.index({ isRecurring: 1, slNo: 1 });
 masterCalendarEventSchema.pre('save', function (next) {
   this.updatedAt = new Date();
   next();
-});
+});// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+masterCalendarEventSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('MasterCalendarEvent', masterCalendarEventSchema);

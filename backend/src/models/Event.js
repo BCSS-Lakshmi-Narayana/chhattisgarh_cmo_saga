@@ -120,5 +120,9 @@ eventSchema.pre('save', function (next) {
   this.updated_at = new Date();
   next();
 });
+// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+eventSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
 
 module.exports = mongoose.model('Event', eventSchema);

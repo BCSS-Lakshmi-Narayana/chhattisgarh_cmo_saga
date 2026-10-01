@@ -370,6 +370,10 @@ const analyzeContent = async (text, options = {}) => {
       taggedKeyword: options.taggedKeyword || '',
       authorHandle: options.authorHandle || '',
       platform: options.platform || '',
+      // Which client's state rules decide whether this post has context at
+      // all. Without it a Maharashtra post scores `unrelated` and carries no
+      // sentiment — see utils/stateSignal.js.
+      vertical: options.vertical || undefined,
     });
     log(`Political context: mode=${politicalCtx.mode} target=${politicalCtx.primary_target || 'none'} target_relevance=${politicalCtx.target_relevance.toFixed(2)} author=${politicalCtx.author_alignment || 'unknown'}`);
 

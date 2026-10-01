@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { DEFAULT_VERTICAL } = require('../config/verticals');
 const { responseLooksDoubleEncoded } = require('../utils/textEncoding');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
@@ -588,7 +589,7 @@ const hasRecognizedPoliticalEntity = (text) => {
  * accepted — it only rescues more relevant ones, especially the cross-script
  * matches a search API's loose matching returns.
  */
-const passesKeywordGate = (text, handle, keywordPhrase) => {
+const passesKeywordGate = (text, handle, keywordPhrase, vertical = DEFAULT_VERTICAL) => {
     const matched = textMatchesAnyKeyword(text, [{ keyword: keywordPhrase }])
         || keywordTokenMatches(text, handle, keywordPhrase)
         || hasRecognizedPoliticalEntity(text);
@@ -597,8 +598,8 @@ const passesKeywordGate = (text, handle, keywordPhrase) => {
     // search to this state. A GENERIC one ("fertilizer shortage", "electricity
     // bill") returns posts from every state and country — keep only those that
     // are about this state (see utils/stateSignal).
-    if (hasStateSignal(keywordPhrase, buildPoliticalContext(keywordPhrase, {}).mentioned_entities || [])) return true;
-    return hasStateSignal(`${text || ''} ${handle || ''}`, buildPoliticalContext(text || '', {}).mentioned_entities || []);
+    if (hasStateSignal(keywordPhrase, buildPoliticalContext(keywordPhrase, { vertical }).mentioned_entities || [], vertical)) return true;
+    return hasStateSignal(`${text || ''} ${handle || ''}`, buildPoliticalContext(text || '', { vertical }).mentioned_entities || [], vertical);
 };
 
 let _keywordCache = { ts: 0, data: [] };
@@ -1179,6 +1180,7 @@ const upsertXGrievancesForSource = async (source, startDate = null, endDate = nu
             tweet_id: preparedMention.tweet_id,
             tagged_account: source.handle,
             grievance_source_id: source.id,
+            vertical: source.vertical || DEFAULT_VERTICAL,
             platform: 'x',
             posted_by: {
                 handle: preparedMention.author.handle,
@@ -1252,6 +1254,7 @@ const upsertFacebookGrievancesForSource = async (source, startDate = null, endDa
                 tweet_id: canonicalPostId,
                 tagged_account: source.handle,
                 grievance_source_id: source.id,
+                vertical: source.vertical || DEFAULT_VERTICAL,
                 platform: 'facebook',
                 posted_by: {
                     handle: postAuthorHandle,
@@ -1323,6 +1326,7 @@ const upsertFacebookGrievancesForSource = async (source, startDate = null, endDa
                 tweet_id: canonicalCommentId,
                 tagged_account: source.handle,
                 grievance_source_id: source.id,
+                vertical: source.vertical || DEFAULT_VERTICAL,
                 platform: 'facebook',
                 posted_by: {
                     handle: toSafeHandle(comment.author_id || comment.author_name),
@@ -1841,6 +1845,10 @@ const createGrievanceFromPost = async (post, platform, taggedKeyword, forceLocat
     const textContent = post.text || '(no text)';
 
     const grievance = new Grievance({
+        // Which client this belongs to. Comes from the KEYWORD that found the
+        // post, since a keyword search has no source account to inherit from.
+        // Defaults to the host client, so every existing caller is unchanged.
+        vertical: options.vertical || DEFAULT_VERTICAL,
         complaint_code: await generateComplaintCode(),
         tweet_id: post.tweet_id,
         tagged_account: taggedKeyword,
@@ -1964,7 +1972,7 @@ const fetchKeywordGrievances = async (platformFilter = null) => {
                                 if (seenTweetIds.has(canonicalId)) continue;
                                 seenTweetIds.add(canonicalId);
 
-                                if (!passesKeywordGate(fbPost.text, fbPost.author_handle || fbPost.author || '', rawKeyword)) {
+                                if (!passesKeywordGate(fbPost.text, fbPost.author_handle || fbPost.author || '', rawKeyword, kw.vertical)) {
                                     console.log(`[KeywordFetch][FB] Skipping post ${postId}: returned by API but text does not contain "${rawKeyword}"`);
                                     continue;
                                 }
@@ -1989,7 +1997,7 @@ const fetchKeywordGrievances = async (platformFilter = null) => {
                                     media: fbMedia,
                                     engagement: { likes: fbPost.metrics?.likes || 0, retweets: fbPost.metrics?.shares || 0, replies: fbPost.metrics?.comments || 0, views: fbPost.metrics?.views || 0, quotes: 0 }
                                 };
-                                const created = await createGrievanceFromPost(post, 'facebook', rawKeyword);
+                                const created = await createGrievanceFromPost(post, 'facebook', rawKeyword, null, { vertical: kw.vertical });
                                 if (created) count++;
                             }
                         } catch (err) {
@@ -2014,7 +2022,7 @@ const fetchKeywordGrievances = async (platformFilter = null) => {
                                 if (seenTweetIds.has(canonicalId)) continue;
                                 seenTweetIds.add(canonicalId);
 
-                                if (!passesKeywordGate(tweet.text, tweet.author_handle || tweet.author || '', rawKeyword)) {
+                                if (!passesKeywordGate(tweet.text, tweet.author_handle || tweet.author || '', rawKeyword, kw.vertical)) {
                                     console.log(`[KeywordFetch][X] Skipping tweet ${tweet.id}: returned by API but text does not contain "${rawKeyword}"`);
                                     continue;
                                 }
@@ -2076,7 +2084,7 @@ const fetchKeywordGrievances = async (platformFilter = null) => {
                                     },
                                     context: Object.keys(ctx).length > 0 ? ctx : undefined,
                                 };
-                                const created = await createGrievanceFromPost(post, 'x', rawKeyword);
+                                const created = await createGrievanceFromPost(post, 'x', rawKeyword, null, { vertical: kw.vertical });
                                 if (created) count++;
                             }
                         } catch (err) {
@@ -2109,7 +2117,7 @@ const fetchKeywordGrievances = async (platformFilter = null) => {
                             if (seenTweetIds.has(canonicalId)) continue;
                             seenTweetIds.add(canonicalId);
 
-                            if (!passesKeywordGate(igPost.text, igPost.author_handle || igPost.username || '', rawKeyword)) {
+                            if (!passesKeywordGate(igPost.text, igPost.author_handle || igPost.username || '', rawKeyword, kw.vertical)) {
                                 console.log(`[KeywordFetch][IG] Skipping post ${postId}: text does not contain "${rawKeyword}"`);
                                 continue;
                             }
@@ -2127,7 +2135,7 @@ const fetchKeywordGrievances = async (platformFilter = null) => {
                                 media: igMedia,
                                 engagement: { likes: igPost.metrics?.likes || 0, retweets: 0, replies: igPost.metrics?.comments || 0, views: igPost.metrics?.views || 0, quotes: 0 }
                             };
-                            const created = await createGrievanceFromPost(post, 'instagram', rawKeyword);
+                            const created = await createGrievanceFromPost(post, 'instagram', rawKeyword, null, { vertical: kw.vertical });
                             if (created) count++;
                         }
                     } catch (err) {
@@ -2154,7 +2162,7 @@ const fetchKeywordGrievances = async (platformFilter = null) => {
                                 seenTweetIds.add(canonicalId);
 
                                 const text = `${video.title || ''} \n\n${video.description || ''} `.trim();
-                                if (!passesKeywordGate(text, video.channelTitle || video.channelId || '', rawKeyword)) {
+                                if (!passesKeywordGate(text, video.channelTitle || video.channelId || '', rawKeyword, kw.vertical)) {
                                     console.log(`[KeywordFetch][YT] Skipping video ${videoId}: title/description does not contain "${rawKeyword}"`);
                                     continue;
                                 }
@@ -2170,7 +2178,7 @@ const fetchKeywordGrievances = async (platformFilter = null) => {
                                     media: thumbnail ? [{ type: 'photo', url: thumbnail, preview_url: thumbnail }] : [],
                                     engagement: { likes: video.statistics?.likeCount || 0, retweets: 0, replies: video.statistics?.commentCount || 0, views: video.statistics?.viewCount || 0, quotes: 0 }
                                 };
-                                const created = await createGrievanceFromPost(post, 'youtube', rawKeyword);
+                                const created = await createGrievanceFromPost(post, 'youtube', rawKeyword, null, { vertical: kw.vertical });
                                 if (created) count++;
                             }
                         } catch (err) {

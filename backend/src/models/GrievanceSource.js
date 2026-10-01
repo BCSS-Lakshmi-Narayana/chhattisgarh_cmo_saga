@@ -101,6 +101,10 @@ grievanceSourceSchema.pre('save', function(next) {
 // Indexes for efficient and platform-safe lookups
 grievanceSourceSchema.index({ platform: 1, handle: 1 }, { unique: true });
 grievanceSourceSchema.index({ platform: 1, is_active: 1 });
-grievanceSourceSchema.index({ is_active: 1 });
+grievanceSourceSchema.index({ is_active: 1 });// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+grievanceSourceSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('GrievanceSource', grievanceSourceSchema);

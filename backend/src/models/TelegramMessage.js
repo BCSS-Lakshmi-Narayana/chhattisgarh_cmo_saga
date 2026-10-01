@@ -74,6 +74,10 @@ telegramMessageSchema.index({ date: -1 });
 
 // Repair UTF-8-read-as-Latin-1 text on every write path. No-op unless the
 // unambiguous mojibake signature is present — see utils/textEncoding.js.
-telegramMessageSchema.plugin(require('../utils/textEncoding').mojibakeGuardPlugin);
+telegramMessageSchema.plugin(require('../utils/textEncoding').mojibakeGuardPlugin);// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+telegramMessageSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('TelegramMessage', telegramMessageSchema);

@@ -155,6 +155,10 @@ const campaignSuggestionSchema = new mongoose.Schema(
     created_at: { type: Date, default: Date.now },
   },
   { collection: 'campaign_suggestions' }
-);
+);// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+campaignSuggestionSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('CampaignSuggestion', campaignSuggestionSchema);

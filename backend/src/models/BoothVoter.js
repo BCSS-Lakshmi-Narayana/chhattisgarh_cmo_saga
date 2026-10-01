@@ -56,5 +56,9 @@ const boothVoterSchema = new mongoose.Schema({
 boothVoterSchema.index({ constituency_key: 1, import_id: 1, part: 1, sl: 1 });
 // Voter-id lookup within a roll (not unique — see above).
 boothVoterSchema.index({ constituency_key: 1, import_id: 1, voter_id: 1 });
+// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+boothVoterSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
 
 module.exports = mongoose.model('BoothVoter', boothVoterSchema);

@@ -89,6 +89,10 @@ youTubeTranscriptSchema.index({ platform: 1, video_id: 1, created_at: -1 });
 youTubeTranscriptSchema.pre('save', function (next) {
   this.updated_at = new Date();
   next();
-});
+});// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+youTubeTranscriptSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('YouTubeTranscript', youTubeTranscriptSchema);

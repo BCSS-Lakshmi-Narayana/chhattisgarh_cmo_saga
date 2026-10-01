@@ -1,4 +1,5 @@
 const Alert = require('../models/Alert');
+const { DEFAULT_VERTICAL } = require('../config/verticals');
 const Content = require('../models/Content');
 const AlertThreshold = require('../models/AlertThreshold');
 const Settings = require('../models/Settings');
@@ -218,6 +219,7 @@ const checkAndCreateVelocityAlerts = async (content, settings) => {
         };
 
         // Create new viral alert
+        alertData.vertical = content.vertical || DEFAULT_VERTICAL; // inherit the post's vertical
         const alert = new Alert(alertData);
 
         await alert.save();
@@ -286,6 +288,8 @@ const createNewPostAlert = async (content, settings) => {
         console.log(`[NewPostAlert] Creating alert for ${content.id}. RiskLevel:${rLevel}, OriginalScore:${content.risk_score}, FinalScore:${finalScore}`);
 
         const alert = new Alert({
+            // Inherit the post's vertical — see monitorService.buildAlertData.
+            vertical: content.vertical || DEFAULT_VERTICAL,
             content_id: content.id,
             alert_type: 'new_post',
             priority: 'LOW',

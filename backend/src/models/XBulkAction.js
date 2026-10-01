@@ -27,6 +27,10 @@ const xBulkActionSchema = new mongoose.Schema({
 
 xBulkActionSchema.index({ batch_id: 1 });
 xBulkActionSchema.index({ created_at: -1 });
-xBulkActionSchema.index({ account_username: 1, created_at: -1 });
+xBulkActionSchema.index({ account_username: 1, created_at: -1 });// Two clients share this database. Reads are filtered to the logged-in
+// user's vertical and new rows inherit it. See utils/verticalScope.js.
+xBulkActionSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+
+
 
 module.exports = mongoose.model('XBulkAction', xBulkActionSchema);
