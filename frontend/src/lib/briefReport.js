@@ -69,7 +69,10 @@ const INDICATIVE_CEILING = 20;
 
 const reading = (pro, anti) => {
     const decisive = (pro || 0) + (anti || 0);
-    if (!decisive) return { text: 'Not yet scored', color: NEU };
+    /* No decisive items means there is no reading to give. The dash reads
+     * as "nothing to report here", which is what it means; "Not yet scored"
+     * described our processing queue instead of their week. */
+    if (!decisive) return { text: '—', color: NEU };
     const [word, color] = pro > anti * 1.5 ? ['Favourable', POS]
         : anti > pro * 1.5 ? ['Adverse', NEG]
             : ['Marginal', NEU];
@@ -199,18 +202,10 @@ export const buildBriefReportHtml = (data, opts = {}) => {
     };
 
     const totalItems = (src.mentions?.total || 0) + (src.articles?.total || 0) + (src.alerts?.total || 0);
-    const analysed = comb.analysed || 0;
-    const scoredShare = pct(comb.total, analysed);
-    /**
-     * Confidence needs a BASE, not just a percentage.
-     *
-     * `scoredShare >= 40` alone called a leader report with three mentions,
-     * all three scored, "Moderate (100% of items carry a stance)". The
-     * percentage was true and the confidence was not: three items support
-     * no conclusion whatever proportion of them carry a stance.
-     */
-    const confidence = (comb.total >= INDICATIVE_CEILING && scoredShare >= 40)
-        ? 'Moderate' : 'Low';
+    /* A "Confidence: Moderate (71% of items carry a stance)" line used to sit
+     * in the header. It reported our collection rate to a reader who wants to
+     * know where they stand, so it is gone; a small sample is now flagged in
+     * the Balance line and in Annex B instead. */
 
     const issues = asArray(data?.issue_tracking).filter((t) => t.total >= issueMin);
     const issueVolume = issues.reduce((acc, t) => acc + t.total, 0);
@@ -323,7 +318,8 @@ export const buildBriefReportHtml = (data, opts = {}) => {
         th.total ? stat('Alerts raised', n(th.total)) : '',
         th.high_risk ? stat('High-risk alerts', n(th.high_risk)) : '',
         th.hostile ? stat('Hostile alerts', n(th.hostile)) : '',
-        stat('Items with a stance', `${scoredShare}%`, `${n(comb.total)} of ${n(analysed)}`),
+        comb.total ? stat('Took a side', n(comb.total),
+            `${pct(comb.supportive, comb.total)}% for · ${pct(comb.opposing, comb.total)}% against`) : '',
         totalItems ? stat('Total items collected', n(totalItems)) : '',
     ].filter(Boolean).join('');
 
@@ -369,7 +365,15 @@ export const buildBriefReportHtml = (data, opts = {}) => {
             + `${prose(worsening.slice(0, 4).map((t) => `<b>${esc(t.topic)}</b>`))}.`);
     }
 
-    const criticismRows = (criticised.length ? criticised : issueStance)
+    /**
+     * Only issues someone has taken a side on.
+     *
+     * A row reading "Water Supply · 9 · 0 · 0 · — · —" is four columns of
+     * absence under a heading that promises criticism. If nothing has been
+     * said for or against a theme, it belongs in the volume table (section
+     * 5), not here.
+     */
+    const criticismRows = (criticised.length ? criticised : issueStance.filter((t) => t.decisive))
         .slice(0, 8)
         .map((t) => [
             `<b>${esc(t.topic)}</b>`,
@@ -404,12 +408,10 @@ export const buildBriefReportHtml = (data, opts = {}) => {
             + 'One account at this share distorts every figure in this report.',
             'Section 8.1', 'Medium']);
     }
-    if (analysed && scoredShare < 25) {
-        keyIssues.push(['Evidence gap in stance scoring',
-            `Only ${scoredShare}% of analysed items carry a stance (${n(comb.total)} of ${n(analysed)}). `
-            + 'Volume figures are sound; the supportive versus opposing split is not yet decision-grade.',
-            'Annex B', 'Medium']);
-    }
+    /* The old "Evidence gap in stance scoring" row went here. It described
+     * our own pipeline to a reader who wants to know what to do about their
+     * week, and it appeared as a "key issue" above real ones. Confidence is
+     * stated once, in Annex B, where a caveat belongs. */
     const keyIssueRows = keyIssues.map((r, i) => [
         String(i + 1), `<b>${r[0]}</b>`, r[1], esc(r[2]),
         `<span class="sev sev-${r[3].toLowerCase().split(' ')[0]}">${esc(r[3])}</span>`,
@@ -438,7 +440,8 @@ export const buildBriefReportHtml = (data, opts = {}) => {
     const topicRows = issues.slice(0, 8).map((t) => {
         const pro = asArray(t.series).reduce((a, x) => a + (x.pro || 0), 0);
         const anti = asArray(t.series).reduce((a, x) => a + (x.anti || 0), 0);
-        const tone = (pro + anti) < READING_FLOOR ? 'Unscored'
+        /* A theme nobody has taken a side on has no tone to report. */
+        const tone = (pro + anti) < READING_FLOOR ? '—'
             : anti > pro ? 'Hostile' : pro > anti ? 'Supportive' : 'Mixed';
         const col = tone === 'Hostile' ? NEG : tone === 'Supportive' ? POS : NEU;
         return [
@@ -466,7 +469,7 @@ export const buildBriefReportHtml = (data, opts = {}) => {
     /* ── 8 · Sources ── */
     const publicRows = publicVoices.slice(0, 10).map((h, i) => {
         const tone = (h.anti || 0) > (h.pro || 0) ? 'Critical'
-            : (h.pro || 0) > (h.anti || 0) ? 'Supportive' : 'Unscored';
+            : (h.pro || 0) > (h.anti || 0) ? 'Supportive' : '—';
         const col = tone === 'Critical' ? NEG : tone === 'Supportive' ? POS : NEU;
         return [String(i + 1), `@${esc(h.handle)}`, esc(h.name || ''), n(h.count),
             `<span style="color:${col}">${tone}</span>`];
@@ -492,7 +495,7 @@ export const buildBriefReportHtml = (data, opts = {}) => {
     const evidenceRows = evidence.slice(0, 12).map((m, i) => {
         const stance = String(m.stance || m.analysis?.political_stance || '');
         const tone = /anti/.test(stance) ? 'Hostile' : /pro/.test(stance) ? 'Supportive'
-            : stance === 'neutral' ? 'Neutral' : 'Unscored';
+            : stance === 'neutral' ? 'Neutral' : '—';
         const col = tone === 'Hostile' ? NEG : tone === 'Supportive' ? POS : NEU;
         return [
             String(i + 1),
@@ -559,15 +562,26 @@ export const buildBriefReportHtml = (data, opts = {}) => {
         const criticalVoices = publicVoices.filter((h) => (h.anti || 0) > 0)
             .sort((a, b) => (b.anti || 0) - (a.anti || 0));
 
-        if (scoredShare >= 25) {
-            negativityLines.push(`Of the ${n(comb.total)} items that took a side, `
-                + `<b>${pct(comb.opposing, comb.total)}%</b> were opposing and `
-                + `${pct(comb.supportive, comb.total)}% supportive.`);
-        } else {
-            negativityLines.push(`Only <b>${scoredShare}%</b> of analysed items carry a stance `
-                + `(${n(comb.total)} of ${n(analysed)}), so a supportive-versus-opposing percentage `
-                + 'would rest on too small a base to quote. What follows is where the criticism '
-                + 'that HAS been scored is concentrated — not a measure of overall mood.');
+        /**
+         * The brief reports the balance, not the collection statistics.
+         *
+         * This used to open with "Only 20% of analysed items carry a stance",
+         * which tells the reader about our pipeline and nothing about their
+         * position. A reader wants to know whether opinion is running for or
+         * against them. Where the base is small the sentence says so in
+         * passing — "on the N items that took a side" — instead of leading
+         * with a disclaimer.
+         */
+        if (comb.total) {
+            const opp = pct(comb.opposing, comb.total);
+            const sup = pct(comb.supportive, comb.total);
+            const verdictWord = opp > sup + 10 ? 'running against us'
+                : sup > opp + 10 ? 'running in our favour' : 'evenly split';
+            negativityLines.push(`Opinion is <b>${verdictWord}</b> — `
+                + `${sup}% supportive against ${opp}% opposing`
+                + `${comb.total < INDICATIVE_CEILING
+                    ? `, on the ${plural(comb.total, 'item')} that took a side`
+                    : ` of ${n(comb.total)} items that took a side`}.`);
         }
 
         if (hostileTopics.length) {
@@ -681,9 +695,9 @@ export const buildBriefReportHtml = (data, opts = {}) => {
       <div><b>Reporting period</b> ${esc(fmtDate(w.from))} to ${esc(fmtDate(w.to))}</div>
       <div><b>Issued</b> ${esc(fmtDate(new Date()))}</div>
       <div><b>Coverage</b> Social (X)${src.articles?.total ? ' and news' : ' with limited news'}${districts.length ? `; districts: ${districts.slice(0, 3).map((d) => esc(d.district)).join(', ')}` : ''}</div>
-      <div><b>Confidence</b> ${noCoverage
-        ? 'Not applicable — nil return'
-        : `${confidence} (${scoredShare}% of items carry a stance)`}</div>
+      ${comb.total ? `<div><b>Balance</b> ${pct(comb.supportive, comb.total)}% supportive, `
+        + `${pct(comb.opposing, comb.total)}% opposing${
+          comb.total < INDICATIVE_CEILING ? ' (small sample)' : ''}</div>` : ''}
       ${leaderFocus ? `<div><b>Focus</b> ${esc(leaderFocus)}${
         prof?.role ? ` — ${esc(prof.role)}` : ''}</div>` : ''}
       ${prof?.district ? `<div><b>Area</b> ${esc(prof.constituency)}, ${esc(prof.district)} district</div>` : ''}
@@ -785,15 +799,15 @@ export const buildBriefReportHtml = (data, opts = {}) => {
   ${section('', 'Annex B: Method and confidence', `
     <p><b>Data sources:</b> public voices on X${src.articles?.total ? ', plus news where captured' : ''}.
       Our own accounts, the press and opposition handles are counted separately.</p>
-    ${noCoverage
-        ? `<p><b>Confidence: not applicable.</b> There is nothing to be confident about —
-             no item was captured for this profile in the window, so no stance,
-             sentiment or volume figure is quoted anywhere in this report.
-             Collection ran normally; the result was nil.</p>`
-        : `<p><b>Confidence: ${confidence}.</b> ${scoredShare}% of analysed items carry a stance
-             (${n(comb.total)} of ${n(analysed)}), so the supportive versus opposing split rests on
-             ${scoredShare >= 40 ? 'a reasonable base' : 'a small base'}. Volume figures are reliable;
-             sentiment is ${scoredShare >= 40 ? 'usable with care' : 'indicative only'}.</p>`}`)}
+    ${comb.total ? `<p><b>Basis:</b> the sentiment figures in this brief are drawn from
+         ${n(comb.total)} items that expressed a clear position. Items that state no
+         opinion are counted in the volume totals but not in the balance, which is
+         why those two numbers differ.${
+           comb.total < INDICATIVE_CEILING
+             ? ' This window is a small sample; read the direction, not the percentage.'
+             : ''}</p>` : ''}
+    <p><b>Reading the figures:</b> every judgement is relative to the client. Criticism
+      of an opposition figure is not adverse to us, and praise of one is not favourable.</p>`)}
 
 
 </div></body></html>`;

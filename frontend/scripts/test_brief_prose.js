@@ -124,10 +124,12 @@ console.log('\n── prose: section 4.2 ─────────────
 
 const s42 = sectionText(html, '4.2 Where the negativity sits');
 
-t('thin stance base is declared, not quoted as a split',
-    /Only 20% of analysed items carry a stance \(64 of 318\)/.test(s42), s42.slice(0, 300));
-t('thin base does NOT print a supportive-vs-opposing split',
-    !/\d+% were opposing/.test(s42), s42.slice(0, 300));
+/* The brief reports the balance, not our collection rate. A small base is
+ * noted in passing ("on the N items that took a side"), never as a lead. */
+t('leads with the balance of opinion, not coverage statistics',
+    /Opinion is (running against us|running in our favour|evenly split)/.test(s42), s42.slice(0, 300));
+t('never reports our stance-coverage percentage to the client',
+    !/carry a stance/.test(s42), s42.slice(0, 300));
 t('names the most adverse leader', /Eknath Shinde draws the most adverse coverage/.test(s42), s42.slice(0, 400));
 t('lists critical handles with a real joiner',
     /@Ambu750K \(6\) and @DeepakK99547383 \(4\)\./.test(s42), s42.slice(0, 500));
@@ -135,7 +137,11 @@ t('lists critical handles with a real joiner',
 /* A thick stance base must switch to the percentage split. */
 const thick = payload({ combined: { total: 200, analysed: 318, supportive: 60, opposing: 140 } });
 const s42thick = sectionText(buildBriefReportHtml(thick, {}), '4.2 Where the negativity sits');
-t('thick stance base quotes the split', /70% were opposing and 30% supportive/.test(s42thick), s42thick.slice(0, 300));
+t('a healthy base quotes the split against the item count',
+    /30% supportive against 70% opposing of 200 items that took a side/.test(s42thick),
+    s42thick.slice(0, 300));
+t('a healthy base names the direction',
+    /running against us/.test(s42thick), s42thick.slice(0, 200));
 
 console.log('\n── prose: section 1 ──────────────────────────────\n');
 
@@ -239,8 +245,12 @@ const noScore = payload({
     issue_tracking: [{ topic: 'Water Supply', total: 9, scored: 0, net: null, direction: 'stable', series: [{ pro: 0, anti: 0, neutral: 3 }] }],
     leaders: [{ name: 'Sharad Pawar', n: 6, pro: 0, anti: 0 }],
 });
-t('a zero base reads "Not yet scored", not a direction',
-    /Not yet scored/.test(buildBriefReportHtml(noScore, {})));
+/* "Not yet scored" described our queue. A dash says "nothing to report". */
+t('a zero base reports nothing rather than naming our queue state',
+    !/Not yet scored/.test(buildBriefReportHtml(noScore, {})));
+t('no "Unscored" anywhere in a client report',
+    !/Unscored/.test(buildBriefReportHtml(noScore, {}))
+    && !/Unscored/.test(html), 'client reports must not show pipeline states');
 
 console.log('\n── a leader with nothing still gets a report ─────\n');
 
@@ -269,8 +279,10 @@ t('says a nil return is normal, not a collection gap',
 t('states the limits of a nil return', /it is not evidence that nothing happened offline/.test(nilText));
 t('documents what was monitored', /What was monitored/.test(nilText));
 t('prints the zeros as stats', /Mentions captured/.test(nilText) && /Items needing a response/.test(nilText));
-t('confidence reads "nil return", not "Low (0%)"',
-    /Not applicable — nil return/.test(nilText) && !/0% of items carry a stance/.test(nilText), nilText.slice(0, 400));
+/* The header used to carry our stance-coverage rate. A reader wants the
+ * finding, not our hit rate, so no percentage-of-items line appears at all. */
+t('no stance-coverage percentage in a nil report',
+    !/carry a stance/.test(nilText) && !/Confidence/.test(nilText), nilText.slice(0, 400));
 t('no "0 of 0" stance arithmetic anywhere', !/0 of 0/.test(nilText), nilText.slice(0, 600));
 t('empty sections 4 and 10 are omitted, not printed blank',
     !/Where the negativity sits/.test(nilText) && !/Outlook for tomorrow/.test(nilText));
