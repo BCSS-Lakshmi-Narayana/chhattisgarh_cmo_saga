@@ -223,15 +223,27 @@ const STANCE_PARAM = { pro: 'supportive', neutral: 'neutral', anti: 'opposing' }
  * above it is a total across streams and the reader needs to know what fed it.
  */
 const Kpi = ({ label, value, share, footer, color, bg, Icon, to }) => {
-  const Wrap = to ? Link : 'div';
-  const wrapProps = to ? { to } : {};
+  /**
+   * A missing icon must not take the page down.
+   *
+   * `<Icon />` with an undefined Icon throws "Element type is invalid" and
+   * React unmounts the whole tree — the entire dashboard goes blank over a
+   * decorative 16px glyph. That happens whenever an icon name is dropped or
+   * renamed by the icon library between versions: the named import silently
+   * resolves to `undefined` and the build still passes, so nothing catches
+   * it before render. Falling back to an empty span keeps every number on
+   * the page and costs only the picture.
+   */
+  const Glyph = typeof Icon === 'function' || (Icon && typeof Icon === 'object') ? Icon : 'span';
+  const Wrap = to && Link ? Link : 'div';
+  const wrapProps = to && Link ? { to } : {};
   return (
   <Wrap {...wrapProps}
     className={`bg-white rounded-xl border border-slate-200 shadow-[0_1px_2px_rgba(16,24,40,0.04)] p-3.5 flex flex-col h-full ${
       to ? 'hover:border-indigo-300 hover:shadow-[0_4px_12px_rgba(16,24,40,0.08)] transition-all group' : ''}`}>
     <div className="flex items-center justify-between gap-2">
       <span className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: bg }}>
-        <Icon className="h-4 w-4" style={{ color }} />
+        <Glyph className="h-4 w-4" style={{ color }} />
       </span>
       <div className="text-[12px] font-medium truncate text-right" style={{ color }}>{label}</div>
     </div>
@@ -603,17 +615,42 @@ export default function CMDashboard() {
   const [exportOpen, setExportOpen] = useState(false);
   // Handle focus: narrows the whole brief to one source account.
   const [handle, setHandle] = useState('');
+  /**
+   * Leader focus: narrows the brief to one of the nine.
+   *
+   * The backend has taken `leader` since the per-leader reports were
+   * built, but the page never sent it, so the only way to see one
+   * leader's data was to export a file. Everything below — issues,
+   * districts, handles, alerts, sentiment — is already scoped by the
+   * same filter server-side, so this is the whole change.
+   */
+  const [leader, setLeader] = useState('');
+  /**
+   * The dropdown's own list, kept from the UNFILTERED response.
+   *
+   * `available_leaders` is scoped like everything else, so the moment a
+   * leader is picked the list collapses to that one name and there is no
+   * way back to any other. Holding the full roster separately keeps every
+   * option reachable while a filter is active.
+   */
+  const [leaderOptions, setLeaderOptions] = useState([]);
   // Same gate the sidebar uses, so a pill never offers a page the user
   // cannot open.
   const { hasAccess } = useRbac();
 
   const load = useCallback(() => {
     setBusy(true); setErr(null); setOpenIssue(null);
-    api.get(`/cm-dashboard/brief?days=${days}${handle ? `&handle=${encodeURIComponent(handle)}` : ''}`)
-      .then((r) => setData(r.data))
+    api.get(`/cm-dashboard/brief?days=${days}`
+      + `${handle ? `&handle=${encodeURIComponent(handle)}` : ''}`
+      + `${leader ? `&leader=${encodeURIComponent(leader)}` : ''}`)
+      .then((r) => {
+        setData(r.data);
+        // Only the unfiltered response carries the whole roster.
+        if (!leader) setLeaderOptions(r.data?.available_leaders || []);
+      })
       .catch((e) => setErr(e?.response?.data?.message || e.message))
       .finally(() => setBusy(false));
-  }, [days, handle]);
+  }, [days, handle, leader]);
   useEffect(load, [load]);
 
   const c = data?.counts;
@@ -622,6 +659,17 @@ export default function CMDashboard() {
   const h = data?.headline;
   const comb = data?.combined;
   const src = data?.by_source;
+  /**
+   * Everything collected, across all three streams.
+   *
+   * `combined.total` is only the items that took a SIDE, so leading with it
+   * made a 9-mention leader read as "3" directly under a picker saying 9.
+   * The headline figure has to be the volume; the stance split is a subset
+   * of it, and the share on the next tile says how much of it took a side.
+   */
+  const totalItems = (data?.by_source?.mentions?.total || 0)
+    + (data?.by_source?.articles?.total || 0)
+    + (data?.by_source?.alerts?.total || 0);
   // Built from the window the API reported, so a drill-down always lands on
   // exactly the period this page measured.
   const links = useMemo(() => makeLinks(data?.window), [data]);
@@ -711,6 +759,22 @@ export default function CMDashboard() {
                 </button>
               ))}
             </div>
+            {/* Leader focus. Offers every leader on the roster, including
+                any with no mentions this window — a quiet leader is exactly
+                the one someone wants to check, and the brief reports the
+                nil return rather than showing an empty page. */}
+            {(leaderOptions || []).length > 0 && (
+              <select value={leader} onChange={(e) => setLeader(e.target.value)}
+                className="px-3 py-2 bg-white rounded-lg border border-slate-200 text-[12.5px] font-medium text-slate-700 max-w-[220px]">
+                <option value="">All leaders</option>
+                {leaderOptions.map((l) => (
+                  <option key={l.name} value={l.name}>
+                    {l.name}{l.mentions ? ` · ${l.mentions}` : ' · 0'}
+                  </option>
+                ))}
+              </select>
+            )}
+
             {/* Handle focus. The list is whatever actually posted in this
                 window, so it never offers an account with nothing to show. */}
             {(data?.available_handles || []).length > 0 && (
@@ -733,10 +797,44 @@ export default function CMDashboard() {
           </div>
         </div>
 
+        {/* Leader context. Every panel below is scoped to this person, so the
+            page says who that is and where their area is — otherwise an empty
+            Top Locations reads as a broken panel rather than as "nothing was
+            said about Worli this week". */}
+        {leader && data?.leader_profile && (
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 px-4 py-2.5 rounded-lg
+                          bg-slate-50 border border-slate-200 text-[12.5px]">
+            <span className="font-semibold text-slate-900">{data.leader_profile.leader}</span>
+            {data.leader_profile.role && (
+              <span className="text-slate-600">{data.leader_profile.role}</span>
+            )}
+            {data.leader_profile.handle && (
+              <span className="text-slate-500">@{data.leader_profile.handle}</span>
+            )}
+            {data.leader_profile.district && (
+              <span className="text-slate-600">
+                Area: <b className="font-semibold text-slate-800">
+                  {data.leader_profile.constituency}
+                </b>, {data.leader_profile.district} district
+              </span>
+            )}
+            <button onClick={() => setLeader('')}
+              className="ml-auto text-[12px] font-medium text-blue-600 hover:text-blue-700">
+              Clear filter
+            </button>
+          </div>
+        )}
 
         {/* ── A · SIGNALS (all three streams) ───────────────────────────── */}
-        <div className="grid grid-cols-2 xl:grid-cols-4 gap-3.5 items-stretch">
-          <Kpi label="Took a side" value={n(comb?.total)} Icon={Megaphone} color="#2563eb" bg="#eff6ff"
+        <div className="grid grid-cols-2 xl:grid-cols-5 gap-3.5 items-stretch">
+          {/* Total FIRST, because every tile after it is a subset.
+              Without it the page led with "Took a side · 3" while the leader
+              picker said 9, and nothing on screen reconciled the two — the 3
+              is the decisive subset of the 9, but the 9 was never shown. */}
+          <Kpi label="Total items" value={n(totalItems)} Icon={Layers} color="#475569" bg="#f1f5f9"
+            footer={`${n(src?.mentions?.total)} mentions · ${n(src?.articles?.total)} articles · ${n(src?.alerts?.total)} alerts`} />
+          <Kpi label="Took a side" value={n(comb?.total)} share={pct(comb?.total, totalItems)}
+            Icon={Megaphone} color="#2563eb" bg="#eff6ff"
             footer={`${n(src?.mentions?.decisive)} mentions · ${n(src?.articles?.decisive)} articles · ${n(src?.alerts?.decisive)} alerts`} />
           <Kpi label="Supportive" value={n(comb?.supportive)} share={pct(comb?.supportive, comb?.total)}
             Icon={Smile} color={POS} bg="#f0fdf4"
@@ -1194,10 +1292,12 @@ export default function CMDashboard() {
 
       {/* Leaders come from the window currently on screen, so the picker
           offers names the user can actually see in the data. */}
+      {/* `leaders` is the cached roster, not the filtered response: picking a
+          leader on the page must not shrink the dialog's own list to one. */}
       <BriefExportDialog
         open={exportOpen}
         onClose={() => setExportOpen(false)}
-        leaders={data?.available_leaders || []}
+        leaders={leaderOptions.length ? leaderOptions : (data?.available_leaders || [])}
         handles={data?.available_handles || []}
         appName={BRAND.appName}
         stateName={data?.profile?.state || BRAND.stateName}

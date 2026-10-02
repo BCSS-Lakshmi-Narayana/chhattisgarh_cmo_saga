@@ -70,7 +70,17 @@
     "dedupe:mh-mentions": "node scripts/dedupe_mh_grievance_sources.js",
     "seed:mh-thresholds": "node scripts/seed_mh_alert_thresholds.js",
     "report:mh-leaders": "node scripts/build_mh_leader_reports.js",
-    "fetch:mh-deep": "node scripts/fetch_mh_deep.js"
+    "fetch:mh-deep": "node scripts/fetch_mh_deep.js",
+    "verify:mh-leaders": "node scripts/verify_mh_leader_panels.js",
+    "fetch:mh-mentions": "node scripts/fetch_mh_mentions.js",
+    "analyze:mh-complete": "node scripts/complete_mh_analysis.js",
+    "repair:analysis-vertical": "node scripts/repair_analysis_vertical.js",
+    "audit:mh-reports": "node scripts/audit_mh_report_readiness.js",
+    "test:mh-lexicon": "node scripts/test_mh_hostile_lexicon.js",
+    "repair:mh-data": "node scripts/repair_mh_data.js",
+    "test:mh-geography": "node scripts/test_mh_geography.js",
+    "test:mh-topics": "node scripts/test_mh_topics.js",
+    "backfill:mh-topics": "node scripts/backfill_mh_topics.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.983.0",

@@ -1631,6 +1631,26 @@ const getCMBrief = async (req, res) => {
        */
       issue_min: Math.max(3, Math.min(10, Math.round(curM.length / 40))),
       leader: leaderFilter,
+      /**
+       * Who the report is about and where their area is.
+       *
+       * Without this a per-leader view could say "0 districts" and the
+       * reader had no way to tell whether the leader has no area coverage
+       * or the page simply does not know where his seat is. Naming the
+       * base turns a blank panel into a statement: nothing was said about
+       * Worli this week.
+       */
+      leader_profile: leaderFilter ? (() => {
+        const base = mhMatch.baseOf(leaderFilter);
+        if (!base) return null;
+        const ent = mhMatch.TERMS.find((e) => e.name === leaderFilter);
+        return {
+          ...base,
+          role: ent ? ent.role : null,
+          alignment: ent ? ent.alignment : null,
+          handle: ent ? ent.handle : null,
+        };
+      })() : null,
       handle: handleFilter,
       available_handles: availableHandles,
       // Lets the page title itself for the client whose data it is showing,

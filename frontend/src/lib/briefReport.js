@@ -166,6 +166,15 @@ export const buildBriefReportHtml = (data, opts = {}) => {
     const v = isObj(data?.voice) ? data.voice : {};
     const th = isObj(data?.threats) ? data.threats : {};
     const leaderFocus = data?.leader || null;
+    /**
+     * Who this leader is and where their area is.
+     *
+     * A per-leader report that showed no districts gave the reader no way
+     * to tell "nothing was said about his area" apart from "we don't know
+     * where his area is". Naming the seat makes the empty Geography panel
+     * a statement rather than a blank.
+     */
+    const prof = data?.leader_profile || null;
     const handleFocus = data?.handle || null;
     /**
      * Internal mode — for the team, not the client.
@@ -675,7 +684,9 @@ export const buildBriefReportHtml = (data, opts = {}) => {
       <div><b>Confidence</b> ${noCoverage
         ? 'Not applicable — nil return'
         : `${confidence} (${scoredShare}% of items carry a stance)`}</div>
-      ${leaderFocus ? `<div><b>Focus</b> ${esc(leaderFocus)}</div>` : ''}
+      ${leaderFocus ? `<div><b>Focus</b> ${esc(leaderFocus)}${
+        prof?.role ? ` — ${esc(prof.role)}` : ''}</div>` : ''}
+      ${prof?.district ? `<div><b>Area</b> ${esc(prof.constituency)}, ${esc(prof.district)} district</div>` : ''}
       ${handleFocus ? `<div><b>Handle</b> @${esc(handleFocus)}</div>` : ''}
     </div>
   </div>
@@ -731,7 +742,10 @@ export const buildBriefReportHtml = (data, opts = {}) => {
 
   ${section('7', 'Geography',
         orNil(table(['District', 'Social', 'News', 'Adverse share'], geoRows),
-            'No post in this window named a district we could resolve.'),
+            prof?.district
+                ? `No post in this window named ${prof.constituency} or `
+                  + `${prof.district} district, the area this leader is anchored to.`
+                : 'No post in this window named a district we could resolve.'),
         newsTagged ? null
             : 'Gap: no district-level news tagging in this window, so the News column reads '
               + '"not captured" rather than zero. If district tagging cannot be fixed before '

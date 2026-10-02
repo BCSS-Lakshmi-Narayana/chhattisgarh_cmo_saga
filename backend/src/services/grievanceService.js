@@ -1,5 +1,6 @@
 const axios = require('axios');
 const { DEFAULT_VERTICAL } = require('../config/verticals');
+const { topicFor } = require('../utils/mhTopicLexicon');
 const { responseLooksDoubleEncoded } = require('../utils/textEncoding');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
@@ -288,7 +289,7 @@ const extractAndSaveLocation = async (grievanceId, text, postedBy = {}, extraCon
  * FIRST — so a re-analysed post showed its new verdict on the Mentions page and
  * its old one on those two surfaces.
  */
-const buildGrievanceAnalysisUpdate = (analysisData, { videoTranscript = '' } = {}) => {
+const buildGrievanceAnalysisUpdate = (analysisData, { videoTranscript = '', text = '' } = {}) => {
     // `analysis.sentiment` is the post's RAW tone (risk follows it); the
     // client-relative verdict is `analysis.target_sentiment`, shown as the
     // stance (pro/anti client). See analysisService.js.
@@ -305,7 +306,18 @@ const buildGrievanceAnalysisUpdate = (analysisData, { videoTranscript = '' } = {
         // well as declared on the schema: this update goes through findOneAndUpdate
         // with an explicit $set, so a field the analysis produced but this object
         // omits simply never lands, silently and with no error.
-        'analysis.topic': analysisData.topic || null,
+        /**
+         * The lexicon fills in where the model returned no topic.
+         *
+         * `campaign_topic: "None"` is stored as null, and a null-topic post
+         * is invisible to the Issue Tracker and to section 2 of the report —
+         * 39% of Maharashtra volume sat there while plainly saying
+         * "कर्जमाफी" or "वीज बिल". The model's own topic always wins; this
+         * only covers what it declined. See utils/mhTopicLexicon.
+         */
+        'analysis.topic': analysisData.topic
+            || (topicFor(text) || {}).topic
+            || null,
         'analysis.topic_taxonomy_version': analysisData.topic_taxonomy_version || null,
         'analysis.intent': analysisData.intent,
         'analysis.explanation': analysisData.explanation,
@@ -454,7 +466,11 @@ const analyzeGrievanceContent = async (grievanceId, text, platform) => {
             return;
         }
 
-        const update = buildGrievanceAnalysisUpdate(analysisData, { videoTranscript: videoTranscriptSaved });
+        const update = buildGrievanceAnalysisUpdate(analysisData, {
+            videoTranscript: videoTranscriptSaved,
+            // The lexicon needs the post itself to fill a null topic.
+            text: analysisText,
+        });
         const targetSentiment = update['analysis.target_sentiment'];
         const sentiment = update['analysis.sentiment'];
 
@@ -1442,7 +1458,21 @@ const fetchAllGrievances = async (startDate = null, endDate = null) => {
         let totalNew = 0;
 
         for (const source of sources) {
-            const result = await upsertGrievancesForSource(source, startDate, endDate);
+            /**
+             * One source failing must not abandon the rest.
+             *
+             * This loop had no guard, so a single throw in the middle of
+             * nine handles ended the whole run and the remaining handles
+             * were never fetched at all. The failure is logged and the
+             * loop continues; a handle that errors is simply not updated.
+             */
+            let result;
+            try {
+                result = await upsertGrievancesForSource(source, startDate, endDate);
+            } catch (err) {
+                console.error(`[Grievance] Source @${source.handle} failed: ${err.message}`);
+                continue;
+            }
             totalNew += result.newCount;
 
             await GrievanceSource.findOneAndUpdate(
@@ -1920,7 +1950,31 @@ const createGrievanceFromPost = async (post, platform, taggedKeyword, forceLocat
         };
     }
 
-    await grievance.save();
+    /**
+     * A duplicate is a no-op, not a crash.
+     *
+     * The existence check above is findOne-then-create, so two paths in the
+     * same run can both pass it for one tweet — the same post is returned
+     * by several keyword variants and by the handle pass. The second insert
+     * then hits the UNIQUE index on `tweet_id` and, uncaught, took the whole
+     * fetch down with it:
+     *
+     *   FAILED: E11000 … index: tweet_id_1 dup key: { tweet_id: … }
+     *
+     * Hours of collection were lost to one already-stored post. The row is
+     * present either way, which is all the caller needs, so a duplicate key
+     * means "someone else got there first" and we move on. Any other write
+     * error still throws.
+     */
+    try {
+        await grievance.save();
+    } catch (err) {
+        if (err && err.code === 11000) {
+            console.log(`[Grievance] ${post.tweet_id} already stored by a concurrent path; skipping.`);
+            return null;
+        }
+        throw err;
+    }
     await analyzeGrievanceContent(grievance.id, post.text || '', platform);
     
     // Extract and persist location only if NOT forced
