@@ -65,8 +65,34 @@ const writeVertical = () => {
     return (verticals && verticals[0]) || DEFAULT_VERTICAL;
 };
 
-const verticalScopePlugin = (schema) => {
+/**
+ * @param {object} schema
+ * @param {object} [opts]
+ * @param {boolean} [opts.shared] — REFERENCE data, not tenant data.
+ *
+ * ── WHAT `shared` IS FOR ─────────────────────────────────────────────
+ * Some collections hold a taxonomy that is the same for every client
+ * because it describes the world rather than the client: the Bharatiya
+ * Nyaya Sanhita sections a category maps to are national law, identical in
+ * Chhattisgarh and Maharashtra.
+ *
+ * Scoping those by vertical does not isolate anything, it just hides them.
+ * PolicyMapping held 14 rows, all tagged `cg`, so under a Maharashtra
+ * request the lookup returned none and the analyser logged
+ * "Constructing prompt with 0 allowed categories" — every item went
+ * uncategorised, which empties the Issue Tracker and with it the report's
+ * whole issue section. Nothing leaked; the tenant simply had no taxonomy.
+ *
+ * A shared schema still STAMPS `vertical` on write, so provenance survives
+ * and the field can be read, but reads are not filtered by it.
+ *
+ * This is for data that describes the world. Anything describing the
+ * client — their constituencies, their thresholds, their keywords — stays
+ * scoped and gets its own rows per vertical.
+ */
+const verticalScopePlugin = (schema, opts = {}) => {
     if (schema.path('vertical')) return; // already applied
+    const shared = !!opts.shared;
     /**
      * No `default:` on purpose. Mongoose applies a default at construction,
      * which would make "the user did not set one" indistinguishable from
@@ -81,6 +107,8 @@ const verticalScopePlugin = (schema) => {
     });
 
     function applyQueryFilter(next) {
+        // Reference data is visible to every vertical by design — see above.
+        if (shared) return next();
         const verticals = currentVerticals();
         // No request context ⇒ collection jobs and scripts ⇒ see everything.
         if (!verticals) return next();

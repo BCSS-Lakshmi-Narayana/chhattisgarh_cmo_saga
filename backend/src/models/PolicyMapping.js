@@ -54,9 +54,15 @@ const PolicyMappingSchema = new mongoose.Schema({
 PolicyMappingSchema.pre('save', function (next) {
     this.updated_at = Date.now();
     next();
-});// Two clients share this database. Reads are filtered to the logged-in
-// user's vertical and new rows inherit it. See utils/verticalScope.js.
-PolicyMappingSchema.plugin(require('../utils/verticalScope').verticalScopePlugin);
+});// SHARED, not per-tenant. These rows map a content category to Bharatiya
+// Nyaya Sanhita sections and platform policies -- national law and platform
+// rules, identical for every client. Scoping them by vertical hid all 14
+// from Maharashtra, so the analyser ran with zero allowed categories and
+// nothing was ever categorised. See utils/verticalScope.js.
+PolicyMappingSchema.plugin(
+    require('../utils/verticalScope').verticalScopePlugin,
+    { shared: true },
+);
 
 
 

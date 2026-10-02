@@ -38,6 +38,8 @@ const {
   OUR_PARTY, OPPOSITION_PARTIES, CABINET_MINISTERS, OPPOSITION_LEADERS,
 } = require('../config/politicalData');
 const { adviseAll } = require('../services/recommendationAdviceService');
+const { ourPartyFor, profileFor } = require('../config/verticalProfiles');
+const mhMatch = require('../utils/mhLeaderMatch');
 
 /* ── voice classification ─────────────────────────────────────────────── */
 const norm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -117,14 +119,65 @@ const ENGAGEMENT_FLOOR = 10;
 const getCMBrief = async (req, res) => {
   try {
     const db = mongoose.connection.db;
-    const days = Math.min(90, Math.max(7, parseInt(req.query.days, 10) || 30));
-    const now = new Date();
-    const from = new Date(now - days * 86400000);
-    const prevFrom = new Date(now - days * 2 * 86400000);
+    /**
+     * Window: either a rolling `days` count, or an explicit `from`/`to` pair
+     * for the report export.
+     *
+     * `to` is pushed to the END of its day. A report asked for "1 Oct to
+     * 1 Oct" otherwise spans zero seconds and comes back empty, which reads
+     * as a quiet day rather than a bad query — the single most likely way a
+     * day-by-day export goes silently wrong.
+     *
+     * The previous window is always the same LENGTH as the current one,
+     * immediately before it, so trend comparisons stay like-for-like
+     * whichever way the window was specified.
+     */
+    const parseDay = (v, endOfDay = false) => {
+        if (!v) return null;
+        const d = new Date(`${String(v).slice(0, 10)}T${endOfDay ? '23:59:59.999' : '00:00:00.000'}Z`);
+        return Number.isNaN(d.getTime()) ? null : d;
+    };
 
-    const [mentions, articles, alerts] = await Promise.all([
+    const now = new Date();
+    const qFrom = parseDay(req.query.from);
+    const qTo = parseDay(req.query.to, true);
+
+    let from; let to; let days;
+    if (qFrom && qTo && qTo > qFrom) {
+        from = qFrom;
+        to = qTo;
+        days = Math.max(1, Math.round((to - from) / 86400000));
+    } else {
+        days = Math.min(90, Math.max(1, parseInt(req.query.days, 10) || 30));
+        to = now;
+        from = new Date(now - days * 86400000);
+    }
+    const prevFrom = new Date(from.getTime() - (to.getTime() - from.getTime()));
+
+    /**
+     * Optional single-leader focus for an exported report. Matched against
+     * the canonical name the pipeline stores, so the caller passes the same
+     * string the brief itself displays.
+     */
+    const leaderFilter = String(req.query.leader || '').trim() || null;
+
+    /**
+     * Who "we" are, for THIS request. OUR_PARTY is a module singleton loaded
+     * at startup, so without this every vertical gets the host deployment's
+     * Chief Minister — correctly-filtered rows under the wrong question.
+     * See config/verticalProfiles.js.
+     */
+    const OURS = ourPartyFor();
+    const vProfile = profileFor();
+    // Author-handle focus, for a per-handle report.
+    const handleFilter = String(req.query.handle || '').trim().replace(/^@+/, '') || null;
+
+    // `alerts` is reassigned below when the report is focused on one leader
+    // or handle, so it cannot be a const.
+    // eslint-disable-next-line prefer-const
+    let [mentions, articles, alerts] = await Promise.all([
       scopedCollection(db, 'grievances').find(
-        { post_date: { $gte: prevFrom }, is_active: { $ne: false } },
+        { post_date: { $gte: prevFrom, $lte: to }, is_active: { $ne: false } },
         { projection: {
           post_date: 1, platform: 1, tweet_url: 1, engagement: 1, workflow_status: 1,
           'posted_by.handle': 1, 'posted_by.display_name': 1, 'content.text': 1,
@@ -133,7 +186,7 @@ const getCMBrief = async (req, res) => {
         } }
       ).toArray(),
       scopedCollection(db, 'newsarticles').find(
-        { published_date: { $gte: prevFrom } },
+        { published_date: { $gte: prevFrom, $lte: to } },
         { projection: {
           published_date: 1, sentiment: 1, category: 1, language: 1,
           // The client-relative verdict. `sentiment` above is RAW tone and
@@ -144,7 +197,7 @@ const getCMBrief = async (req, res) => {
         } }
       ).toArray(),
       scopedCollection(db, 'alerts').find(
-        { created_at: { $gte: from } },
+        { created_at: { $gte: from, $lte: to } },
         { projection: {
           created_at: 1, alert_type: 1, risk_level: 1, status: 1, title: 1,
           'threat_details.intent': 1, legal_sections: 1, violated_policies: 1,
@@ -157,13 +210,152 @@ const getCMBrief = async (req, res) => {
       ).toArray(),
     ]);
 
-    const curM = []; const prevM = [];
+    let curM = []; const prevM = [];
     for (const d of mentions) {
+      // classifyVoice resolves against the HOST registry; a vertical with its
+      // own profile falls back to its own handles, or everything there reads
+      // as public opinion — including our own accounts.
       d._voice = classifyVoice(d.posted_by?.handle, d.posted_by?.display_name);
-      (new Date(d.post_date) >= from ? curM : prevM).push(d);
+      if (vProfile && d._voice === 'organic') {
+        d._voice = mhMatch.voiceOf(d.posted_by?.handle) || 'organic';
+      }
+      const t = new Date(d.post_date);
+      // Upper bound matters for a custom range: without it every post after
+      // `from` counts, and a one-day export silently becomes open-ended.
+      if (t >= from && t <= to) curM.push(d); else if (t < from) prevM.push(d);
     }
-    const curN = articles.filter((a) => new Date(a.published_date) >= from);
+    let curN = articles.filter((a) => new Date(a.published_date) >= from && new Date(a.published_date) <= to);
     const prevN = articles.filter((a) => new Date(a.published_date) < from);
+
+    // Shared by the leader focus below and the per-leader tally further
+    // down — one definition, so the two cannot drift apart.
+    const entityNames = (d) => {
+      const ents = d.analysis?.mentioned_entities;
+      if (!Array.isArray(ents)) return [];
+      return ents
+        .map((e) => (typeof e === 'string' ? e : (e?.name || e?.canonical || e?.id)))
+        .filter(Boolean)
+        .map(String);
+    };
+
+    /* ── leader focus, for the report export ───────────────────────────
+     *
+     * The list of selectable leaders is built from the UNFILTERED window
+     * first. Building it after the filter would offer exactly one name — the
+     * one already chosen — and the export dialog would look broken.
+     *
+     * Entity names are read the same way the leader tally below reads them,
+     * rather than with a second matcher that could drift from it.
+     */
+    /**
+     * ⚠ `mentioned_entities` IS EMPTY FOR EVERY ROW IN A NON-HOST VERTICAL.
+     *
+     * Entity resolution runs against this deployment's own roster, so a
+     * Maharashtra post naming "@Dev_Fadnavis" resolves to `[]`. Verified on
+     * live data: 162 grievances and 73 alerts, all with `mentioned_entities:
+     * []`. Counting leaders from that field reported zero while the text
+     * named Fadnavis 62 times.
+     *
+     * So a vertical with its own profile matches on TEXT AND AUTHOR HANDLE
+     * instead — see utils/mhLeaderMatch.js. The host client keeps using
+     * resolved entities, which are correct for it and cheaper.
+     */
+    const namedIn = (doc) => (vProfile
+      ? mhMatch.leadersIn(doc).map((l) => l.name)
+      : entityNames(doc));
+
+    /**
+     * Every leader the report CAN be run for — not only those mentioned.
+     *
+     * This used to list whoever appeared in the window, so a leader with a
+     * quiet week simply vanished from the export picker and got no report at
+     * all. The client asks for one report per profile every day, and "we did
+     * not send you one because nobody mentioned him" is not an answer: zero
+     * mentions is itself the finding, and it can only be reported if the
+     * leader is still on the list. The roster is therefore unioned in at
+     * zero, and `mentions: 0` is what tells the report to say so.
+     */
+    const availableLeaders = (() => {
+      const seen = new Map();
+      if (vProfile) for (const l of mhMatch.TERMS) seen.set(l.name, 0);
+      for (const d of curM) for (const nm of namedIn(d)) seen.set(nm, (seen.get(nm) || 0) + 1);
+      return [...seen.entries()]
+        .map(([name, n]) => ({ name, mentions: n }))
+        .sort((a, b) => b.mentions - a.mentions);
+    })();
+
+    /** Every author handle in the window, for the per-handle report picker. */
+    const allHandles = mhMatch.authorHandles(curM);
+
+    let focusM = curM; let focusN = curN;
+
+    if (handleFilter) {
+      const want = mhMatch.norm(handleFilter);
+      focusM = focusM.filter((d) => mhMatch.norm(d.posted_by?.handle || '') === want);
+      // Articles have no author handle, so a handle-scoped report carries no
+      // press section rather than an unfiltered one.
+      focusN = [];
+    }
+
+    if (leaderFilter) {
+      const want = leaderFilter.toLowerCase();
+      const hits = (doc) => (vProfile
+        ? mhMatch.namesLeader(doc, leaderFilter)
+        : entityNames(doc).some((nm) => nm.toLowerCase() === want));
+      focusM = focusM.filter(hits);
+      // Articles are matched on the headline — looser than the mention match
+      // on purpose: dropping every article would leave a leader report with
+      // no press section at all, which reads as "no coverage" rather than
+      // "not matched".
+      focusN = focusN.filter((a) => `${a.title || ''} ${a.title_english || ''}`.toLowerCase().includes(want));
+    }
+    // Every section below reads curM / curN, so the focus is applied once
+    // here rather than threaded through thirty call sites.
+    curM = focusM; curN = focusN;
+
+    /**
+     * Alerts follow the focus too.
+     *
+     * They are fetched separately from mentions and articles, so the filter
+     * above missed them entirely: every per-leader report carried the SAME
+     * alert block — "94 alerts, 38 high risk" under all nine names. Worse,
+     * `combined` folds the alert stance tally in, so a leader with 6
+     * mentions reported 24 scored items and a sentiment split built almost
+     * entirely out of other people's alerts.
+     *
+     * An alert is matched on its text the same way a mention is. Alerts
+     * carry no `mentioned_entities` for Maharashtra either, so the handle
+     * and name matcher is the only thing that resolves them.
+     */
+    if (leaderFilter || handleFilter) {
+      const want = String(leaderFilter || '').toLowerCase();
+      alerts = alerts.filter((a) => {
+        if (handleFilter) {
+          const h = mhMatch.norm(a.posted_by?.handle || a.author_handle || a.handle || '');
+          if (h !== mhMatch.norm(handleFilter)) return false;
+        }
+        if (!leaderFilter) return true;
+        if (vProfile) return mhMatch.namesLeader(a, leaderFilter);
+        const text = `${a.content?.text || a.text || ''} ${a.title || ''}`.toLowerCase();
+        return entityNames(a).some((nm) => nm.toLowerCase() === want) || text.includes(want);
+      });
+    }
+
+    /**
+     * Handles are counted over the FOCUSED set once a leader is chosen.
+     *
+     * Counting them over everything while the report's mention total was
+     * filtered produced shares above 100%: a leader report covering three
+     * mentions listed "@YeshwantMPuran1 — 11 posts, 367% of all mentions".
+     * The 11 was that account's output across the whole window; the 3 was
+     * the leader's. Both numbers were right and the sentence was nonsense.
+     *
+     * The unfiltered list is kept for the export picker, which has to offer
+     * every handle regardless of who the report ends up being about.
+     */
+    const availableHandles = (leaderFilter || handleFilter)
+      ? mhMatch.authorHandles(curM)
+      : allHandles;
 
     const voice = { owned: 0, news: 0, opposition: 0, organic: 0 };
     for (const d of curM) voice[d._voice] += 1;
@@ -297,7 +489,8 @@ const getCMBrief = async (req, res) => {
       return geo.get(d);
     };
     for (const a of curN) {
-      const d = a.detected_location?.district; if (!d) continue;
+      const d = a.detected_location?.district || (vProfile ? mhMatch.districtIn(a) : null);
+      if (!d) continue;
       const r = touch(d); r.news += 1;
       // Adverse share is computed over SCORED articles only — an unscored row
       // is not evidence of calm.
@@ -306,7 +499,11 @@ const getCMBrief = async (req, res) => {
       if (articleStance(a) === 'anti') r.news_negative += 1;
     }
     for (const d of organic) {
-      const dist = d.detected_location?.district; if (!dist) continue;
+      // districtLocator only knows the HOST state, so detected_location is
+      // null on every row of another vertical — Top Locations sat empty at
+      // any volume. Fall back to matching the vertical's own districts.
+      const dist = d.detected_location?.district || (vProfile ? mhMatch.districtIn(d) : null);
+      if (!dist) continue;
       const r = touch(dist); r.social += 1;
       const side = sideOf(d.analysis?.political_stance);
       if (side === 'unrelated') continue;
@@ -386,11 +583,12 @@ const getCMBrief = async (req, res) => {
     /* ── leaders named in public conversation ──────────────────────────── */
     const leaderMap = new Map();
     for (const d of organic) {
-      const ents = d.analysis?.mentioned_entities;
-      if (!Array.isArray(ents)) continue;
+      // namedIn falls back to text/handle matching for a vertical whose
+      // entities never resolve — without it this table is permanently empty.
+      const names = namedIn(d);
+      if (!names.length) continue;
       const side = sideOf(d.analysis?.political_stance);
-      for (const e of ents) {
-        const nm = typeof e === 'string' ? e : (e?.name || e?.canonical || e?.id);
+      for (const nm of names) {
         if (!nm) continue;
         if (!leaderMap.has(nm)) leaderMap.set(nm, { name: String(nm), n: 0, pro: 0, anti: 0 });
         const r = leaderMap.get(nm); r.n += 1;
@@ -679,7 +877,12 @@ const getCMBrief = async (req, res) => {
         i,
         start: new Date(from.getTime() + (span * i) / BUCKETS),
         end: new Date(from.getTime() + (span * (i + 1)) / BUCKETS),
-        pro: 0, anti: 0, neutral: 0, total: 0, net: null,
+        // total   = VOLUME: every mention on the topic, scored or not.
+        //           The row label says "N mentions" and this is what makes
+        //           that true and agree with the Mentions page.
+        // scored  = the subset that carries a stance. net/direction use it,
+        //           because an unscored mention is not evidence of calm.
+        pro: 0, anti: 0, neutral: 0, total: 0, scored: 0, net: null,
         our_posts: 0, opposition_posts: 0,
       };
     });
@@ -693,11 +896,15 @@ const getCMBrief = async (req, res) => {
     for (const d of organic) {
       const topic = d.analysis?.topic;
       if (!topic || topic === 'None') continue;
+      const b = touchTrack(topic)[bucketIndex(d.post_date)];
+      // Volume first. Dropping unscored rows here is what made the tracker
+      // disagree with the Mentions page — Water Supply showed 5 there and
+      // nothing here, because 4 of the 5 carried no stance.
+      b.total += 1;
       const side = sideOf(d.analysis?.political_stance);
       if (side === 'unrelated') continue;
-      const b = touchTrack(topic)[bucketIndex(d.post_date)];
       b[side] += 1;
-      b.total += 1;
+      b.scored += 1;
     }
     // who was campaigning on it, per bucket
     for (const d of curM) {
@@ -716,14 +923,16 @@ const getCMBrief = async (req, res) => {
       const half = Math.floor(BUCKETS / 2);
       const sum = (arr) => arr.reduce((a, b) => ({
         pro: a.pro + b.pro, anti: a.anti + b.anti, neutral: a.neutral + b.neutral,
-        total: a.total + b.total, our: a.our + b.our_posts, opp: a.opp + b.opposition_posts,
-      }), { pro: 0, anti: 0, neutral: 0, total: 0, our: 0, opp: 0 });
+        total: a.total + b.total, scored: a.scored + b.scored,
+        our: a.our + b.our_posts, opp: a.opp + b.opposition_posts,
+      }), { pro: 0, anti: 0, neutral: 0, total: 0, scored: 0, our: 0, opp: 0 });
       const early = sum(buckets.slice(0, half));
       const late = sum(buckets.slice(half));
       const earlyNet = netScore(early.pro, early.anti, early.neutral);
       const lateNet = netScore(late.pro, late.anti, late.neutral);
 
-      const enough = early.total >= MIN_PER_HALF && late.total >= MIN_PER_HALF;
+      // Scored, not volume: a trend drawn from unscored rows is noise.
+      const enough = early.scored >= MIN_PER_HALF && late.scored >= MIN_PER_HALF;
       const movement = (enough && earlyNet !== null && lateNet !== null)
         ? lateNet - earlyNet : null;
 
@@ -735,9 +944,19 @@ const getCMBrief = async (req, res) => {
       }
 
       const total = buckets.reduce((a, b) => a + b.total, 0);
+      /**
+       * How many of those mentions actually carry a stance.
+       *
+       * Without it the reader cannot tell "+100" earned from 300 scored
+       * mentions from "+100" earned from two. Governance & Administration
+       * showed 62 mentions and net +100 off 2 supportive and 0 opposing —
+       * a figure that reads as overwhelming approval and rests on two posts.
+       */
+      const scored = buckets.reduce((a, b) => a + b.scored, 0);
       issueTracking.push({
         topic,
         total,
+        scored,
         net: netScore(
           buckets.reduce((a, b) => a + b.pro, 0),
           buckets.reduce((a, b) => a + b.anti, 0),
@@ -792,14 +1011,6 @@ const getCMBrief = async (req, res) => {
     };
     const OUR_INDEX = buildLeaderIndex(CABINET_MINISTERS);
     const OPP_INDEX = buildLeaderIndex(OPPOSITION_LEADERS);
-
-    const entityNames = (d) => {
-      const ents = d.analysis?.mentioned_entities;
-      if (!Array.isArray(ents)) return [];
-      return ents
-        .map((e) => (typeof e === 'string' ? e : (e?.name || e?.canonical || e?.id)))
-        .filter(Boolean);
-    };
 
     const blankLeader = (l) => ({
       id: l.id,
@@ -875,17 +1086,58 @@ const getCMBrief = async (req, res) => {
 
     const CHIEF_ID = (CABINET_MINISTERS || []).find(
       (l) => String(l.role || '').toLowerCase() === 'chief minister'
-        || nameNorm(l.name) === nameNorm(OUR_PARTY?.chief),
+        || nameNorm(l.name) === nameNorm(OURS?.chief),
     )?.id || null;
 
-    const chiefCur = CHIEF_ID && curOur.has(CHIEF_ID) ? finishLeader(curOur.get(CHIEF_ID)) : null;
-    const chiefPrev = CHIEF_ID && prevOur.has(CHIEF_ID) ? finishLeader(prevOur.get(CHIEF_ID)) : null;
+    let chiefCur = CHIEF_ID && curOur.has(CHIEF_ID) ? finishLeader(curOur.get(CHIEF_ID)) : null;
+    let chiefPrev = CHIEF_ID && prevOur.has(CHIEF_ID) ? finishLeader(prevOur.get(CHIEF_ID)) : null;
+
+    /**
+     * Fallback for a vertical whose principal is not in this deployment's
+     * cabinet roster.
+     *
+     * CHIEF_ID is looked up in CABINET_MINISTERS, which is the HOST client's
+     * roster. Devendra Fadnavis is not in it, so the Maharashtra brief found
+     * no chief and reported "0 mentions naming him" however much Maharashtra
+     * data had been collected — the page looked like it was working and was
+     * answering a question about the wrong person.
+     *
+     * Counted here straight from the named entities, the same way the leader
+     * table below counts everyone else.
+     */
+    if (!chiefCur && vProfile && OURS?.chief) {
+      // Text and author handle, NOT resolved entities — those are empty for
+      // every row in this vertical, which is what made this read 0.
+      const namesChief = (d) => mhMatch.namesLeader(d, OURS.chief);
+      const tally = (rows) => {
+        const hits = rows.filter(namesChief);
+        let pro = 0; let anti = 0; let neutral = 0;
+        for (const d of hits) {
+          const side = sideOf(d.analysis?.political_stance);
+          if (side === 'pro') pro += 1;
+          else if (side === 'anti') anti += 1;
+          else if (side === 'neutral') neutral += 1;
+        }
+        return {
+          mentions: hits.length,
+          pro,
+          anti,
+          neutral,
+          net: netScore(pro, anti, neutral),
+          confident: hits.length >= MIN_CONFIDENT,
+          topics: [],
+          quotes: [],
+        };
+      };
+      chiefCur = tally(organic);
+      chiefPrev = tally(prevOrganic);
+    }
 
     const principal = {
-      name: OUR_PARTY?.chief || null,
+      name: OURS?.chief || null,
       role: 'Chief Minister',
-      party: OUR_PARTY?.name || null,
-      party_full: OUR_PARTY?.full_name || null,
+      party: OURS?.name || null,
+      party_full: OURS?.full_name || null,
       found: !!chiefCur,
       ...(chiefCur || {
         mentions: 0, pro: 0, anti: 0, neutral: 0,
@@ -962,8 +1214,8 @@ const getCMBrief = async (req, res) => {
       }
     }
     const party = {
-      name: OUR_PARTY?.name || null,
-      full_name: OUR_PARTY?.full_name || null,
+      name: OURS?.name || null,
+      full_name: OURS?.full_name || null,
       mentions: ourParty.mentions,
       pro: ourParty.pro,
       anti: ourParty.anti,
@@ -1341,8 +1593,8 @@ const getCMBrief = async (req, res) => {
      * renders either way; `action_source` records which it was.
      */
     await adviseAll(recommendations, {
-      state: OUR_PARTY?.state || 'the state',
-      party: OUR_PARTY?.full_name || OUR_PARTY?.name || 'the party',
+      state: OURS?.state || 'the state',
+      party: OURS?.full_name || OURS?.name || 'the party',
       days,
     });
 
@@ -1362,7 +1614,34 @@ const getCMBrief = async (req, res) => {
     };
 
     res.json({
-      window: { days, from, to: now },
+      // `to` is the real window end, not `now` — for a custom range those
+      // differ, and the drill-down links on the page are built from this.
+      window: { days, from, to, custom: !!(qFrom && qTo) },
+      // The focus applied, and every leader the caller could have picked.
+      // The list comes from the unfiltered window, so the export dialog can
+      // offer alternatives even while a filter is active.
+      /**
+       * How many mentions an issue needs before the tracker shows it.
+       *
+       * The page hard-coded 10, which is sensible at Chhattisgarh's volume
+       * (3,300 mentions a month) and silently empties the panel at
+       * Maharashtra's (200). The floor is now proportional, so a small
+       * dataset shows its real top issues instead of nothing, and a large
+       * one is not flooded with noise.
+       */
+      issue_min: Math.max(3, Math.min(10, Math.round(curM.length / 40))),
+      leader: leaderFilter,
+      handle: handleFilter,
+      available_handles: availableHandles,
+      // Lets the page title itself for the client whose data it is showing,
+      // instead of the deployment's own branding.
+      profile: {
+        state: OURS?.state || null,
+        party: OURS?.name || null,
+        chief: OURS?.chief || null,
+        caveat: vProfile?.caveat || null,
+      },
+      available_leaders: availableLeaders,
       headline, voice, coverage, modules, decisions,
       issues, timeline, spreading,
       trend, counts, combined, by_source: bySource,

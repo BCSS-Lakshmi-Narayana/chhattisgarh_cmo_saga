@@ -122,6 +122,8 @@ const analyzeArticle = async (article, { write = true, force = false } = {}) => 
 
     const analysisData = await analyzeContent(text, {
         platform: 'news',
+        // Same reason as the Mentions path: the roster is chosen by vertical.
+        vertical: article.vertical || undefined,
         skipForensics: true,
         taggedKeyword: (article.keywords_matched || []).join(' '),
         // News has no social author. The publication is the closest analogue,
