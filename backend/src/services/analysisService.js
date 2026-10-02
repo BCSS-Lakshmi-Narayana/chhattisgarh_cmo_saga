@@ -5,6 +5,7 @@ const { categorizeText } = require('./llmService');
 const mappingService = require('./mappingService');
 const { buildPoliticalContext, detectLanguageHints } = require('./politicalContextService');
 const { analyzePoliticalSentiment } = require('./politicalSentimentService');
+const { hostileOverride } = require('../utils/mhHostileLexicon');
 // Owns the STAGE3_INCLUDE_ORIGINAL switch. Inert unless that flag is 'true'.
 const { buildStage3Input } = require('./stage3Input');
 const cacheService = require('./cacheService');
@@ -396,6 +397,34 @@ const analyzeContent = async (text, options = {}) => {
       log('Stage 3 receiving ORIGINAL + translation (STAGE3_INCLUDE_ORIGINAL=true).');
     }
     const political = await analyzePoliticalSentiment(stage3Text, politicalCtx);
+
+    /**
+     * Deterministic floor under the LLM's call.
+     *
+     * The model returned `target_tone=neutral` for a reply calling Eknath
+     * Shinde a traitor, so a hostile item was scored `unrelated` and never
+     * reached the brief. Where a target is resolved, is on our side, and the
+     * text carries tier-1 attack vocabulary, the verdict cannot be "no
+     * opinion". See utils/mhHostileLexicon for why this is narrow: it only
+     * fills in where the LLM declined, and never overturns a real verdict.
+     */
+    const forced = hostileOverride({
+      text: stage3Text,
+      stance: political.stance,
+      context: politicalCtx,
+    });
+    if (forced) {
+      log(`Stance OVERRIDE ${political.stance} -> ${forced.stance}: ${forced.reason}`);
+      political.stance = forced.stance;
+      political.provider = `${political.provider || 'llm'}+lexicon`;
+      if (!political.target_sentiment || political.target_sentiment === 'neutral') {
+        political.target_sentiment = 'negative';
+      }
+      if (!political.target_tone || political.target_tone === 'neutral') {
+        political.target_tone = 'negative';
+      }
+    }
+
     log(`Stance=${political.stance} target_sentiment=${political.target_sentiment} target_tone=${political.target_tone} beneficiary=${political.beneficiary} provider=${political.provider}`);
 
     // ── risk_level is the Alerts page's Negative/Neutral/Positive bucket ──

@@ -28,7 +28,27 @@
       ],
       "verified_on": "2026-10-01",
       "note": "Largest account in the set at 5.86M followers.",
-      "alliance": "mahayuti"
+      "alliance": "mahayuti",
+      "base": {
+        "constituency": "Nagpur South West",
+        "district": "Nagpur",
+        "area_aliases": [
+          "Nagpur",
+          "नागपूर",
+          "Nagpur South West",
+          "नागपूर दक्षिण पश्चिम",
+          "Hingna",
+          "हिंगणा",
+          "Kamptee",
+          "कामठी",
+          "Katol",
+          "कातोल",
+          "Ramtek",
+          "रामटेक",
+          "Umred",
+          "उमरेड"
+        ]
+      }
     },
     {
       "key": "mh-eknath-shinde",
@@ -46,12 +66,30 @@
       ],
       "verified_on": "2026-10-01",
       "note": "⚠ 'Shinde' alone is ambiguous — it is also Dr Shrikant Shinde, his son, who is separately on this list. Never match on the surname.",
-      "alliance": "mahayuti"
+      "alliance": "mahayuti",
+      "base": {
+        "constituency": "Kopri-Pachpakhadi",
+        "district": "Thane",
+        "area_aliases": [
+          "Thane",
+          "ठाणे",
+          "Kopri",
+          "कोपरी",
+          "Pachpakhadi",
+          "पाचपाखाडी",
+          "Mumbra",
+          "मुंब्रा",
+          "Kalwa",
+          "कळवा",
+          "Bhiwandi",
+          "भिवंडी"
+        ]
+      }
     },
     {
       "key": "mh-sunetra-pawar",
       "name": "Sunetra Pawar",
-      "role": "Deputy Chief Minister of Maharashtra",
+      "role": "Member of Parliament, Rajya Sabha (Maharashtra)",
       "party": "ncp",
       "alignment": "ally",
       "handle": "SunetraA_Pawar",
@@ -65,7 +103,25 @@
       ],
       "verified_on": "2026-10-01",
       "note": "Took office 31 Jan 2026, replacing Ajit Pawar; first woman in the role. Resigned her Rajya Sabha seat on taking it. By far the smallest following of the three government principals (34K) — low volume here is expected, not a collection fault.",
-      "alliance": "mahayuti"
+      "alliance": "mahayuti",
+      "base": {
+        "constituency": "Rajya Sabha (Maharashtra); Baramati base",
+        "district": "Pune",
+        "area_aliases": [
+          "Baramati",
+          "बारामती",
+          "Indapur",
+          "इंदापूर",
+          "Daund",
+          "दौंड",
+          "Purandar",
+          "पुरंदर",
+          "Shirur",
+          "शिरूर",
+          "Pune",
+          "पुणे"
+        ]
+      }
     },
     {
       "key": "mh-shrikant-shinde",
@@ -85,7 +141,31 @@
       ],
       "verified_on": "2026-10-01",
       "note": "The manager's list spells him 'Srikanth'; his own bio spells it 'Shrikant'. Both are aliases. Son of Eknath Shinde — see the surname warning there.",
-      "alliance": "mahayuti"
+      "alliance": "mahayuti",
+      "base": {
+        "constituency": "Kalyan (Lok Sabha)",
+        "district": "Thane",
+        "area_aliases": [
+          "Kalyan",
+          "कल्याण",
+          "Dombivli",
+          "डोंबिवली",
+          "Ulhasnagar",
+          "उल्हासनगर",
+          "Ambernath",
+          "अंबरनाथ",
+          "Badlapur",
+          "बदलापूर",
+          "Titwala",
+          "टिटवाळा",
+          "Murbad",
+          "मुरबाड",
+          "Shahapur",
+          "शहापूर",
+          "Thane",
+          "ठाणे"
+        ]
+      }
     },
     {
       "key": "mh-sharad-pawar",
@@ -104,7 +184,27 @@
       ],
       "verified_on": "2026-10-01",
       "note": "⚠ 'Pawar' alone matches four people on this list — Sharad, Sunetra, Rohit, and Ajit Pawar who is not on it. The NCP split means the surname spans both camps. Full names only.",
-      "alliance": "mva"
+      "alliance": "mva",
+      "base": {
+        "constituency": "Rajya Sabha (Maharashtra)",
+        "district": "Pune",
+        "area_aliases": [
+          "Baramati",
+          "बारामती",
+          "Indapur",
+          "इंदापूर",
+          "Daund",
+          "दौंड",
+          "Purandar",
+          "पुरंदर",
+          "Shirur",
+          "शिरूर",
+          "Bhor",
+          "भोर",
+          "Pune",
+          "पुणे"
+        ]
+      }
     },
     {
       "key": "mh-rohit-pawar",
@@ -121,7 +221,27 @@
         "रोहित पवार"
       ],
       "verified_on": "2026-10-01",
-      "alliance": "mva"
+      "alliance": "mva",
+      "base": {
+        "constituency": "Karjat-Jamkhed",
+        "district": "Ahilyanagar",
+        "area_aliases": [
+          "Karjat Jamkhed",
+          "कर्जत जामखेड",
+          "Jamkhed",
+          "जामखेड",
+          "Karjat",
+          "कर्जत",
+          "Ahilyanagar",
+          "अहिल्यानगर",
+          "Ahmednagar",
+          "अहमदनगर",
+          "Shrigonda",
+          "श्रीगोंदा",
+          "Parner",
+          "पारनेर"
+        ]
+      }
     },
     {
       "key": "mh-aaditya-thackeray",
@@ -141,7 +261,29 @@
       ],
       "verified_on": "2026-10-01",
       "note": "His bio spells it 'Aaditya' with two a's; the manager wrote 'Aditya Thakre'. Both recorded.",
-      "alliance": "mva"
+      "alliance": "mva",
+      "base": {
+        "constituency": "Worli",
+        "district": "Mumbai City",
+        "area_aliases": [
+          "Worli",
+          "वरळी",
+          "Dadar",
+          "दादर",
+          "Mahim",
+          "माहीम",
+          "Prabhadevi",
+          "प्रभादेवी",
+          "Lower Parel",
+          "लोअर परळ",
+          "Sewri",
+          "शिवडी",
+          "Byculla",
+          "भायखळा",
+          "Mumbai",
+          "मुंबई"
+        ]
+      }
     },
     {
       "key": "mh-raj-thackeray",
@@ -160,7 +302,23 @@
         "राज ठाकरे"
       ],
       "verified_on": "2026-10-01",
-      "note": "ALIGNMENT CONFIRMED 2026-10-01. Previously flagged as uncertain — MNS had been courted by the BJP and Raj Thackeray said in 2024 that MNS would be part of a BJP-led government. That is no longer the position: he and Uddhav Thackeray announced a formal alliance on 24 Dec 2025 and appeared together at Shiv Sena Bhavan on 4 Jan 2026, on a Marathi-first platform aimed squarely at the Mahayuti and the Shinde Sena. He is opposition, and now shares a front with Aaditya Thackeray. Also note only 1,514 posts for 1.85M followers: he is read far more than he posts, so mention volume will dwarf his own output."
+      "note": "ALIGNMENT CONFIRMED 2026-10-01. Previously flagged as uncertain — MNS had been courted by the BJP and Raj Thackeray said in 2024 that MNS would be part of a BJP-led government. That is no longer the position: he and Uddhav Thackeray announced a formal alliance on 24 Dec 2025 and appeared together at Shiv Sena Bhavan on 4 Jan 2026, on a Marathi-first platform aimed squarely at the Mahayuti and the Shinde Sena. He is opposition, and now shares a front with Aaditya Thackeray. Also note only 1,514 posts for 1.85M followers: he is read far more than he posts, so mention volume will dwarf his own output.",
+      "base": {
+        "constituency": "No current seat; Mumbai base",
+        "district": "Mumbai City",
+        "area_aliases": [
+          "Dadar",
+          "दादर",
+          "Shivaji Park",
+          "शिवाजी पार्क",
+          "Mahim",
+          "माहीम",
+          "Krishnakunj",
+          "कृष्णकुंज",
+          "Mumbai",
+          "मुंबई"
+        ]
+      }
     },
     {
       "key": "mh-jarange-patil",
@@ -182,7 +340,27 @@
       ],
       "verified_on": "2026-10-01",
       "note": "⚠ HANDLE MONITORING WILL NOT WORK FOR HIM. 483 followers and 13 posts ever, for the most prominent figure in the Maratha agitation. X is not where he operates — he works through rallies, fasts and television. His coverage is in what OTHERS post about him, so he must be tracked by KEYWORD, not by handle. `alignment: opposition` reflects that he agitates against the sitting government; he belongs to no party.",
-      "alliance": "none"
+      "alliance": "none",
+      "base": {
+        "constituency": "Antarwali Sarati (agitation base)",
+        "district": "Jalna",
+        "area_aliases": [
+          "Jalna",
+          "जालना",
+          "Antarwali Sarati",
+          "अंतरवाली सराटी",
+          "Ambad",
+          "अंबड",
+          "Partur",
+          "परतूर",
+          "Ghansawangi",
+          "घनसावंगी",
+          "Badnapur",
+          "बदनापूर",
+          "Marathwada",
+          "मराठवाडा"
+        ]
+      }
     }
   ],
   "districts": [
@@ -233,5 +411,6 @@
     "maharashtra",
     "mh"
   ],
-  "state_native": "महाराष्ट्र"
+  "state_native": "महाराष्ट्र",
+  "_base_note": "`base` anchors a leader's area coverage. `district` is one of the 39 above so Geography joins on an existing row. `area_aliases` are the names posts actually use - talukas and localities, not district names: a post says 'Worli', 'Baramati' or 'अंतरवाली सराटी', never 'Mumbai City' or 'Pune'. Matching district names alone left 8 of 9 leaders with no area coverage at all. KNOWN AMBIGUITY: 'Karjat' names a taluka in BOTH Raigad and Ahilyanagar; it is kept for Rohit Pawar because Karjat-Jamkhed is his seat, so a Raigad Karjat post could map to the wrong district. The compound forms are listed first and win."
 }

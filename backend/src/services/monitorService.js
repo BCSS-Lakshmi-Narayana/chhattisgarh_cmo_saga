@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const { DEFAULT_VERTICAL } = require('../config/verticals');
+const { DEFAULT_VERTICAL, runWithVerticals } = require('../config/verticals');
 const { TwitterApi } = require('twitter-api-v2');
 const blugateClient = require('./blugateClient');
 const youtubeChannels = require('./youtubeChannelService');
@@ -1913,7 +1913,27 @@ const performFullAnalysis = async (content, settings, keywords, options = {}) =>
     // re-push already-seen content into newContent on every poll, so performFullAnalysis runs
     // repeatedly for the same content_id. Upserting keeps exactly one Analysis per content_id
     // and preserves the original `id` (via $setOnInsert) so earlier Alert links stay valid.
-    const analysis = await Analysis.findOneAndUpdate(
+    /**
+     * The Analysis belongs to the CONTENT's vertical, not the caller's.
+     *
+     * `analyses` has a UNIQUE index on `content_id` alone — it predates
+     * multi-tenancy. The background monitor runs with no request context,
+     * so `writeVertical()` fell back to DEFAULT_VERTICAL and stamped every
+     * Analysis 'cg', including those for Maharashtra content. The scoped
+     * query then could not see its own row, the upsert tried to INSERT,
+     * and the unique index rejected it:
+     *
+     *   E11000 … index: content_id_1 dup key: { content_id: … }
+     *
+     * The LLM work completed and was then thrown away, the Content went
+     * back to 'pending', and it retried six times failing identically.
+     * 119 rows were mislabelled this way before it was caught.
+     *
+     * Running the upsert in the content's own vertical makes the read
+     * scope and the write stamp agree, so the row is found and updated
+     * instead of re-inserted.
+     */
+    const analysis = await runWithVerticals([content.vertical || DEFAULT_VERTICAL], () => Analysis.findOneAndUpdate(
       { content_id: content.id },
       {
         $set: {
@@ -1946,11 +1966,14 @@ const performFullAnalysis = async (content, settings, keywords, options = {}) =>
           forensic_results: analysisData.forensic_results || null
         },
         $setOnInsert: {
-          id: analysisId
+          id: analysisId,
+          // Explicit, so a row created here never inherits the ambient
+          // vertical of whatever job happened to trigger the analysis.
+          vertical: content.vertical || DEFAULT_VERTICAL
         }
       },
       { upsert: true, new: true }
-    );
+    ));
 
     // Persist derived intelligence back onto the content record for dashboard/reporting.
     const normalizeText = (value) => String(value || '')

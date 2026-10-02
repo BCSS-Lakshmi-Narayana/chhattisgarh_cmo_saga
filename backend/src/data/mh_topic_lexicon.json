@@ -1,0 +1,78 @@
+{
+  "_meta": {
+    "what": "Marathi/Hindi/English terms mapped to the 15 issue topics the Issue Tracker uses.",
+    "why": "39% of Maharashtra posts (561 of 1442) carried analysis.topic = null, because the LLM returned campaign_topic 'None' and it was stored as null. Those posts are invisible to the Issue Tracker and to section 2 of every report. This lexicon assigns a topic deterministically where the text plainly states one.",
+    "rules": [
+      "Only fills a NULL topic. An LLM-assigned topic is never overwritten - the model reading the sentence beats a word list.",
+      "Longest term wins, so a compound ('शेतकरी आत्महत्या') is never split by a shorter one ('शेतकरी').",
+      "Terms must be unambiguous for the topic. Anything that could sit under two topics is left out rather than guessed.",
+      "Devanagari terms carry no word boundaries in matching, so very short terms are excluded - they match inside unrelated words."
+    ],
+    "topics": 15,
+    "updated": "2026-10-02"
+  },
+  "topics": {
+    "Agriculture & Farmers": [
+      "सरसकट कर्जमाफी", "किसान कर्जमाफी", "शेतकरी आत्महत्या", "किसान आत्महत्या",
+      "farm loan waiver", "drought relief", "crop insurance", "सातबारा कोरा",
+      "पीक विमा", "कर्जमाफी", "बळीराजा", "शेतकरी", "शेतकऱ्यां", "दुष्काळ",
+      "कृषी", "सातबारा", "पंचनामा", "हमीभाव", "किसान"
+    ],
+    "Elections & Politics": [
+      "State Election Commission", "marker pen voting", "indelible ink",
+      "poll petition", "बोगस मतदान", "फर्जी मतदान", "vote chori", "मतचोरी",
+      "वोट चोरी", "निवडणूक आयोग", "मतदार यादी", "निवडणूक", "मतदान", "मतदार",
+      "उमेदवार", "प्रचार", "जाहीरनामा", "विधानसभा", "लोकसभा", "मतपेटी"
+    ],
+    "Corruption": [
+      "vote chor chanda chor", "50 khoke", "50 खोके", "भ्रष्टाचार", "घोटाळा",
+      "लाचखोरी", "टक्केवारी", "गैरव्यवहार", "corruption", "scam"
+    ],
+    "Law & Order": [
+      "मराठा क्रांती मोर्चा", "Maratha reservation", "कुणबी प्रमाणपत्र",
+      "मराठा आरक्षण", "ओबीसी आरक्षण", "आरक्षण", "गुन्हा दाखल", "पोलीस ठाणे",
+      "कायदा सुव्यवस्था", "जातीय तणाव", "दंगल", "अटक", "एफआयआर"
+    ],
+    "Electricity": [
+      "महावितरण", "MSEDCL", "वीज बिल", "भारनियमन", "वीजपुरवठा", "वीजजोडणी"
+    ],
+    "Employment & Jobs": [
+      "नागपूर बेरोजगारी", "बेरोजगारी", "unemployment", "नोकरभरती", "रोजगार",
+      "MPSC", "एमपीएससी", "नोकरी", "भरती प्रक्रिया"
+    ],
+    "Environment": [
+      "नागपूर पूर", "वृक्षतोड", "प्रदूषण", "पर्यावरण", "हवामान बदल",
+      "flooding", "महापूर"
+    ],
+    "Water Supply": [
+      "पाणीटंचाई", "पाणीपुरवठा", "जलजीवन मिशन", "नळ योजना", "धरण",
+      "पिण्याचे पाणी", "water supply"
+    ],
+    "Health Services": [
+      "आरोग्य सेवा", "रुग्णालय", "प्राथमिक आरोग्य", "दवाखाना", "डॉक्टर",
+      "आरोग्य केंद्र", "औषध"
+    ],
+    "Education": [
+      "शिक्षण हक्क", "विद्यार्थी", "महाविद्यालय", "शिक्षक भरती", "शाळा",
+      "शिष्यवृत्ती", "शिक्षण"
+    ],
+    "Roads & Transport": [
+      "रस्त्यांची दुरवस्था", "महामार्ग", "एसटी महामंडळ", "वाहतूक कोंडी",
+      "खड्डे", "समृद्धी महामार्ग", "मेट्रो", "रस्ता"
+    ],
+    "Housing & Land": [
+      "भूसंपादन", "झोपडपट्टी", "पुनर्वसन", "घरकुल", "म्हाडा", "जमीन"
+    ],
+    "Sanitation & Waste": [
+      "घनकचरा", "स्वच्छता", "कचरा", "सांडपाणी", "गटार"
+    ],
+    "Pensions & Welfare": [
+      "लाडकी बहीण", "निवृत्तीवेतन", "जुनी पेन्शन", "पेन्शन", "अनुदान",
+      "रेशन", "संजय गांधी निराधार"
+    ],
+    "Governance & Administration": [
+      "शासन निर्णय", "महापालिका", "ग्रामपंचायत", "जिल्हाधिकारी", "तहसील",
+      "प्रशासन", "निधी वाटप", "अर्थसंकल्प"
+    ]
+  }
+}

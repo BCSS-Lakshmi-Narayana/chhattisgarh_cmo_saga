@@ -36,6 +36,8 @@
  *   node backend/scripts/fetch_mh_deep.js --seed --count     plan + create terms
  *   node backend/scripts/fetch_mh_deep.js --seed --platform x        run it
  *   node backend/scripts/fetch_mh_deep.js --seed --per-leader 4      cap the width
+ *   node backend/scripts/fetch_mh_deep.js --seed --leader "Sharad Pawar"   one leader
+ *   node backend/scripts/fetch_mh_deep.js --seed --under 40            only the starved
  */
 require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
 const mongoose = require('mongoose');
@@ -53,6 +55,16 @@ const SEED = has('seed');
 const NO_HANDLES = has('no-handles');
 const PER_LEADER = Number(val('per-leader', '0')) || 0;
 const PLATFORM = val('platform');
+/**
+ * One leader, or only the starved ones.
+ *
+ * The run is sequential and dominated by per-post analysis, so the way to
+ * finish sooner is to run fewer terms — or to run several processes at once,
+ * each owning one leader. `--leader` makes that possible without two
+ * processes fetching the same term twice.
+ */
+const ONLY_LEADER = val('leader');
+const UNDER = Number(val('under', '0')) || 0;
 const MINUTES_PER_TERM = 9;
 
 /** Roster aliases, richer than mh_leaders.json for some entries. */
@@ -120,7 +132,27 @@ const termsFor = (l) => {
             }
         }
 
-        const order = [...MH.leaders].sort((a, b) => (counts.get(a.key) || 0) - (counts.get(b.key) || 0));
+        let order = [...MH.leaders].sort((a, b) => (counts.get(a.key) || 0) - (counts.get(b.key) || 0));
+
+        if (ONLY_LEADER) {
+            const want = ONLY_LEADER.trim().toLowerCase();
+            order = order.filter((l) => l.name.toLowerCase() === want
+                || l.key.toLowerCase() === want
+                || String(l.handle || '').toLowerCase() === want.replace(/^@+/, ''));
+            if (!order.length) {
+                console.log(`No leader matches "${ONLY_LEADER}". Names are:`);
+                for (const l of MH.leaders) console.log(`  ${l.name}`);
+                process.exitCode = 1;
+                return;
+            }
+        }
+        if (UNDER) {
+            order = order.filter((l) => (counts.get(l.key) || 0) < UNDER);
+            if (!order.length) {
+                console.log(`Every leader already has ${UNDER} or more mentions. Nothing to do.`);
+                return;
+            }
+        }
 
         const plan = [];
         const toCreate = [];

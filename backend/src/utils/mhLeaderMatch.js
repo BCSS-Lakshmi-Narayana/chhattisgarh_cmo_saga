@@ -136,11 +136,44 @@ const DISTRICTS = [...new Set(MH.districts)]
     .map((d) => ({ name: d, term: norm(d) }))
     .sort((a, b) => b.term.length - a.term.length);
 
+/**
+ * Locality → district.
+ *
+ * Matching district names alone returned a district on almost nothing: a
+ * post says "Worli", "Baramati", "Kalyan" or "अंतरवाली सराटी", not "Mumbai
+ * City" or "Ahilyanagar". Eight of the nine leaders showed zero area
+ * coverage for that reason alone. Each leader's `base.area_aliases` are the
+ * names actually used, mapped to the district they sit in so they join the
+ * Geography panel rather than forming a parallel vocabulary.
+ */
+const LOCALITIES = [];
+for (const l of MH.leaders) {
+    for (const a of (l.base && l.base.area_aliases) || []) {
+        const term = norm(a);
+        if (term.length > 3) LOCALITIES.push({ term, district: l.base.district, leaderKey: l.key });
+    }
+}
+/* Longest first: "shivaji park" must win over "park", "mumbai suburban" over "mumbai". */
+LOCALITIES.sort((a, b) => b.term.length - a.term.length);
+
 const districtIn = (doc) => {
     const text = textOf(doc);
     if (!text) return null;
-    const hit = DISTRICTS.find((d) => d.term.length > 3 && text.includes(d.term));
-    return hit ? hit.name : null;
+    // District names are the stronger signal, so they are tried first.
+    const d = DISTRICTS.find((x) => x.term.length > 3 && text.includes(x.term));
+    if (d) return d.name;
+    const loc = LOCALITIES.find((x) => text.includes(x.term));
+    return loc ? loc.district : null;
+};
+
+/** The area a leader's coverage is anchored to, for the per-leader view. */
+const baseOf = (who) => {
+    if (!who) return null;
+    const want = norm(who);
+    const l = MH.leaders.find((x) => x.key === who
+        || norm(x.name) === want
+        || norm(x.handle) === want);
+    return l && l.base ? { ...l.base, leader: l.name } : null;
 };
 
 /* ── voice ────────────────────────────────────────────────────────────
@@ -201,5 +234,6 @@ const voiceOf = (handle) => {
 };
 
 module.exports = {
-    leadersIn, namesLeader, authorHandles, districtIn, voiceOf, TERMS, norm, DISTRICTS,
+    leadersIn, namesLeader, authorHandles, districtIn, voiceOf, baseOf,
+    TERMS, norm, DISTRICTS, LOCALITIES,
 };
