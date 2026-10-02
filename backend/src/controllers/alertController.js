@@ -1428,6 +1428,9 @@ const investigateLink = async (req, res) => {
     try {
       analysis = await analyzeContent(metadata.text || metadata.description || metadata.title, {
         platform,
+        // Manual investigation runs inside a request, so the vertical comes
+        // from the logged-in user rather than from a stored row.
+        vertical: (req.verticals && req.verticals[0]) || undefined,
         content_id: contentId,
         content: {
           ...metadata,

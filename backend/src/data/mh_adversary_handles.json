@@ -1,0 +1,313 @@
+{
+  "_meta": {
+    "purpose": "Accounts that post AGAINST the nine Maharashtra leaders under watch. Vertical 'mh'. Separate from mh_leaders.json, which records who the nine ARE.",
+
+    "why_this_is_per_target_and_not_one_list": "⚠ READ THIS FIRST. The BRS deployment had ONE client, so 'adversary' was a single set. There is no client here. The nine span the governing Mahayuti (Fadnavis, Eknath Shinde, Sunetra Pawar, Shrikant Shinde), the opposition (Sharad Pawar, Rohit Pawar, Aaditya Thackeray, Raj Thackeray) and a non-party agitator (Jarange Patil). An account attacking Fadnavis is pro-opposition; an account attacking Sharad Pawar is pro-government. THE SAME HANDLE IS HOSTILE TO SOME OF THE NINE AND FRIENDLY TO OTHERS. A flat 'adversary' list would be meaningless, and worse, would let a report say 'N attack accounts' as though the nine shared an enemy. Each entry below therefore records WHICH of the nine it targets.",
+
+    "researched": "2026-10-01. Every handle fetched live from api.fxtwitter.com and its bio read before being recorded. Follower and post counts are from that fetch and will drift.",
+
+    "verification_limits": "A profile fetch proves IDENTITY, not BEHAVIOUR. Nothing here claims a specific post was observed. `hostility` records why an account is expected to attack a given target, with the evidence. Confirming actual posting needs the pipeline once it has run, or the Grok prompts in docs/MH_ADVERSARY_HANDLES.md.",
+
+    "the_two_splits": "The dominant dynamic in Maharashtra is not government vs opposition — it is two parties that each split in half and now fight over the same name, symbol and legacy. Shiv Sena split (Eknath Shinde vs Uddhav Thackeray, ECI gave Shinde the name and bow-and-arrow in Feb 2023) and NCP split (Ajit Pawar vs Sharad Pawar). The fiercest targeting in this dataset is between the mirror pairs, not across the normal aisle, and it is personal: @supriya_sule is Sharad Pawar's daughter and Ajit Pawar's cousin; Sunetra Pawar is Ajit Pawar's wife and Supriya Sule's sister-in-law.",
+
+    "deliberately_absent": [
+      "The Shiv Sena (Shinde faction) official party handle. Eight variants probed on 2026-10-01 — ShivSena, ShivsenaOfficial, Shivsena_Office, BalasahebanchiSS, ShivSenaOfficial_, ShivSena_Shinde, OfficialShivSena, ShivsenaOnline — every one is missing or a low-follower namesake (Shivsena Rajasthan, a 70-follower account, a 2-follower account). The party plainly has one; it could not be established from here. Ask Grok rather than guessing: a wrong party handle mis-attributes an entire party's output.",
+      "Anonymous, meme and troll accounts. None could be verified from a profile. This is the real gap and the Grok prompts exist for it.",
+      "The ~429 handles Maharashtra Cyber flagged in July 2026 as AI-generated/deepfake content around the CJP protests, roughly 100 of them operating from outside India. Documented as a network but NO handles were published, so nothing can be recorded. Worth asking Maharashtra Cyber (@MahaCyber1) or watching for a published list."
+    ],
+
+    "hostility_values": {
+      "structural": "The account's institutional purpose puts it against this target — a rival party organ, or the opposing faction of a split party.",
+      "personal_rivalry": "A direct, named contest between this account and the target: same seat, same family, same party name.",
+      "reported": "Named in published reporting as running a campaign against the target."
+    },
+
+    "keys": "targets = the `key` values from mh_leaders.json that this account posts against. camp = which bloc it belongs to."
+  },
+
+  "accounts": [
+    {
+      "handle": "amitmalviya",
+      "platform": "x",
+      "name": "Amit Malviya",
+      "camp": "mahayuti",
+      "party": "bjp",
+      "hostility": "structural",
+      "followers": 855524,
+      "posts": 176925,
+      "posts_per_follower": 0.207,
+      "bio": "Sah Prabhari of BJP Maharashtra. Member National Executive. Ex-banker, interested in politics and economics.",
+      "targets": ["mh-sharad-pawar", "mh-rohit-pawar", "mh-aaditya-thackeray", "mh-raj-thackeray", "mh-jarange-patil"],
+      "evidence": "api.fxtwitter.com/amitmalviya — bio states co-in-charge of BJP Maharashtra. Headed the BJP IT Cell for ~11 years until Deepak Mhaskey replaced him as National Convener in August 2026.",
+      "verified_on": "2026-10-01",
+      "note": "HIGHEST-VOLUME ACCOUNT IN THE SET — 176,925 posts, more than the BJP's own national handle relative to its following. He is the single most significant organised source of attack content against the MVA leaders on this list, and his formal role is Maharashtra-specific, so his output is on-topic for this report rather than national noise."
+    },
+    {
+      "handle": "BJP4Maharashtra",
+      "platform": "x",
+      "name": "भाजपा महाराष्ट्र / BJP Maharashtra",
+      "camp": "mahayuti",
+      "party": "bjp",
+      "hostility": "structural",
+      "followers": 650036,
+      "posts": 103335,
+      "bio": "Official Twitter Account of BJP Maharashtra / महाराष्ट्र भाजपाचे अधिकृत ट्विटर खातं",
+      "targets": ["mh-sharad-pawar", "mh-rohit-pawar", "mh-aaditya-thackeray", "mh-raj-thackeray", "mh-jarange-patil"],
+      "evidence": "api.fxtwitter.com/BJP4Maharashtra — the state party organ. 103,335 posts.",
+      "verified_on": "2026-10-01",
+      "note": "Also the main AMPLIFIER for Fadnavis, who is one of the nine. Its output is simultaneously pro-target and anti-target depending on which of the nine a post concerns — which is exactly why this file is per-target."
+    },
+    {
+      "handle": "AjitPawarSpeaks",
+      "platform": "x",
+      "name": "Ajit Pawar",
+      "camp": "mahayuti",
+      "party": "ncp",
+      "hostility": "personal_rivalry",
+      "followers": 1645488,
+      "posts": 15673,
+      "bio": "संकल्प, निष्ठा, कर्म- हाच माझा धर्म! उपमुख्यमंत्री- महाराष्ट्र राज्य | Deputy Chief Minister- Maharashtra",
+      "targets": ["mh-sharad-pawar", "mh-rohit-pawar"],
+      "evidence": "api.fxtwitter.com/AjitPawarSpeaks — leader of the NCP faction that split from Sharad Pawar's.",
+      "verified_on": "2026-10-01",
+      "note": "⚠ HIS BIO IS STALE AND WILL MISLEAD. It still reads 'Deputy Chief Minister', an office he left on 28 Jan 2026 — Sunetra Pawar took it on 31 Jan. A bio is evidence of identity, never of current role. He is Sunetra Pawar's husband, so he is an ALLY of one of the nine and an adversary of two others."
+    },
+    {
+      "handle": "MrsGandhi",
+      "platform": "x",
+      "name": "Priti Gandhi",
+      "camp": "mahayuti",
+      "party": "bjp",
+      "hostility": "structural",
+      "followers": 507822,
+      "posts": 1334,
+      "bio": "BJP Karyakarta.",
+      "targets": ["mh-sharad-pawar", "mh-aaditya-thackeray"],
+      "evidence": "api.fxtwitter.com/MrsGandhi — in the BJP's Maharashtra IT cell since 2013; appointed Mahila Morcha national social media convenor in 2018.",
+      "verified_on": "2026-10-01",
+      "note": "Only 1,334 posts against 508K followers — very low output for a social-media office-bearer. Either she posts rarely or this is not her main channel. Low expected volume; listed for role, not reach."
+    },
+    {
+      "handle": "ShivSenaUBT_",
+      "platform": "x",
+      "name": "ShivSena - शिवसेना Uddhav Balasaheb Thackeray",
+      "camp": "mva",
+      "party": "shivsena-ubt",
+      "hostility": "structural",
+      "followers": 896383,
+      "posts": 26779,
+      "bio": "जनसामान्यांच्या हक्कांसाठी रस्त्यावर उतरून सर्वशक्तीनिशी लढा देणारी एकमेव संघटना!",
+      "targets": ["mh-eknath-shinde", "mh-shrikant-shinde", "mh-fadnavis", "mh-sunetra-pawar"],
+      "evidence": "api.fxtwitter.com/ShivSenaUBT_ — the Uddhav Thackeray faction's party account.",
+      "verified_on": "2026-10-01",
+      "note": "THE MIRROR OF EKNATH SHINDE. The ECI awarded the Shiv Sena name and bow-and-arrow symbol to Shinde in Feb 2023, so this account fights over its own party's identity. Expect the sharpest, most personal content against @mieknathshinde and his son @DrSEShinde of anything in this file."
+    },
+    {
+      "handle": "rautsanjay61",
+      "platform": "x",
+      "name": "Sanjay Raut",
+      "camp": "mva",
+      "party": "shivsena-ubt",
+      "hostility": "structural",
+      "followers": 1320856,
+      "posts": 5931,
+      "bio": "Executive Editor, Dainik Saamana. Member of Parliament, Rajya Sabha. Shiv Sena Leader.",
+      "targets": ["mh-fadnavis", "mh-eknath-shinde", "mh-shrikant-shinde"],
+      "evidence": "api.fxtwitter.com/rautsanjay61. Surfaced by a Grok search of live X as the most prominent individual critic of Fadnavis, then verified here. Rajya Sabha MP and executive editor of Saamana, the Shiv Sena (UBT) mouthpiece — so his posts and the party newspaper's line move together.",
+      "verified_on": "2026-10-01",
+      "note": "⚠ HIS BIO SAYS 'Shiv Sena Leader' AND THAT IS MISLEADING. He is Shiv Sena (UBT) — Uddhav's faction. Since Feb 2023 the ECI has recognised Eknath Shinde's party as 'Shiv Sena', so a bio reading plain 'Shiv Sena' now points at the OPPOSITE camp from the one he belongs to. Filed by role and reporting, never by that string. Also 5,931 posts against 1.32M followers: low volume, very high reach — weight by engagement, not frequency."
+    },
+    {
+      "handle": "OfficeofUT",
+      "platform": "x",
+      "name": "Office of Uddhav Thackeray",
+      "camp": "mva",
+      "party": "shivsena-ubt",
+      "hostility": "structural",
+      "followers": 1653876,
+      "posts": 4275,
+      "bio": "Official account of the Office of @ShivSenaUBT_ Party President Shri Uddhavsaheb Thackeray | Former Chief Minister of Maharashtra",
+      "targets": ["mh-eknath-shinde", "mh-shrikant-shinde", "mh-fadnavis"],
+      "evidence": "api.fxtwitter.com/OfficeofUT",
+      "verified_on": "2026-10-01",
+      "note": "1.65M followers on only 4,275 posts — high reach, low volume. Each post carries far more weight than the raw count suggests; weight by engagement, not frequency."
+    },
+    {
+      "handle": "NCPspeaks",
+      "platform": "x",
+      "name": "Nationalist Congress Party - Sharadchandra Pawar",
+      "camp": "mva",
+      "party": "ncp-sp",
+      "hostility": "structural",
+      "followers": 764558,
+      "posts": 78050,
+      "bio": "Official Twitter account of Nationalist Congress Party - Sharadchandra Pawar",
+      "targets": ["mh-sunetra-pawar", "mh-fadnavis", "mh-eknath-shinde"],
+      "evidence": "api.fxtwitter.com/NCPspeaks — Sharad Pawar's faction's party account.",
+      "verified_on": "2026-10-01",
+      "note": "Also the main AMPLIFIER for Sharad Pawar and Rohit Pawar, two of the nine. Pro-target and anti-target at once, like BJP4Maharashtra."
+    },
+    {
+      "handle": "supriya_sule",
+      "platform": "x",
+      "name": "Supriya Sule",
+      "camp": "mva",
+      "party": "ncp-sp",
+      "hostility": "personal_rivalry",
+      "followers": 1744388,
+      "posts": 57511,
+      "bio": "Working President @NCPSpeaks, Member of Parliament - Baramati Lok Sabha Constituency, Maharashtra",
+      "targets": ["mh-sunetra-pawar", "mh-fadnavis", "mh-eknath-shinde"],
+      "evidence": "api.fxtwitter.com/supriya_sule. She DEFEATED Sunetra Pawar in Baramati in the 2024 Lok Sabha election by 158,333 votes — the first direct electoral contest between two members of the Pawar family.",
+      "verified_on": "2026-10-01",
+      "note": "THE SHARPEST SINGLE RELATIONSHIP IN THIS FILE. She is Sharad Pawar's daughter, Ajit Pawar's cousin and Sunetra Pawar's sister-in-law, and she beat Sunetra at the ballot box. Sunetra Pawar has 34K followers; Supriya Sule has 1.74M — a 50× asymmetry. Any 'share of voice' comparison between them that does not account for that will read as Sunetra Pawar being ignored, when she is simply out-amplified."
+    },
+    {
+      "handle": "INCMaharashtra",
+      "platform": "x",
+      "name": "Maharashtra Congress",
+      "camp": "mva",
+      "party": "inc",
+      "hostility": "structural",
+      "followers": 296569,
+      "posts": 65924,
+      "bio": "The official Twitter handle of Maharashtra Pradesh Congress Committee",
+      "targets": ["mh-fadnavis", "mh-eknath-shinde", "mh-sunetra-pawar", "mh-shrikant-shinde"],
+      "evidence": "api.fxtwitter.com/INCMaharashtra",
+      "verified_on": "2026-10-01"
+    },
+    {
+      "handle": "INCMumbai",
+      "platform": "x",
+      "name": "Mumbai Congress",
+      "camp": "mva",
+      "party": "inc",
+      "hostility": "structural",
+      "followers": 154104,
+      "posts": 85827,
+      "posts_per_follower": 0.557,
+      "bio": "Official X account of the Mumbai Regional Congress Committee | Voice of Mumbai",
+      "targets": ["mh-fadnavis", "mh-eknath-shinde"],
+      "evidence": "api.fxtwitter.com/INCMumbai — 85,827 posts on 154K followers, a higher output-to-audience ratio than the state unit.",
+      "verified_on": "2026-10-01",
+      "note": "City-level but higher cadence than the state account. Mumbai is where the BMC contest sits, so expect concentrated activity there."
+    },
+    {
+      "handle": "mnsadhikrut",
+      "platform": "x",
+      "name": "MNS Adhikrut - मनसे अधिकृत",
+      "camp": "mva-aligned",
+      "party": "mns",
+      "hostility": "structural",
+      "followers": 495925,
+      "posts": 18985,
+      "bio": "मनसे अधिकृत - हे महाराष्ट्र नवनिर्माण सेनेचं अधिकृत ट्विटर खाते आहे.",
+      "targets": ["mh-fadnavis", "mh-eknath-shinde", "mh-shrikant-shinde"],
+      "evidence": "api.fxtwitter.com/mnsadhikrut — the MNS party account, i.e. Raj Thackeray's own party.",
+      "verified_on": "2026-10-01",
+      "note": "AMPLIFIER for Raj Thackeray, one of the nine, and adversary of the Mahayuti members. Its posture changed recently: MNS allied with Shiv Sena (UBT) on 24 Dec 2025, so content from before that date may read very differently from content after it. Do not treat its archive as one consistent stance."
+    },
+    {
+      "handle": "BJP4India",
+      "platform": "x",
+      "name": "BJP",
+      "camp": "mahayuti",
+      "party": "bjp",
+      "hostility": "structural",
+      "followers": 23044258,
+      "posts": 308689,
+      "bio": "Bharatiya Janata Party, the world's largest political party",
+      "targets": ["mh-sharad-pawar", "mh-aaditya-thackeray"],
+      "evidence": "api.fxtwitter.com/BJP4India",
+      "verified_on": "2026-10-01",
+      "note": "National, not Maharashtra-specific. 23M followers means a single post about one of the nine dwarfs anything the state accounts produce — but most of its output is irrelevant here and should be dropped by the state gate. Include for reach when Maharashtra is the subject; exclude from any volume comparison."
+    }
+  ],
+
+  "low_reach_accounts": [
+    {
+      "handle": "LifeOfAndolan1",
+      "platform": "x",
+      "name": "LifeOf Andolanjeevi",
+      "camp": "unaligned",
+      "anonymous": true,
+      "hostility": "reported",
+      "followers": 548,
+      "posts": 48830,
+      "posts_per_follower": 89.1,
+      "bio": "मुझे सनातन नहीं बहुजन का मान रखना है ! सनातन ही आतंकवाद है JaiBhim !! #IstandwithPalestine #IStandWithIran",
+      "targets": ["mh-fadnavis", "mh-eknath-shinde"],
+      "evidence": "Surfaced by Grok as posting 'गद्दार'/traitor and corruption attacks, then verified at api.fxtwitter.com/LifeOfAndolan1.",
+      "verified_on": "2026-10-01",
+      "note": "48,830 posts to 548 followers. Enormous output, almost no audience."
+    },
+    {
+      "handle": "Ambu750K",
+      "platform": "x",
+      "name": "k ambu",
+      "camp": "unaligned",
+      "anonymous": true,
+      "hostility": "reported",
+      "followers": 20,
+      "posts": 8902,
+      "posts_per_follower": 445.1,
+      "bio": "",
+      "targets": ["mh-eknath-shinde"],
+      "evidence": "Surfaced by Grok, verified at api.fxtwitter.com/Ambu750K.",
+      "verified_on": "2026-10-01",
+      "note": "445 posts per follower — 8,902 posts read by 20 people. The most extreme output-to-audience ratio in the dataset."
+    },
+    {
+      "handle": "soura_bh",
+      "platform": "x",
+      "name": "Sourabh",
+      "camp": "unaligned",
+      "anonymous": true,
+      "hostility": "reported",
+      "followers": 320,
+      "posts": 6963,
+      "posts_per_follower": 21.8,
+      "bio": "Bharatwasi",
+      "targets": ["mh-eknath-shinde"],
+      "evidence": "Surfaced by Grok, verified at api.fxtwitter.com/soura_bh.",
+      "verified_on": "2026-10-01"
+    }
+  ],
+  "_low_reach_note": "⚠ KEPT SEPARATE FROM `accounts` ON PURPOSE, AND NOT SEEDED BY DEFAULT. Grok's own assessment of these three was that they are 'not frequent or high-reach… one-off or low-engagement replies/quotes rather than sustained campaigns'. The follower counts bear that out: together they reach fewer than 900 accounts. Monitoring them costs the same API quota per cycle as @OfficeofUT, which reaches 1.65 million. VOLUME IS NOT INFLUENCE — a post nobody sees does not move sentiment, and counting these alongside party accounts would inflate an 'attack volume' figure with noise. Seed them with --low-reach only if the question is specifically about coordinated spam.",
+
+  "reference_accounts": [
+    {
+      "handle": "kunalkamra88",
+      "platform": "x",
+      "name": "Kunal Kamra",
+      "camp": "unaligned",
+      "followers": 2616042,
+      "posts": 6655,
+      "bio": "For enquires & collaborations Email - kunal@burntfilter.com",
+      "verified_on": "2026-10-01",
+      "why_listed": "NOT an adversary account. A comedian with 2.6M followers who has drawn attention for critical remarks about Maharashtra politics in the past, but Grok's check found no ongoing frequent political posting. Recorded because his reach means a single post would outweigh everything in `low_reach_accounts` combined — worth knowing about, not worth a monitoring slot."
+    },
+    {
+      "handle": "TimesNow",
+      "platform": "x",
+      "name": "TIMES NOW",
+      "camp": "news",
+      "followers": 9839208,
+      "posts": 1432198,
+      "verified_on": "2026-10-01",
+      "why_listed": "NOT an adversary. A national news channel. Filed here so nobody promotes it into the adversary list because it carried a critical story — newsrooms belong in the `news` voice bucket, and treating one as an attacker would corrupt the share-of-voice split."
+    },
+    {
+      "handle": "MahaCyber1",
+      "platform": "x",
+      "name": "Maharashtra Cyber",
+      "camp": "state_agency",
+      "followers": 164419,
+      "posts": 2859,
+      "bio": "Official account of Maharashtra Cyber. Nodal agency for cyber security and cybercrime investigation for Maharashtra.",
+      "evidence": "api.fxtwitter.com/MahaCyber1",
+      "verified_on": "2026-10-01",
+      "why_listed": "NOT an adversary — a source. This is the agency that flagged ~429 AI-generated and deepfake handles around the July 2026 CJP protests, roughly 100 of them operating from outside India. It is the most likely public origin of any named list of coordinated accounts, which is exactly the gap this file cannot fill from profile data. Worth monitoring for that reason alone."
+    }
+  ]
+}

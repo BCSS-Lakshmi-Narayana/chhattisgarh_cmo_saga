@@ -1848,6 +1848,9 @@ const performFullAnalysis = async (content, settings, keywords, options = {}) =>
     const analysisId = uuidv4();
     const analysisData = await analyzeContent(textToAnalyze, {
       platform: content.platform,
+      // See the note in grievanceService: without this the row is analysed
+      // under the host client's roster and can never resolve an entity.
+      vertical: content.vertical || undefined,
       content_id: content.content_id,
       media_urls: content.media ? content.media.map(m => m.url) : [],
       content: content,

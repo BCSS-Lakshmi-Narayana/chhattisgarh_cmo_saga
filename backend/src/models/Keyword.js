@@ -23,9 +23,13 @@ const keywordSchema = new mongoose.Schema({
     enum: ['violence', 'threat', 'hate', 'other'],
     required: true
   },
+  // 'hne' is Chhattisgarhi, from the host deployment. 'mr' is Marathi, added
+  // for the Maharashtra vertical — without it a Marathi keyword fails schema
+  // validation and the seed throws, which is loud but only after the fact.
+  // Purely additive: no existing row changes and the default is unchanged.
   language: {
     type: String,
-    enum: ['en', 'hi', 'hne', 'all'],
+    enum: ['en', 'hi', 'hne', 'mr', 'all'],
     default: 'en'
   },
   // Scope: a keyword can be statewide (party-wide) or tied to a single AC.

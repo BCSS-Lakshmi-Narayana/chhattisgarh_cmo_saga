@@ -56,7 +56,21 @@
     "seed:mh": "node scripts/seed_mh_vertical.js",
     "report:mh": "node scripts/mh_daily_report.js",
     "backfill:vertical": "node scripts/backfill_vertical_cg.js",
-    "test:vertical:http": "node scripts/test_vertical_http.js"
+    "test:vertical:http": "node scripts/test_vertical_http.js",
+    "test:mh-adversaries": "node scripts/test_mh_adversaries.js",
+    "seed:mh-adversaries": "node scripts/seed_mh_adversary_sources.js",
+    "seed:mh-keywords": "node scripts/seed_mh_criticism_keywords.js",
+    "seed:mh-mentions": "node scripts/seed_mh_grievance_sources.js",
+    "seed:mh-antigovt": "node scripts/seed_mh_anti_govt_sources.js",
+    "rescore:mh": "node scripts/rescore_mh.js",
+    "verify:brief": "node scripts/verify_brief_panels.js",
+    "test:brief-report": "node scripts/test_brief_report.js",
+    "test:mh-entities": "node scripts/test_mh_entities.js",
+    "fetch:mh-leaders": "node scripts/fetch_mh_leaders.js",
+    "dedupe:mh-mentions": "node scripts/dedupe_mh_grievance_sources.js",
+    "seed:mh-thresholds": "node scripts/seed_mh_alert_thresholds.js",
+    "report:mh-leaders": "node scripts/build_mh_leader_reports.js",
+    "fetch:mh-deep": "node scripts/fetch_mh_deep.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.983.0",

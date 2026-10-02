@@ -54,10 +54,12 @@ function isValidCanonicalResult(result) {
  * exception, so the caller retries it (bounded) and never marks it
  * 'complete'.
  */
-async function analyzeLiveComment(text) {
+async function analyzeLiveComment(text, vertical) {
   try {
     const result = await withForcedProvider('ollama', () =>
-      analyzeContent(text, { platform: 'youtube_live', skipForensics: true })
+      // Same rule as every other analysis path: the roster is chosen by
+      // vertical, and omitting it scores the message under the host client's.
+      analyzeContent(text, { platform: 'youtube_live', skipForensics: true, vertical })
     );
     if (!isValidCanonicalResult(result)) {
       return { ok: false, reason: (result && result.explanation) || 'canonical_engine_incomplete_result' };

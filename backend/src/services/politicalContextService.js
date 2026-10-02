@@ -160,6 +160,7 @@ const ADMIN_BLAME_RX = /negligen|administration|government|govt|sarkar|pothole|c
 
 const { hasStateSignal } = require('../utils/stateSignal');
 const { DEFAULT_VERTICAL } = require('../config/verticals');
+const mhEntities = require('../config/mhPoliticalEntities');
 
 const CEREMONIAL_RX = /(श्रद्धांजलि|श्रद्धा सुमन|जयंती|पुण्यतिथि|पुण्य तिथि|बलिदान दिवस|शहादत दिवस|शोक संवेदना|निधन|tribute|condolence|birth anniversary|death anniversary|jayanti|punyatithi|homage|rest in peace|\brip\b)/i;
 
@@ -176,7 +177,8 @@ const containsCivicSignal = (lowerText) => {
  * first appearance plus a per-entity match metadata bag.
  */
 /** The roster entity whose handle is exactly `handle`, or null. */
-const resolveAuthorEntity = (handle) => {
+const resolveAuthorEntity = (handle, vertical = DEFAULT_VERTICAL) => {
+    if (vertical === 'mh') return mhEntities.mhResolveAuthorEntity(handle);
     const bare = String(handle || '').trim().replace(/^@+/, '').toLowerCase();
     if (!bare) return null;
     const keys = [...new Set(
@@ -197,7 +199,17 @@ const resolveAuthorEntity = (handle) => {
     };
 };
 
-const findMentionedEntities = (text) => {
+/**
+ * Which roster to scan with.
+ *
+ * Entity resolution is the first step of the whole pipeline: no entities
+ * means no target, which means `unrelated`, which means no stance. Running
+ * the host roster against another vertical's text resolved nothing at all —
+ * Maharashtra sat at 8% stance coverage against Chhattisgarh's 53% for
+ * exactly this reason.
+ */
+const findMentionedEntities = (text, vertical = DEFAULT_VERTICAL) => {
+    if (vertical === 'mh') return mhEntities.mhFindMentionedEntities(text);
     const raw = String(text || '');
     const lower = ` ${raw.toLowerCase()} `; // pad for boundary detection
     const seen = new Map();
@@ -227,14 +239,31 @@ const findMentionedEntities = (text) => {
     return [...seen.values()];
 };
 
+/**
+ * Alignment checks read the MENTION, not the roster.
+ *
+ * `isAlly(key)` and friends look the key up in the host deployment's roster,
+ * so every Maharashtra key returned false: no target, relevance zero, mode
+ * `irrelevant`, and the post never reached scoring — entities resolved
+ * correctly and still produced nothing.
+ *
+ * Each mention already carries the `alignment` and `priority` its own roster
+ * gave it, so using those works for any vertical and cannot fall out of step
+ * with the roster that produced them.
+ */
+const mAlly = (m) => m && m.alignment === 'ally';
+const mOpposition = (m) => m && m.alignment === 'opposition';
+/** The principal: top-priority ally in this vertical's own ladder. */
+const mPrimaryTarget = (m) => !!m && m.alignment === 'ally' && (m.priority || 0) >= 94;
+
 /* ─── relevance score & mode ───────────────────────────────────────── */
 
 const computeTargetRelevance = (mentions, taggedKeyword) => {
     const tagged = String(taggedKeyword || '').toLowerCase();
 
-    const hasTarget = mentions.some((m) => isPrimaryTarget(m.key));
-    const hasAlly = mentions.some((m) => isAlly(m.key));
-    const hasOpposition = mentions.some((m) => isOpposition(m.key));
+    const hasTarget = mentions.some(mPrimaryTarget);
+    const hasAlly = mentions.some(mAlly);
+    const hasOpposition = mentions.some(mOpposition);
 
     // Direct mention of the CM / party state president → maximum relevance.
     if (hasTarget) return 1.0;
@@ -250,9 +279,9 @@ const computeTargetRelevance = (mentions, taggedKeyword) => {
 };
 
 const decideMode = ({ mentions, targetRelevance, hasCivic }) => {
-    const hasTarget = mentions.some((m) => isPrimaryTarget(m.key));
-    const hasAlly = mentions.some((m) => isAlly(m.key));
-    const hasOpposition = mentions.some((m) => isOpposition(m.key));
+    const hasTarget = mentions.some(mPrimaryTarget);
+    const hasAlly = mentions.some(mAlly);
+    const hasOpposition = mentions.some(mOpposition);
 
     if (hasTarget && hasCivic) return 'civic_grievance';
     if (hasTarget) return 'about_target';
@@ -270,7 +299,7 @@ const pickPrimaryTarget = (mentions) => {
     if (mentions.length === 0) return null;
 
     // 1. The CM / party state president always wins if present.
-    const targetHit = mentions.find((m) => isPrimaryTarget(m.key));
+    const targetHit = mentions.find(mPrimaryTarget);
     if (targetHit) return targetHit;
 
     // 2. Otherwise pick the highest-priority entity.
@@ -298,11 +327,11 @@ const buildPoliticalContext = (text, { taggedKeyword = '', authorHandle = '', pl
      * change or displace what the body text already resolved, which is what
      * keeps hashtags weaker evidence than the sentence.
      */
-    const mentions = findMentionedEntities(raw);
+    const mentions = findMentionedEntities(raw, vertical);
     const segmented = segmentHashtags(raw);
     if (segmented) {
         const known = new Set(mentions.map((m) => m.key));
-        for (const extra of findMentionedEntities(segmented)) {
+        for (const extra of findMentionedEntities(segmented, vertical)) {
             if (known.has(extra.key)) continue;
             known.add(extra.key);
             mentions.push({ ...extra, from_hashtag: true });
@@ -336,7 +365,7 @@ const buildPoliticalContext = (text, { taggedKeyword = '', authorHandle = '', pl
      */
     // Exact handle match only: a substring scan would make @babush_fan_club
     // Babush Monserrate and @sardesairajdeep Vijai Sardesai.
-    const authorEntity = resolveAuthorEntity(authorHandle);
+    const authorEntity = resolveAuthorEntity(authorHandle, vertical);
 
     const hasCivic = containsCivicSignal(lower);
     // Tributes, condolences, anniversaries: praise there is courtesy, not a
@@ -350,9 +379,9 @@ const buildPoliticalContext = (text, { taggedKeyword = '', authorHandle = '', pl
     const mode = decideMode({ mentions, targetRelevance, hasCivic });
     const languageHints = detectLanguageHints(raw);
 
-    const hasTarget = mentions.some((m) => isPrimaryTarget(m.key));
-    const hasAlly = mentions.some((m) => isAlly(m.key));
-    const hasOpposition = mentions.some((m) => isOpposition(m.key));
+    const hasTarget = mentions.some(mPrimaryTarget);
+    const hasAlly = mentions.some(mAlly);
+    const hasOpposition = mentions.some(mOpposition);
 
     const summaryParts = [];
     if (hasTarget) summaryParts.push('mentions the CM / party state president directly');

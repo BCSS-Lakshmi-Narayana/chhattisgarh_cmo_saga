@@ -53,6 +53,8 @@ import {
 import api from '../lib/api';
 import { APP_NAVIGATION } from '../config/navigation';
 import { useRbac } from '../contexts/RbacContext';
+import BriefExportDialog from '../components/cmBrief/BriefExportDialog';
+import { BRAND } from '../config/partyMedia';
 
 /* ── palette ───────────────────────────────────────────────────────────── */
 const POS = '#15803d';
@@ -598,17 +600,20 @@ export default function CMDashboard() {
   const [err, setErr] = useState(null);
   const [busy, setBusy] = useState(true);
   const [openIssue, setOpenIssue] = useState(null);
+  const [exportOpen, setExportOpen] = useState(false);
+  // Handle focus: narrows the whole brief to one source account.
+  const [handle, setHandle] = useState('');
   // Same gate the sidebar uses, so a pill never offers a page the user
   // cannot open.
   const { hasAccess } = useRbac();
 
   const load = useCallback(() => {
     setBusy(true); setErr(null); setOpenIssue(null);
-    api.get(`/cm-dashboard/brief?days=${days}`)
+    api.get(`/cm-dashboard/brief?days=${days}${handle ? `&handle=${encodeURIComponent(handle)}` : ''}`)
       .then((r) => setData(r.data))
       .catch((e) => setErr(e?.response?.data?.message || e.message))
       .finally(() => setBusy(false));
-  }, [days]);
+  }, [days, handle]);
   useEffect(load, [load]);
 
   const c = data?.counts;
@@ -641,7 +646,10 @@ export default function CMDashboard() {
   }, [data]);
 
   const tracking = useMemo(
-    () => (data?.issue_tracking || []).filter((t) => t.total >= 10).slice(0, 8),
+    // Threshold comes from the API, which scales it to the dataset. A
+    // hard-coded 10 is right for 3,300 mentions a month and empties the
+    // panel entirely at 200.
+    () => (data?.issue_tracking || []).filter((t) => t.total >= (data?.issue_min ?? 10)).slice(0, 8),
     [data],
   );
 
@@ -687,7 +695,10 @@ export default function CMDashboard() {
           <div>
             <h1 className="text-[23px] font-bold text-slate-900 tracking-[-0.02em]">Intelligence Brief</h1>
             <p className="text-[12.5px] text-slate-500 mt-0.5">
-              Public pulse, press coverage and open issues across Chhattisgarh
+              {/* From the API, not the build-time brand: the same deployment
+                  serves two clients and the state differs per login. */}
+              Public pulse, press coverage and open issues across{' '}
+              {data?.profile?.state || BRAND.stateName}
             </p>
           </div>
           <div className="flex items-center gap-2.5">
@@ -700,7 +711,22 @@ export default function CMDashboard() {
                 </button>
               ))}
             </div>
-            <button onClick={() => window.print()}
+            {/* Handle focus. The list is whatever actually posted in this
+                window, so it never offers an account with nothing to show. */}
+            {(data?.available_handles || []).length > 0 && (
+              <select value={handle} onChange={(e) => setHandle(e.target.value)}
+                className="px-3 py-2 bg-white rounded-lg border border-slate-200 text-[12.5px] font-medium text-slate-700 max-w-[200px]">
+                <option value="">All handles</option>
+                {(data.available_handles || []).filter((h) => h.count >= 2).slice(0, 50).map((h) => (
+                  <option key={h.handle} value={h.handle}>@{h.handle} · {h.count}</option>
+                ))}
+              </select>
+            )}
+
+            {/* window.print() printed the SCREEN — current scroll position,
+                sidebar and all, for whichever window happened to be loaded.
+                This asks for the window you want and builds a document. */}
+            <button onClick={() => setExportOpen(true)}
               className="flex items-center gap-2 px-3.5 py-2 bg-white rounded-lg border border-slate-200 text-[13px] font-medium text-slate-700 hover:bg-slate-50">
               <Download className="h-4 w-4" /> Export
             </button>
@@ -1165,6 +1191,17 @@ export default function CMDashboard() {
           Public voice only — our own accounts, the press and opposition handles are counted separately.
         </p>
       </div>
+
+      {/* Leaders come from the window currently on screen, so the picker
+          offers names the user can actually see in the data. */}
+      <BriefExportDialog
+        open={exportOpen}
+        onClose={() => setExportOpen(false)}
+        leaders={data?.available_leaders || []}
+        handles={data?.available_handles || []}
+        appName={BRAND.appName}
+        stateName={data?.profile?.state || BRAND.stateName}
+      />
     </div>
   );
 }

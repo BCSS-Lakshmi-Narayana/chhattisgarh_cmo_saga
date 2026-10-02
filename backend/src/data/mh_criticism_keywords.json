@@ -1,0 +1,73 @@
+{
+  "_meta": {
+    "purpose": "Terms used to criticise the Maharashtra government, Chief Minister Devendra Fadnavis and his constituency. Seeded into the Keyword collection (the Mentions page) under vertical 'mh'.",
+
+    "researched": "2026-10-01, from current reporting. Tier 1 are slogans found being chanted or posted — not invented. Tier 2 are issue terms derived from live stories. Nothing here is a guessed hashtag presented as a real one.",
+
+    "language_note": "MARATHI IS THE PRIMARY LANGUAGE OF THIS DISCOURSE, not Hindi. Hindi matters specifically in Nagpur and Vidarbha — which is where Fadnavis's own seat is, so it earns its place for the constituency angle. A state-level sweep in English and Hindi alone misses most of the corpus. Note also that Marathi and Hindi share the Devanagari script, so script detection cannot tell them apart; the `language` field here is set from the term, not from the characters.",
+
+    "tiers": {
+      "1": "Slogans in active use, found in reporting. Highest signal per API call. Start here.",
+      "2": "Live issue terms, October 2026. Add once tier 1 has shown what comes back.",
+      "3": "Constituency-level — Nagpur South West. Narrow by design; low volume expected."
+    },
+
+    "quota_warning": "grievanceService.generateKeywordVariants turns ONE keyword into three queries (@term, #term, term) across up to FOUR platforms — up to 12 API calls per keyword per fetch cycle. Seeding all three tiers is roughly 60 terms, around 720 calls per cycle, on top of the 9 leader sources, 18 leader keywords and 13 adversary accounts already running. Tier by tier, not all at once.",
+
+    "not_fadnavis_specific": "⚠ `gaddar`, `50 khoke` and `vote chori` are aimed at the Mahayuti broadly and land most often on Eknath Shinde, who is ALSO one of the nine monitored leaders. Posts matching them are not automatically about the Chief Minister. Do not read a spike in these as criticism of Fadnavis without checking the target.",
+
+    "hashtags_are_inferred": "The SLOGANS below were found in reporting. The hashtag FORMS were not — they are the likely spelling of those slogans as tags. #VoteChori is near-certain given the national Congress campaign; the rest are inferences. Verify on X before relying on them: a wrong hashtag collects nothing and fails silently."
+  },
+
+  "keywords": [
+    { "term": "50 khoke", "lang": "en", "kind": "keyword", "tier": 1, "weight": 90, "about": "bribery allegation over the Shiv Sena split; the most durable anti-Mahayuti slogan" },
+    { "term": "50 खोके", "lang": "mr", "kind": "keyword", "tier": 1, "weight": 90, "about": "same, Marathi" },
+    { "term": "gaddar", "lang": "en", "kind": "keyword", "tier": 1, "weight": 85, "about": "traitor — aimed at the Shinde faction" },
+    { "term": "गद्दार", "lang": "mr", "kind": "keyword", "tier": 1, "weight": 85, "about": "same, Devanagari" },
+    { "term": "vote chori", "lang": "en", "kind": "keyword", "tier": 1, "weight": 95, "about": "Rahul Gandhi's charge over the civic-poll indelible ink row" },
+    { "term": "मतचोरी", "lang": "mr", "kind": "keyword", "tier": 1, "weight": 95, "about": "same, Marathi" },
+    { "term": "वोट चोरी", "lang": "hi", "kind": "keyword", "tier": 1, "weight": 95, "about": "same, Hindi" },
+    { "term": "vote chor chanda chor", "lang": "en", "kind": "keyword", "tier": 1, "weight": 90, "about": "chanted at Vidhan Bhavan against Fadnavis directly" },
+    { "term": "वोट चोर चढ़ावा चोर", "lang": "hi", "kind": "keyword", "tier": 1, "weight": 90, "about": "same, Hindi" },
+    { "term": "सातबारा कोरा करा", "lang": "mr", "kind": "keyword", "tier": 1, "weight": 85, "about": "the farm loan waiver demand — 'wipe the 7/12 land record clean'" },
+    { "term": "नक्राश्रू", "lang": "mr", "kind": "keyword", "tier": 1, "weight": 60, "about": "crocodile tears — used in both directions on drought" },
+
+    { "term": "VoteChori", "lang": "all", "kind": "hashtag", "tier": 1, "weight": 90, "about": "near-certain given the national campaign; still verify" },
+    { "term": "50Khoke", "lang": "all", "kind": "hashtag", "tier": 1, "weight": 70, "about": "INFERRED form — verify on X" },
+
+    { "term": "indelible ink", "lang": "en", "kind": "keyword", "tier": 2, "weight": 80, "about": "civic polls — marker pens, ink wiped off, SEC probe" },
+    { "term": "शाई", "lang": "mr", "kind": "keyword", "tier": 2, "weight": 70 },
+    { "term": "बोगस मतदान", "lang": "mr", "kind": "keyword", "tier": 2, "weight": 75, "about": "bogus voting" },
+    { "term": "फर्जी मतदान", "lang": "hi", "kind": "keyword", "tier": 2, "weight": 75 },
+    { "term": "marker pen voting", "lang": "en", "kind": "keyword", "tier": 2, "weight": 70 },
+    { "term": "State Election Commission Maharashtra", "lang": "en", "kind": "keyword", "tier": 2, "weight": 60 },
+
+    { "term": "कर्जमाफी", "lang": "mr", "kind": "keyword", "tier": 2, "weight": 85, "about": "farm loan waiver — the dominant farmer issue" },
+    { "term": "सरसकट कर्जमाफी", "lang": "mr", "kind": "keyword", "tier": 2, "weight": 85, "about": "unconditional waiver — the opposition's specific demand" },
+    { "term": "किसान कर्जमाफी", "lang": "hi", "kind": "keyword", "tier": 2, "weight": 80 },
+    { "term": "farm loan waiver Maharashtra", "lang": "en", "kind": "keyword", "tier": 2, "weight": 80 },
+    { "term": "दुष्काळ", "lang": "mr", "kind": "keyword", "tier": 2, "weight": 80, "about": "drought — 265 talukas declared" },
+    { "term": "Maharashtra drought relief", "lang": "en", "kind": "keyword", "tier": 2, "weight": 75 },
+    { "term": "पंचनामा", "lang": "mr", "kind": "keyword", "tier": 2, "weight": 65, "about": "crop loss survey — opposition attacked the delay to 5 Oct" },
+    { "term": "शेतकरी आत्महत्या", "lang": "mr", "kind": "keyword", "tier": 2, "weight": 80, "about": "farmer suicides" },
+    { "term": "किसान आत्महत्या", "lang": "hi", "kind": "keyword", "tier": 2, "weight": 75 },
+
+    { "term": "मराठा आरक्षण", "lang": "mr", "kind": "keyword", "tier": 2, "weight": 85, "about": "Maratha reservation" },
+    { "term": "Maratha reservation", "lang": "en", "kind": "keyword", "tier": 2, "weight": 85 },
+    { "term": "कुणबी प्रमाणपत्र", "lang": "mr", "kind": "keyword", "tier": 2, "weight": 70, "about": "Kunbi certificate — the mechanism at the centre of the quota fight" },
+    { "term": "मराठा क्रांती मोर्चा", "lang": "mr", "kind": "keyword", "tier": 2, "weight": 75 },
+
+    { "term": "MSEDCL", "lang": "en", "kind": "keyword", "tier": 2, "weight": 60, "about": "electricity distribution — 'mafia' allegations over inflated bills" },
+    { "term": "वीज बिल", "lang": "mr", "kind": "keyword", "tier": 2, "weight": 60, "about": "electricity bill" },
+    { "term": "महावितरण", "lang": "mr", "kind": "keyword", "tier": 2, "weight": 60 },
+
+    { "term": "Nagpur South West", "lang": "en", "kind": "keyword", "tier": 3, "weight": 80, "about": "Fadnavis's own assembly seat" },
+    { "term": "नागपूर दक्षिण पश्चिम", "lang": "mr", "kind": "keyword", "tier": 3, "weight": 80 },
+    { "term": "Nagpur flooding", "lang": "en", "kind": "keyword", "tier": 3, "weight": 70, "about": "a named local grievance in his constituency" },
+    { "term": "नागपूर पूर", "lang": "mr", "kind": "keyword", "tier": 3, "weight": 70 },
+    { "term": "Nagpur unemployment", "lang": "en", "kind": "keyword", "tier": 3, "weight": 65 },
+    { "term": "नागपूर बेरोजगारी", "lang": "mr", "kind": "keyword", "tier": 3, "weight": 65 },
+    { "term": "Fadnavis poll petition", "lang": "en", "kind": "keyword", "tier": 3, "weight": 75, "about": "Bombay High Court summons over his 2024 win, filed by Congress's Prafulla Gudadhe alleging corrupt practices — a personal legal line, not a policy one" },
+    { "term": "Prafulla Gudadhe", "lang": "en", "kind": "keyword", "tier": 3, "weight": 70, "about": "the petitioner" }
+  ]
+}

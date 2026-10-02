@@ -399,9 +399,16 @@ const analyzeGrievanceContent = async (grievanceId, text, platform) => {
         // can use them as deterministic signal (alongside the text).
         let grievanceCtx = null;
         try {
+            // `vertical` MUST be in this projection. It is passed to
+            // analyzeContent below to pick which client's roster and state
+            // rules apply; left out it reads as undefined, every post is
+            // analysed under the host client's rules, and a Maharashtra post
+            // naming @mieknathshinde resolves to target=none, mode=irrelevant
+            // and stance=unrelated — which is exactly what the rescore run
+            // was producing.
             const grievanceDoc = await Grievance.findOne(
                 { id: grievanceId },
-                'content.media posted_by.handle tagged_account'
+                'content.media posted_by.handle tagged_account vertical'
             ).lean();
             grievanceCtx = grievanceDoc;
             const videoItems = (grievanceDoc?.content?.media || [])
@@ -428,7 +435,19 @@ const analyzeGrievanceContent = async (grievanceId, text, platform) => {
             platform: platform || 'x',
             skipForensics: true,
             taggedKeyword: grievanceCtx?.tagged_account || '',
-            authorHandle: grievanceCtx?.posted_by?.handle || ''
+            authorHandle: grievanceCtx?.posted_by?.handle || '',
+            /**
+             * ⚠ WITHOUT THIS EVERY NON-HOST ROW IS SCORED `unrelated`.
+             *
+             * buildPoliticalContext defaults to the host vertical, so a
+             * Maharashtra post was checked for a CHHATTISGARH state signal,
+             * found none, and politicalSentimentService then forced the
+             * stance to `unrelated`. Measured on live data before this fix:
+             * 176 of 195 Maharashtra grievances scored `unrelated` — 8% of
+             * the corpus carried any stance at all, so the brief had almost
+             * nothing to count.
+             */
+            vertical: grievanceCtx?.vertical || undefined,
         });
         if (!isAnalysisComplete(analysisData)) {
             await markGrievancePending(grievanceId, (analysisData?.analysis_incomplete_reasons || []).join(',') || analysisData?.explanation || 'incomplete');
@@ -602,15 +621,31 @@ const passesKeywordGate = (text, handle, keywordPhrase, vertical = DEFAULT_VERTI
     return hasStateSignal(`${text || ''} ${handle || ''}`, buildPoliticalContext(text || '', { vertical }).mentioned_entities || [], vertical);
 };
 
-let _keywordCache = { ts: 0, data: [] };
+/**
+ * Keyed by vertical, not a single slot.
+ *
+ * The query below IS vertical-filtered by the schema plugin, but the cache in
+ * front of it was not: whichever vertical warmed it first served every caller
+ * for the next 60 seconds. A fetch scoped to Maharashtra would quietly run
+ * Chhattisgarh's keyword list, and vice versa — the database filter working
+ * perfectly while the answer came from memory. Same failure the response
+ * cache had; see the namespacing note in services/cacheService.js.
+ *
+ * The unscoped case (background collection, which must see every vertical)
+ * gets its own slot under 'all'.
+ */
+const _keywordCache = new Map();
 const KEYWORD_CACHE_TTL_MS = 60 * 1000;
 const getActiveKeywordsCached = async () => {
+    const { currentVerticals } = require('../config/verticals');
+    const v = currentVerticals();
+    const slot = v ? v.join('+') : 'all';
     const now = Date.now();
-    if (now - _keywordCache.ts < KEYWORD_CACHE_TTL_MS && _keywordCache.data.length > 0) {
-        return _keywordCache.data;
-    }
+    const hit = _keywordCache.get(slot);
+    if (hit && now - hit.ts < KEYWORD_CACHE_TTL_MS && hit.data.length > 0) return hit.data;
+
     const data = await Keyword.find({ is_active: true }).lean();
-    _keywordCache = { ts: now, data };
+    _keywordCache.set(slot, { ts: now, data });
     return data;
 };
 
@@ -1923,11 +1958,59 @@ const createGrievanceFromPost = async (post, platform, taggedKeyword, forceLocat
 /**
  * Fetch content from Facebook, Instagram, and YouTube
  * matching keywords from the Keyword model.
+ *
+ * ── WHY `only` AND `first` EXIST ─────────────────────────────────────
+ * A keyword takes roughly nine minutes to work through its variants across
+ * the platforms, and this loop walks the keyword list in INSERTION order.
+ * With 61 Maharashtra keywords that is a nine-hour pass, so a run that is
+ * interrupted — or simply looked at too early — has covered only the first
+ * few. Measured on 2026-10-01: keywords 1–8 had data, 9 onward had none,
+ * which read as "we have no coverage of Sharad Pawar" when it really meant
+ * "the fetch never reached him".
+ *
+ * Insertion order also decides who loses. The nine leaders sit at 1–18 and
+ * the issue keywords at 19–61, so leaders 5–9 are behind eight other names
+ * every single run and are always the ones missing at report time.
+ *
+ * `only` restricts the pass to named keywords; `first` just reorders, so a
+ * full pass still happens but the names that must be in tomorrow's report
+ * are collected before anything else.
+ *
  * @param {string|null} platformFilter - 'facebook', 'instagram', 'youtube', or null for all
+ * @param {object}  [opts]
+ * @param {string[]} [opts.only]  - run ONLY these keywords (case-insensitive)
+ * @param {string[]} [opts.first] - run these keywords before the rest
  */
-const fetchKeywordGrievances = async (platformFilter = null) => {
+const fetchKeywordGrievances = async (platformFilter = null, opts = {}) => {
     try {
-        const keywords = await Keyword.find({ is_active: true });
+        let keywords = await Keyword.find({ is_active: true });
+
+        const norm = (s) => String(s || '').replace(/^[@#]+/, '').trim().toLowerCase();
+        if (opts.only && opts.only.length) {
+            // The caller's ORDER is the point, not just the membership: the
+            // reason to restrict the run is usually to collect a starved name
+            // before a well-covered one. Filtering alone left the list in DB
+            // insertion order, so `--thin-first` printed the right plan and
+            // then fetched in exactly the order it was trying to avoid.
+            const rank = new Map(opts.only.map((k, i) => [norm(k), i]));
+            const before = keywords.length;
+            keywords = keywords
+                .filter((k) => rank.has(norm(k.keyword)))
+                .sort((a, b) => rank.get(norm(a.keyword)) - rank.get(norm(b.keyword)));
+            console.log(`[KeywordFetch] Restricted to ${keywords.length} of ${before} keywords, `
+                + 'in the order given');
+            for (const w of opts.only) {
+                if (!keywords.some((k) => norm(k.keyword) === norm(w))) {
+                    console.log(`[KeywordFetch]   NOT IN DB, skipped: "${w}"`);
+                }
+            }
+            console.log(`[KeywordFetch] Order: ${keywords.map((k) => k.keyword).join(' → ')}`);
+        } else if (opts.first && opts.first.length) {
+            const rank = new Map(opts.first.map((k, i) => [norm(k), i]));
+            const at = (k) => (rank.has(norm(k.keyword)) ? rank.get(norm(k.keyword)) : rank.size);
+            keywords = [...keywords].sort((a, b) => at(a) - at(b));
+            console.log(`[KeywordFetch] ${opts.first.length} keywords promoted to the front`);
+        }
 
         if (keywords.length === 0) {
             console.log('[KeywordFetch] No active keywords configured');

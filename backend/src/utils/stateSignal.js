@@ -76,9 +76,25 @@ const MH_NAME_RX = new RegExp(
     'iu',
 );
 
+/**
+ * Any entity from the Maharashtra roster is in-state context.
+ *
+ * The nine monitored leaders are not the whole state. "Uddhav Thackeray
+ * slams the Mahayuti government" names neither a district nor one of the
+ * nine, so it failed the gate and was scored `unrelated` — a post plainly
+ * about Maharashtra politics, discarded. The roster knows every party,
+ * scheme and institution; use it.
+ */
+let _mhRoster = null;
+const mhRosterHas = (text) => {
+    if (!_mhRoster) _mhRoster = require('../config/mhPoliticalEntities');
+    return _mhRoster.mhFindMentionedEntities(text).length > 0;
+};
+
 const hasMhSignal = (text, entities = []) => {
     const t = String(text || '');
     if ((entities || []).some((e) => e && MH_LEADER_KEYS.has(e.key))) return true;
+    if (t && mhRosterHas(t)) return true;
     if (MH_WORD_RX.test(t)) return true;
     if (MH_NATIVE_STEM && stripNukta(t).includes(MH_NATIVE_STEM)) return true;
     if (MH_NAME_RX.test(t)) return true;
