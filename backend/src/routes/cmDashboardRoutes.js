@@ -17,6 +17,7 @@ const express = require('express');
 
 const router = express.Router();
 const { getCMBrief } = require('../controllers/cmDashboardController');
+const { renderBriefPdf } = require('../controllers/briefPdfController');
 const { protect } = require('../middleware/authMiddleware');
 
 router.use(protect);
@@ -27,5 +28,14 @@ router.use(protect);
  * findings no single module can produce alone.
  */
 router.get('/brief', getCMBrief);
+
+/**
+ * POST /api/cm-dashboard/brief/pdf
+ * The client sends the exact document it would otherwise have downloaded;
+ * Chrome's own print engine turns it into a PDF with real text and the
+ * report's print stylesheet honoured. See controllers/briefPdfController
+ * for why this is server-side and what it refuses to load.
+ */
+router.post('/brief/pdf', renderBriefPdf);
 
 module.exports = router;

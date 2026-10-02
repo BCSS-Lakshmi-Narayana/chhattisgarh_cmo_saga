@@ -20,7 +20,7 @@
 import React, { useMemo, useState } from 'react';
 import { Download, X, CalendarDays, User, AtSign, Loader2, FileText } from 'lucide-react';
 import api from '../../lib/api';
-import { openBriefReport, downloadBriefReport } from '../../lib/briefReport';
+import { openBriefReport, downloadBriefReport, downloadBriefPdf } from '../../lib/briefReport';
 
 const todayStr = () => new Date().toISOString().slice(0, 10);
 const daysAgoStr = (d) => new Date(Date.now() - d * 86400000).toISOString().slice(0, 10);
@@ -66,6 +66,8 @@ export default function BriefExportDialog({
     const [busy, setBusy] = useState(false);
     const [err, setErr] = useState(null);
     const [progress, setProgress] = useState(null);
+    /* Told plainly rather than leaving the user to wonder why they got .html */
+    const [fellBack, setFellBack] = useState(false);
 
     // Only handles that actually posted enough to make a report worth reading.
     const usableHandles = useMemo(
@@ -100,15 +102,34 @@ export default function BriefExportDialog({
     };
 
     const deliver = async (data) => {
-        const opts = { appName, stateName };
+        // `api` lets the report module post to the PDF renderer with the
+        // same bearer token the rest of the app uses.
+        const opts = { appName, stateName, api };
         // Many documents always download: opening 30 tabs is blocked, and 30
         // print dialogs in a row is not usable either.
-        if (delivery === 'download' || jobCount > 3) { downloadBriefReport(data, opts); return; }
+        if (delivery === 'download' || jobCount > 3) {
+            /**
+             * PDF, not HTML.
+             *
+             * The server drives Chrome's own print engine, so the file is
+             * what "Print / Save as PDF" would have produced by hand — real
+             * selectable text, the report's print stylesheet honoured — and
+             * it is what a client can be sent without them having to open a
+             * browser and print it themselves.
+             *
+             * It falls back to HTML if the renderer is unavailable, so a
+             * busy server costs fidelity rather than the report.
+             */
+            const got = await downloadBriefPdf(data, opts);
+            if (got === 'html') setFellBack(true);
+            return;
+        }
         await openBriefReport(data, opts);
     };
 
     const run = async () => {
         setErr(null);
+        setFellBack(false);
         if (!from || !to || to < from) { setErr('Pick an end date on or after the start date.'); return; }
         if (handleMode === 'one' && !handle) { setErr('Pick a handle, or choose "All handles".'); return; }
         if (leaderMode === 'one' && !leader) { setErr('Pick a leader, or choose "Combined".'); return; }
@@ -262,6 +283,13 @@ export default function BriefExportDialog({
                             {seg('download', delivery, setDelivery, 'Download files')}
                         </div>
                     </Field>
+
+                    {fellBack && !err && (
+                        <div className="text-[12px] text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                            The PDF renderer was unavailable, so these downloaded as HTML.
+                            They open in any browser and print to PDF from there.
+                        </div>
+                    )}
 
                     {err && (
                         <div className="text-[12px] text-rose-600 bg-rose-50 border border-rose-100 rounded-lg px-3 py-2">
