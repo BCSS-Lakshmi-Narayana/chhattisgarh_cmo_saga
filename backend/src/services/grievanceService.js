@@ -1,6 +1,7 @@
 const axios = require('axios');
 const { DEFAULT_VERTICAL } = require('../config/verticals');
 const { topicFor } = require('../utils/mhTopicLexicon');
+const { interleaveByVertical } = require('../utils/tenantRotation');
 const { responseLooksDoubleEncoded } = require('../utils/textEncoding');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
@@ -1454,7 +1455,15 @@ const upsertGrievancesForSource = async (source, startDate = null, endDate = nul
  */
 const fetchAllGrievances = async (startDate = null, endDate = null) => {
     try {
-        const sources = await GrievanceSource.find({ is_active: true });
+        /**
+         * Rotated for the same reason as the keyword queue: all 19 active
+         * sources were last fetched 220-246 minutes ago, Chhattisgarh's
+         * first, and a pass that stalls partway never reaches the tail.
+         */
+        const sources = interleaveByVertical(
+            await GrievanceSource.find({ is_active: true }),
+            'grievance sources',
+        );
         let totalNew = 0;
 
         for (const source of sources) {
@@ -2064,6 +2073,9 @@ const fetchKeywordGrievances = async (platformFilter = null, opts = {}) => {
             const at = (k) => (rank.has(norm(k.keyword)) ? rank.get(norm(k.keyword)) : rank.size);
             keywords = [...keywords].sort((a, b) => at(a) - at(b));
             console.log(`[KeywordFetch] ${opts.first.length} keywords promoted to the front`);
+        } else {
+            /* Round-robin across tenants - see utils/tenantRotation. */
+            keywords = interleaveByVertical(keywords, 'keyword fetch');
         }
 
         if (keywords.length === 0) {
