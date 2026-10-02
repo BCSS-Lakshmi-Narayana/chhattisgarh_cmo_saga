@@ -1133,7 +1133,62 @@ const getCMBrief = async (req, res) => {
       chiefPrev = tally(prevOrganic);
     }
 
-    const principal = {
+    /**
+     * When a leader is selected, the Spotlight is about THEM.
+     *
+     * It was pinned to the vertical's chief, so filtering the whole brief
+     * to Manoj Jarange Patil still produced a panel headed "CHIEF MINISTER
+     * / Devendra Fadnavis - 6 mentions naming him". Every other panel had
+     * narrowed to Jarange; this one answered a question nobody asked, and
+     * the 6 was Fadnavis's count WITHIN Jarange's filtered set, which is a
+     * number with no meaning at all.
+     *
+     * The focus leader's own tally replaces it, counted the same way.
+     */
+    const focusLeader = leaderFilter && vProfile ? (() => {
+      const namesFocus = (d) => mhMatch.namesLeader(d, leaderFilter);
+      const tally = (rows) => {
+        const hits = rows.filter(namesFocus);
+        let pro = 0; let anti = 0; let neutral = 0;
+        for (const d of hits) {
+          const side = sideOf(d.analysis?.political_stance);
+          if (side === 'pro') pro += 1;
+          else if (side === 'anti') anti += 1;
+          else if (side === 'neutral') neutral += 1;
+        }
+        return {
+          mentions: hits.length,
+          pro,
+          anti,
+          neutral,
+          net: netScore(pro, anti, neutral),
+          confident: hits.length >= MIN_CONFIDENT,
+          topics: [],
+          quotes: [],
+        };
+      };
+      const ent = mhMatch.TERMS.find((e) => e.name === leaderFilter);
+      return {
+        cur: tally(organic),
+        prev: tally(prevOrganic),
+        role: (ent && ent.role) || 'Leader',
+      };
+    })() : null;
+
+    const principal = focusLeader ? {
+      name: leaderFilter,
+      role: focusLeader.role,
+      party: OURS?.name || null,
+      party_full: OURS?.full_name || null,
+      found: focusLeader.cur.mentions > 0,
+      ...focusLeader.cur,
+      prev_mentions: focusLeader.prev.mentions,
+      prev_net: focusLeader.prev.net,
+      net_change: (focusLeader.cur.net !== null && focusLeader.prev.net !== null
+        && focusLeader.cur.mentions >= MIN_CONFIDENT
+        && focusLeader.prev.mentions >= MIN_CONFIDENT)
+        ? focusLeader.cur.net - focusLeader.prev.net : null,
+    } : {
       name: OURS?.chief || null,
       role: 'Chief Minister',
       party: OURS?.name || null,

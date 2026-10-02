@@ -708,12 +708,31 @@ export default function CMDashboard() {
   }, [data]);
   const maxLocation = topLocations[0]?.mentions || 1;
 
+  /**
+   * What the page is doing, in words.
+   *
+   * The spinner said "Loading your brief…" and only on a FIRST load — the
+   * guard was `busy && !data`, so changing the leader or the window left
+   * the old numbers on screen with nothing to say they were stale. On a
+   * thirty-day brief that is several seconds of showing one leader's
+   * figures under another leader's name.
+   */
+  const loadingWhat = [
+    leader ? `for ${leader}` : 'across all leaders',
+    handle ? `from @${handle}` : null,
+    `over the last ${days} days`,
+  ].filter(Boolean).join(' ');
+
   if (busy && !data) {
     return (
       <div className="h-full flex items-center justify-center bg-[#f6f7fb]">
         <div className="text-center">
           <RefreshCw className="h-6 w-6 text-indigo-500 animate-spin mx-auto mb-3" />
-          <div className="text-[13px] text-slate-500">Loading your brief…</div>
+          <div className="text-[13px] font-medium text-slate-700">Building the brief</div>
+          <div className="text-[12px] text-slate-500 mt-1">{loadingWhat}</div>
+          <div className="text-[11.5px] text-slate-400 mt-2">
+            Reading mentions, articles and alerts, then scoring them by issue.
+          </div>
         </div>
       </div>
     );
@@ -797,6 +816,17 @@ export default function CMDashboard() {
           </div>
         </div>
 
+        {/* A refilter keeps the previous `data` on screen, so without this the
+            page showed one leader's numbers under another leader's name for
+            the whole request. The panels dim and a bar says what is coming. */}
+        {busy && data && (
+          <div className="sticky top-0 z-20 flex items-center gap-2.5 px-4 py-2.5 rounded-lg
+                          bg-indigo-50 border border-indigo-200 text-[12.5px] text-indigo-900">
+            <RefreshCw className="h-3.5 w-3.5 animate-spin shrink-0" />
+            <span>Updating <b>{loadingWhat}</b> — the figures below are from the previous view.</span>
+          </div>
+        )}
+
         {/* Leader context. Every panel below is scoped to this person, so the
             page says who that is and where their area is — otherwise an empty
             Top Locations reads as a broken panel rather than as "nothing was
@@ -825,6 +855,10 @@ export default function CMDashboard() {
           </div>
         )}
 
+        {/* Everything below is the PREVIOUS view until the request lands, so
+            it is dimmed and inert rather than looking current. */}
+        <div className={busy && data ? 'opacity-50 pointer-events-none transition-opacity' : 'contents'}>
+
         {/* ── A · SIGNALS (all three streams) ───────────────────────────── */}
         <div className="grid grid-cols-2 xl:grid-cols-5 gap-3.5 items-stretch">
           {/* Total FIRST, because every tile after it is a subset.
@@ -849,9 +883,14 @@ export default function CMDashboard() {
 
         {/* ── B · SPOTLIGHTS ────────────────────────────────────────────── */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
-          <Spotlight Icon={Landmark} accent="#2563eb" eyebrow="Chief Minister" title={p?.name || '—'}
+          {/* Eyebrow follows the focus: with a leader selected this panel is
+              about THEM, so labelling it "Chief Minister" named the wrong
+              person while every other panel had narrowed. */}
+          <Spotlight Icon={Landmark} accent="#2563eb"
+            eyebrow={leader ? (p?.role || 'Leader') : 'Chief Minister'}
+            title={p?.name || '—'}
             pill={verdict(p?.net, p?.confident)} pillTone={verdictTone(p?.net, p?.confident)}
-            figure={n(p?.mentions)} unit="mentions naming him"
+            figure={n(p?.mentions)} unit="mentions naming them"
             footer={null}>
             {p?.mentions > 0
               ? (
@@ -877,6 +916,26 @@ export default function CMDashboard() {
               : <div className="text-[11.5px] text-slate-400">No mentions named him</div>}
           </Spotlight>
 
+          {/* Inside a leader filter this counted the client's party WITHIN that
+              leader's posts — "BJP · 0" under a Jarange view, a number with
+              no meaning. The panel states the leader's own alignment instead. */}
+          {leader && data?.leader_profile ? (
+            <Spotlight Icon={Users} accent="#7c3aed" eyebrow="Alignment"
+              title={data.leader_profile.alignment === 'ally' ? 'Ruling alliance' : 'Opposition'}
+              figure={n(p?.mentions)} unit="mentions in this window"
+              footer={null}>
+              <p className="text-[12.5px] text-slate-600 leading-relaxed">
+                {data.leader_profile.leader} is counted as
+                {data.leader_profile.alignment === 'ally'
+                  ? ' part of the ruling alliance, so criticism of them is adverse to us.'
+                  : ' opposition, so criticism of them is not adverse to us — the sentiment'
+                    + ' figures are relative to the client, not to this leader.'}
+              </p>
+              {data.leader_profile.role && (
+                <p className="text-[12px] text-slate-500 mt-2">{data.leader_profile.role}</p>
+              )}
+            </Spotlight>
+          ) : (
           <Spotlight Icon={Users} accent="#7c3aed" eyebrow="Your Party" title={party?.name || '—'}
             pill={verdict(party?.net, party?.confident)} pillTone={verdictTone(party?.net, party?.confident)}
             figure={n(party?.mentions)} unit="mentions naming the party"
@@ -904,6 +963,7 @@ export default function CMDashboard() {
               )
               : <div className="text-[11.5px] text-slate-400">No mentions named the party</div>}
           </Spotlight>
+          )}
 
           <Spotlight Icon={Layers} accent="#0d9488" eyebrow="Stance by source"
             title="Supportive against opposing"
@@ -1288,6 +1348,7 @@ export default function CMDashboard() {
           <Info className="h-3.5 w-3.5 shrink-0 text-slate-300" />
           Public voice only — our own accounts, the press and opposition handles are counted separately.
         </p>
+        </div>{/* end dim-while-refiltering wrapper */}
       </div>
 
       {/* Leaders come from the window currently on screen, so the picker
