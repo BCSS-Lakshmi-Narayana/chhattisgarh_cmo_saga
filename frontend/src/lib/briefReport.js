@@ -836,20 +836,98 @@ export const openBriefReport = async (data, opts) => {
     return 'print';
 };
 
-export const downloadBriefReport = (data, opts) => {
-    const html = buildBriefReportHtml(data, opts);
+/**
+ * Anything a filesystem will not take, out. `@` and `.` included: Windows
+ * and macOS both accept them, but a leading dot hides the file and `@` is
+ * awkward to type when someone is chasing one report out of nine.
+ */
+const fileSafe = (s) => String(s || '')
+    .replace(/[\/:*?"<>|]+/g, '')
+    .replace(/[@.]+/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+
+/**
+ * The LEADER leads the filename.
+ *
+ * It used to trail every other field, so nine reports downloaded in one go
+ * sorted together by state, cadence and date with the name last —
+ * "Maharashtra_daily_2026-10-01_2026-10-02_Devendra-Fadnavis.html". In a
+ * downloads folder that is nine near-identical rows, and finding one leader
+ * means reading to the end of each. Leading with the name sorts them by
+ * person, which is how someone looks for them.
+ */
+const briefFileSlug = (data, opts) => {
     const w = data?.window || {};
     const cad = cadenceOf(w.days, opts?.cadence);
-    const slug = [
-        (data?.profile?.state || opts?.appName || 'SAGA').replace(/\s+/g, '-'), cad,
-        String(w.from || '').slice(0, 10), String(w.to || '').slice(0, 10),
-        data?.handle ? `@${data.handle}` : null,
-        data?.leader ? String(data.leader).replace(/\s+/g, '-') : null,
+    return [
+        data?.leader ? fileSafe(data.leader)
+            : `${fileSafe(data?.profile?.state || opts?.appName || 'SAGA')}-All-Leaders`,
+        'Report',
+        data?.handle ? fileSafe(data.handle) : null,
+        cad,
+        String(w.to || '').slice(0, 10),
     ].filter(Boolean).join('_');
-    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+};
+
+export const downloadBriefReport = (data, opts) => {
+    const html = buildBriefReportHtml(data, opts);
+    const slug = briefFileSlug(data, opts);
+    saveBlob(new Blob([html], { type: 'text/html;charset=utf-8' }), `${slug}.html`);
+};
+
+/** One place that puts a blob on disk, so the PDF and HTML paths agree. */
+const saveBlob = (blob, name) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = `${slug}.html`;
+    a.href = url; a.download = name;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 2000);
+};
+
+/**
+ * Download the brief as a PDF.
+ *
+ * ── WHY THE SERVER RENDERS IT ────────────────────────────────────────
+ * The in-browser options rasterise: html2canvas screenshots the DOM, so
+ * the text stops being text — unselectable, unsearchable, tables blurred
+ * at print resolution, and a much larger file. For a document a client
+ * reads and quotes from, that is the wrong trade.
+ *
+ * The backend drives the same Chrome print engine the "Print / Save as
+ * PDF" button uses, so the file is what the user would have produced by
+ * hand — without nine print dialogs for nine leaders.
+ *
+ * ── IF IT FAILS ──────────────────────────────────────────────────────
+ * The HTML is already built and perfectly readable, so a render failure
+ * falls back to downloading that rather than losing the report. The
+ * caller is told which one it got.
+ *
+ * @returns {Promise<'pdf'|'html'>}
+ */
+export const downloadBriefPdf = async (data, opts) => {
+    const html = buildBriefReportHtml(data, opts);
+    const name = briefFileSlug(data, opts);
+    const api = opts?.api;
+    try {
+        if (!api) throw new Error('no api client supplied');
+        // The shared axios instance carries the bearer token and the base
+        // URL, so this cannot drift from how the rest of the app authenticates.
+        const res = await api.post(
+            '/cm-dashboard/brief/pdf',
+            { html, filename: name },
+            { responseType: 'blob', timeout: 60000 },
+        );
+        const blob = res?.data;
+        if (!blob || blob.size === 0) throw new Error('empty PDF');
+        if (blob.type && blob.type.includes('json')) throw new Error('server returned an error');
+        saveBlob(blob, `${name}.pdf`);
+        return 'pdf';
+    } catch (err) {
+        // Losing the report because the renderer was busy would be worse
+        // than handing over the HTML, which prints fine from a browser.
+        console.warn(`[brief] PDF render failed (${err.message}); downloading HTML instead.`);
+        saveBlob(new Blob([html], { type: 'text/html;charset=utf-8' }), `${name}.html`);
+        return 'html';
+    }
 };

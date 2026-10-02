@@ -27,7 +27,7 @@ const SRC = path.join(__dirname, '..', 'src', 'lib', 'briefReport.js');
 const load = () => {
     const src = fs.readFileSync(SRC, 'utf8').replace(/^export /gm, '');
     // eslint-disable-next-line no-new-func
-    return new Function(`${src}\nreturn { buildBriefReportHtml };`)();
+    return new Function(`${src}\nreturn { buildBriefReportHtml, downloadBriefReport };`)();
 };
 
 let pass = 0;
@@ -298,6 +298,41 @@ console.log('\n── no placeholder leaks ────────────�
 t('no bare [?] in the rendered report', !/\[\?\]/.test(html));
 t('report is titled for the client state, not the host',
     html.includes('Maharashtra') && !/Chhattisgarh Political/.test(html));
+
+console.log('\n── download filenames ────────────────────────────\n');
+
+/**
+ * Nine reports land in one folder together, so the leader has to lead the
+ * name. It used to trail the state, the cadence and both dates.
+ */
+{
+    const { downloadBriefReport } = load();
+    const realBlob = global.Blob; const realURL = global.URL; const realDoc = global.document;
+    let captured = null;
+    global.Blob = function Blob() {};
+    global.URL = { createObjectURL: () => 'blob:x', revokeObjectURL() {} };
+    global.document = {
+        createElement: () => ({ set download(v) { captured = v; }, set href(v) {}, click() {}, remove() {} }),
+        body: { appendChild() {} },
+    };
+    const nameFor = (leader) => { downloadBriefReport({ ...nil, leader }, {}); return captured; };
+
+    t('leader name leads the filename',
+        nameFor('Devendra Fadnavis').startsWith('Devendra-Fadnavis_Report'), nameFor('Devendra Fadnavis'));
+    t('spaces become hyphens',
+        nameFor('Manoj Jarange Patil').startsWith('Manoj-Jarange-Patil_Report'), nameFor('Manoj Jarange Patil'));
+    t('a dotted title does not produce a hidden file',
+        nameFor('Dr. Shrikant Shinde').startsWith('Dr-Shrikant-Shinde'), nameFor('Dr. Shrikant Shinde'));
+    t('combined export is named, not blank',
+        nameFor(null).includes('All-Leaders'), nameFor(null));
+    t('no filesystem-hostile characters survive',
+        !/[\/:*?"<>|@]/.test(nameFor('A/B:C*D?E"F<G>H|I@J')), nameFor('A/B:C*D?E"F<G>H|I@J'));
+    t('each leader gets a distinct filename',
+        new Set(['Devendra Fadnavis', 'Eknath Shinde', 'Sharad Pawar', 'Rohit Pawar'].map(nameFor)).size === 4);
+    t('the name ends in .html', nameFor('Raj Thackeray').endsWith('.html'), nameFor('Raj Thackeray'));
+
+    global.Blob = realBlob; global.URL = realURL; global.document = realDoc;
+}
 
 console.log(`\n  ${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);
