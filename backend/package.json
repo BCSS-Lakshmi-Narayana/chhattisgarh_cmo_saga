@@ -81,7 +81,9 @@
     "test:mh-geography": "node scripts/test_mh_geography.js",
     "test:mh-topics": "node scripts/test_mh_topics.js",
     "backfill:mh-topics": "node scripts/backfill_mh_topics.js",
-    "db:indexes": "node scripts/add_vertical_indexes.js"
+    "db:indexes": "node scripts/add_vertical_indexes.js",
+    "test:rotation": "node scripts/test_tenant_rotation.js",
+    "verify:rotation": "node scripts/verify_rotation_live.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.983.0",

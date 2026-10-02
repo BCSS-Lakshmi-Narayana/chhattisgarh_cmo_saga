@@ -14,6 +14,7 @@
  */
 
 const { EventEmitter } = require('events');
+const { interleaveByVertical } = require('../utils/tenantRotation');
 const reader = require('./youtubeLiveChatReader');
 const LiveStream = require('../models/LiveStream');
 const LiveChatMessage = require('../models/LiveChatMessage');
@@ -1420,7 +1421,13 @@ const runWatcherOnce = async ({ forceRefresh = false } = {}) => {
     if (watcherRunning) return;
     watcherRunning = true;
     try {
-        const channels = await LiveStream.find({ is_active: true }).lean();
+        /* Rotated across tenants: this loop awaits each channel in turn, so
+         * insertion order would make one client's channels wait behind
+         * another's. See utils/tenantRotation. */
+        const channels = interleaveByVertical(
+            await LiveStream.find({ is_active: true }).lean(),
+            'youtube live channels',
+        );
         for (const ch of channels) {
             try {
                 await checkChannel(ch, { forceRefresh });

@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const { DEFAULT_VERTICAL, runWithVerticals } = require('../config/verticals');
+const { interleaveByVertical } = require('../utils/tenantRotation');
 const { TwitterApi } = require('twitter-api-v2');
 const blugateClient = require('./blugateClient');
 const youtubeChannels = require('./youtubeChannelService');
@@ -2172,8 +2173,20 @@ const startMonitoring = async () => {
         //console.warn("No API credentials configured (BluGate/X/Facebook). Monitoring may fail. ");
       }
 
-      const sources = await Source.find({ is_active: true });
-      let keywords = await Keyword.find({ is_active: true });
+      /**
+       * Rotated across tenants. Insertion order put Chhattisgarh's sources
+       * and keywords ahead of Maharashtra's in every cycle, so a cycle that
+       * ran out of time never reached the newer client at all.
+       * See utils/tenantRotation.
+       */
+      const sources = interleaveByVertical(
+        await Source.find({ is_active: true }),
+        'monitored sources',
+      );
+      let keywords = interleaveByVertical(
+        await Keyword.find({ is_active: true }),
+        'monitor keywords',
+      );
 
       // Quick visibility into platform mix for this cycle.
       const platformCounts = sources.reduce((acc, s) => {
@@ -2238,7 +2251,9 @@ const startMonitoring = async () => {
         }
       }
       await autoArchiveEndedEvents();
-      const activeEvents = await getActiveEvents();
+      /* Events too: a client creating many events must not push another
+       * client's events out of the cycle. */
+      const activeEvents = interleaveByVertical(await getActiveEvents(), 'events');
 
       for (const event of activeEvents) {
         const pollMinutes = event.polling_interval_minutes || Math.max(3, Math.floor((settings.monitoring_interval_minutes || 5) / 2));
