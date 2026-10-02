@@ -80,7 +80,8 @@
     "repair:mh-data": "node scripts/repair_mh_data.js",
     "test:mh-geography": "node scripts/test_mh_geography.js",
     "test:mh-topics": "node scripts/test_mh_topics.js",
-    "backfill:mh-topics": "node scripts/backfill_mh_topics.js"
+    "backfill:mh-topics": "node scripts/backfill_mh_topics.js",
+    "db:indexes": "node scripts/add_vertical_indexes.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.983.0",
