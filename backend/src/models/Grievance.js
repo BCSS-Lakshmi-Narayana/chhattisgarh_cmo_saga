@@ -434,7 +434,15 @@ const grievanceSchema = new mongoose.Schema({
     misinformation_probability: { type: Number, default: 0 },
     language_detected: { type: String },
     political_reasoning: { type: String },
-    political_provider: { type: String }
+    political_provider: { type: String },
+    /**
+     * Maharashtra only — who the tone was aimed at, among the nine monitored
+     * leaders, and the leader-relative sentiment derived from it. Absent on
+     * every Chhattisgarh row and on Maharashtra rows analysed before this
+     * existed; the single-leader report leaves those out of its score.
+     * See utils/mhLeaderTarget.js.
+     */
+    leader_target: { type: mongoose.Schema.Types.Mixed, default: undefined }
   },
   // Detected location from tweet text/user profile/hashtags
   detected_location: {

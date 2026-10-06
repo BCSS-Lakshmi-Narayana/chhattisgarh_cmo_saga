@@ -120,7 +120,29 @@ const extractJson = (blob) => {
 
 /* ─── prompt ───────────────────────────────────────────────────────── */
 
-const buildPrompt = (text, ctx) => {
+/**
+ * The state-specific phrasing of the prompt. The host deployment's values are
+ * exactly what this file always used; Maharashtra gets its own, built from
+ * its roster (config/mhPromptProfile). Chosen per request by `vertical`, so
+ * the host client's prompt is byte-for-byte unchanged.
+ */
+const HOST_PROMPT_PROFILE = {
+    state: STATE_NAME,
+    country: COUNTRY,
+    languages: LANGUAGES_DESCRIPTION,
+    map: null, // the host map is built inline from the roster, below
+    targetExamples: `  • "Congress demands the Sai government keep its promises" → sentiment_target is the Sai government (the one being demanded of), NOT Congress (the speaker).
+  • "Mahant praised the CM's decision"   → sentiment_target is the CM (the one praised), NOT Mahant (the praiser).
+  • "Congress misled the farmers of Chhattisgarh, says a citizen" → sentiment_target is Congress (the one accused).`,
+    pairExample: `      → "Baghel gave a brilliant speech and exposed the government" ⇒ EITHER sentiment_target = Baghel with target_tone "positive", OR sentiment_target = the government with target_tone "negative". NOT Baghel with "negative".`,
+};
+
+const promptProfileFor = (vertical) => (vertical === 'mh'
+    ? require('../config/mhPromptProfile')
+    : HOST_PROMPT_PROFILE);
+
+const buildPrompt = (text, ctx, vertical) => {
+    const P = promptProfileFor(vertical);
     const mentionedList = ctx.mentioned_entities && ctx.mentioned_entities.length > 0
         ? ctx.mentioned_entities
             .map((m) => `  • ${m.canonical} — ${m.alignment} of ${OUR_PARTY.name}${m.party ? ` (${m.party})` : ''}`)
@@ -136,7 +158,7 @@ const buildPrompt = (text, ctx) => {
     // the model articulates its read of the text first and labels it second,
     // instead of committing to a label and writing a reasoning line to match.
     // This is what prevents "reasoning says critical, sentiment says positive".
-    return `You are a factual extractor for political media monitoring in ${STATE_NAME}, ${COUNTRY}. Posts may be written in ${LANGUAGES_DESCRIPTION}.
+    return `You are a factual extractor for political media monitoring in ${P.state}, ${P.country}. Posts may be written in ${P.languages}.
 
 Read the input text and return STRICT JSON only, with these fields IN THIS ORDER:
 "english_translation", "candidate_actors" (array of {text, span}), "candidate_subjects" (array of {text, span, subject_type}), "praised" (array of {text}: every person, party or government the text speaks FAVOURABLY about — praise, thanks, credit, support, defence), "criticised" (array of {text}: every person, party or government the text speaks UNFAVOURABLY about — attack, blame, accusation, demand, mockery), "sentiment_target" (object {text, span} or null — see below), "reasoning" (ONE line; write this BEFORE deciding the tones below — it must justify them, not restate them), "target_tone" (positive|negative|neutral), "generic_sentiment" (positive|negative|neutral — the overall mood of the WHOLE text; must agree with "reasoning"), "emotion" (anger|joy|fear|sadness|frustration|hope|pride|sarcasm|concern|neutral — must agree with "reasoning"), "language_detected".
@@ -145,9 +167,7 @@ Do NOT output any client-perspective verdict (stance, beneficiary, who benefits)
 
 ── "sentiment_target" ────────────────────────────────────────────────
 The ONE person, party or government the tone is directed AT: the entity being praised, criticised, blamed, demanded of, or defended. This is NOT necessarily who is speaking or posting.
-  • "Congress demands the Sai government keep its promises" → sentiment_target is the Sai government (the one being demanded of), NOT Congress (the speaker).
-  • "Mahant praised the CM's decision"   → sentiment_target is the CM (the one praised), NOT Mahant (the praiser).
-  • "Congress misled the farmers of Chhattisgarh, says a citizen" → sentiment_target is Congress (the one accused).
+${P.targetExamples}
   • A politician posting about a GOVERNMENT ORDER, policy, police action or scheme is targeting the GOVERNMENT that issued it, even if the government is not named again in that sentence.
   • Use the entity's name as it appears in the text. Return null if the tone is not aimed at any person/party/government.
 
@@ -169,7 +189,7 @@ A post very commonly SUPPORTS one group while ATTACKING the target. Judge ONLY t
   • Treat as target_tone "neutral": only when the reported facts are genuinely neither damaging nor crediting (schedules, routine meetings, announcements with no evaluation, weather, statistics).
   • If sentiment_target is null, set target_tone to "neutral".
   • "sentiment_target" and "target_tone" MUST describe the SAME entity. When a post praises one side AND attacks the other, choose ONE entity as sentiment_target and give the tone toward THAT entity — never the target of one clause with the tone of the other.
-      → "Baghel gave a brilliant speech and exposed the government" ⇒ EITHER sentiment_target = Baghel with target_tone "positive", OR sentiment_target = the government with target_tone "negative". NOT Baghel with "negative".
+${P.pairExample}
 
 ── "generic_sentiment" ───────────────────────────────────────────────
 The mood of the WHOLE text, judged by the same rule: what the content says or reports, not how calmly it is written. A neutrally worded report of a scam, arrest, protest, accident or crisis is "negative"; a report of an inauguration, award, festival or relief delivered — or of a government decision delivered to people (a gazette notification, a grant, a new facility, a renaming residents asked for) — is "positive"; "neutral" only for content with no positive or negative substance (weather bulletins, schedules, plain announcements).
@@ -177,9 +197,9 @@ The mood of the WHOLE text, judged by the same rule: what the content says or re
   • A REQUEST OR DEMAND ADDRESSED TO THE GOVERNMENT is an unmet grievance, not praise, however politely it is worded ("माननीय महोदय, … कीजिए", "विचार करें", "मांग है", "ध्यान दें"). Deferential openings and honorifics do not make it "positive" — score the ASK, which is that something has not been delivered.
 
 ── Political map (for identifying WHO, not for judging) ──────────────
-  Governing alliance (NDA) : ${ALLY_SUMMARY}
+${P.map || `  Governing alliance (NDA) : ${ALLY_SUMMARY}
   Leadership               : ${PRIMARY ? PRIMARY.canonical : 'CM'} (Chief Minister)${SECONDARY ? `, ${SECONDARY.canonical} (${SECONDARY.role || 'party leader'})` : ''}
-  Opposition               : ${OPPOSITION_SUMMARY}
+  Opposition               : ${OPPOSITION_SUMMARY}`}
 
 ── Deterministic pre-scan (evidence) ─────────────────────────────────
   Platform           : ${ctx.platform || 'unknown'}
@@ -393,7 +413,7 @@ const analyzePoliticalSentiment = async (text, politicalContext, options = {}) =
         return finalize(heuristicFallback(ctx), 'fallback');
     }
 
-    const prompt = buildPrompt(text, ctx);
+    const prompt = buildPrompt(text, ctx, options.vertical);
 
     try {
         const raw = extractJson(await callLLM(prompt));
