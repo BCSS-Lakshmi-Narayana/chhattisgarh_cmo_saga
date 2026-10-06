@@ -6,6 +6,8 @@ const mappingService = require('./mappingService');
 const { buildPoliticalContext, detectLanguageHints } = require('./politicalContextService');
 const { analyzePoliticalSentiment } = require('./politicalSentimentService');
 const { hostileOverride } = require('../utils/mhHostileLexicon');
+const { classifyLeaderTarget } = require('../utils/mhLeaderTarget');
+const mhLeaderMatch = require('../utils/mhLeaderMatch');
 // Owns the STAGE3_INCLUDE_ORIGINAL switch. Inert unless that flag is 'true'.
 const { buildStage3Input } = require('./stage3Input');
 const cacheService = require('./cacheService');
@@ -209,6 +211,53 @@ const triggerForensicAnalysis = async (content, analysisId) => {
   });
 };
 
+/**
+ * Leader-relative target record, Maharashtra ONLY.
+ *
+ * The stored stance stays government-relative and is not touched here. This
+ * adds `leader_target` beside it so a single-leader report can tell WHO the
+ * tone was aimed at and flip the sign for opposition leaders. Any other
+ * vertical returns the result unchanged, so Chhattisgarh output is
+ * byte-for-byte what it was. See utils/mhLeaderTarget.
+ *
+ * Derived purely from fields already on the result, so it is safe to apply to
+ * a cache hit too — an identical repost must carry it as well.
+ */
+const attachLeaderTarget = (result, text, options = {}) => {
+  if (!result) return result;
+  if (options.vertical !== 'mh') {
+    // The text cache is keyed on author + text with no vertical, so an
+    // identical Maharashtra post could have left a record in it. Strip it
+    // rather than let another vertical inherit it.
+    if (result.leader_target) {
+      delete result.leader_target;
+      if (result.llm_analysis) {
+        result.llm_analysis = { ...result.llm_analysis };
+        delete result.llm_analysis.leader_target;
+      }
+    }
+    return result;
+  }
+  try {
+    const named = mhLeaderMatch.leadersIn({ text, author_handle: options.authorHandle || '' })
+      .filter((l) => l.via === 'text')
+      .map((l) => l.key);
+    const leaderTarget = classifyLeaderTarget({
+      stance: result.political_stance || result.stance,
+      targetEntity: result.target_entity,
+      rationale: result.narrative_direction,
+      leadersNamed: named,
+      authorHandle: options.authorHandle || '',
+    });
+    result.leader_target = leaderTarget;
+    if (result.llm_analysis) result.llm_analysis.leader_target = leaderTarget;
+  } catch (e) {
+    // Never let the add-on break the verdict it sits beside.
+    console.warn(`[AnalysisService] leader_target skipped: ${e.message}`);
+  }
+  return result;
+};
+
 const analyzeContent = async (text, options = {}) => {
   const log = (msg) => console.log(`[AnalysisService] ${msg}`);
 
@@ -234,7 +283,7 @@ const analyzeContent = async (text, options = {}) => {
       if (!options.skipForensics && options.content && options.analysisId) {
         forensicResults = await triggerForensicAnalysis(options.content, options.analysisId);
       }
-      return { ...cached, forensic_results: forensicResults, from_text_cache: true };
+      return attachLeaderTarget({ ...cached, forensic_results: forensicResults, from_text_cache: true }, text, options);
     }
 
     log(`Starting Dual-Pass analysis for: "${text.substring(0, 50)}..."`);
@@ -396,7 +445,9 @@ const analyzeContent = async (text, options = {}) => {
     if (stage3Text !== analysisText) {
       log('Stage 3 receiving ORIGINAL + translation (STAGE3_INCLUDE_ORIGINAL=true).');
     }
-    const political = await analyzePoliticalSentiment(stage3Text, politicalCtx);
+    // `vertical` only selects the prompt's state wording (Maharashtra); the
+    // host client's prompt is unchanged when it is absent.
+    const political = await analyzePoliticalSentiment(stage3Text, politicalCtx, { vertical: options.vertical });
 
     /**
      * Deterministic floor under the LLM's call.
@@ -602,6 +653,9 @@ const analyzeContent = async (text, options = {}) => {
     finalResult.analysis_complete = incompleteReasons.length === 0;
     finalResult.analysis_incomplete_reasons = incompleteReasons;
     if (finalResult.llm_analysis) finalResult.llm_analysis.analysis_complete = finalResult.analysis_complete;
+
+    // Maharashtra only; no-op for every other vertical.
+    attachLeaderTarget(finalResult, text, options);
 
     // Cache the text-derived verdict (not forensic_results, which is
     // per-content media, not per-text) for reuse by identical future text.

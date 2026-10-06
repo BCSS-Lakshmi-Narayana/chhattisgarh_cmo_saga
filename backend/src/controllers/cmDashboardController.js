@@ -183,6 +183,8 @@ const getCMBrief = async (req, res) => {
           'posted_by.handle': 1, 'posted_by.display_name': 1, 'content.text': 1,
           'analysis.topic': 1, 'analysis.political_stance': 1,
           'analysis.mentioned_entities': 1, 'detected_location.district': 1,
+          // Maharashtra leader-relative target record (utils/mhLeaderTarget).
+          'analysis.leader_target': 1,
         } }
       ).toArray(),
       scopedCollection(db, 'newsarticles').find(
@@ -286,6 +288,10 @@ const getCMBrief = async (req, res) => {
 
     /** Every author handle in the window, for the per-handle report picker. */
     const allHandles = mhMatch.authorHandles(curM);
+
+    // The unfiltered window, kept for the leader-sentiment layer below: a post
+    // can TARGET a leader without the mention filter having matched it.
+    const windowM = curM; const windowPrevM = prevM;
 
     let focusM = curM; let focusN = curN;
 
@@ -1668,6 +1674,98 @@ const getCMBrief = async (req, res) => {
         ? Math.round((curN.filter((a) => a.detected_location?.district).length / curN.length) * 100) : 0,
     };
 
+    /* ── leader-relative sentiment (single-leader report, Maharashtra) ──
+     *
+     * The stored stance is relative to the GOVERNMENT and is not changed. For
+     * one selected leader this derives how the PUBLIC treats THAT PERSON:
+     * only posts whose target is him count, and an opposition leader's sign is
+     * inverted (an attack on him is pro-government but negative for him).
+     * See utils/mhLeaderTarget.js.
+     *
+     * Three buckets, never mixed:
+     *   targeted  target is the selected leader, public voice  → the score
+     *   unclear   he is named but the target is not him / not clear → shown apart
+     *   own       posted by him                                  → his output
+     *
+     * Forward-only. Rows analysed before this existed carry no `leader_target`
+     * and are COUNTED but never scored, so two definitions are not mixed.
+     */
+    const leaderSentiment = await (async () => {
+      if (!leaderFilter || !vProfile) return null;
+      const who = mhMatch.TERMS.find((e) => e.name === leaderFilter || e.key === leaderFilter);
+      if (!who) return null;
+      const lt = (d) => d.analysis?.leader_target || null;
+      const isOwn = (d) => mhMatch.norm(d.posted_by?.handle || '') === mhMatch.norm(who.handle);
+      const tallySent = (list) => {
+        const t = { positive: 0, negative: 0, neutral: 0, total: 0 };
+        for (const d of list) {
+          const v = lt(d)?.leader_sentiment;
+          if (v === 'positive' || v === 'negative' || v === 'neutral') { t[v] += 1; t.total += 1; }
+        }
+        return t;
+      };
+      const isTargeted = (d) => lt(d)?.status === 'targeted' && lt(d).target_leader_key === who.key;
+      const publicVoice = (d) => d._voice === 'organic';
+
+      const targeted = windowM.filter((d) => isTargeted(d) && !isOwn(d) && publicVoice(d));
+      const prevTargeted = windowPrevM.filter((d) => isTargeted(d) && !isOwn(d) && d._voice === 'organic');
+      const sentiment = tallySent(targeted);
+      const prevSentiment = tallySent(prevTargeted);
+
+      // Posts that name him (the filtered set), split by what we know of their target.
+      const named = curM.filter((d) => !isOwn(d) && publicVoice(d));
+      const unclear = named.filter((d) => lt(d) && lt(d).status === 'unclear');
+      const aboutOthers = named.filter((d) => lt(d) && lt(d).status === 'targeted' && lt(d).target_leader_key !== who.key);
+      const preGoLive = named.filter((d) => !lt(d));
+      const own = windowM.filter(isOwn);
+
+      // The date the new classification started, so the report can state its
+      // own coverage instead of implying it spans the whole window.
+      let goLive = null;
+      try {
+        const first = await scopedCollection(db, 'grievances').find(
+          { 'analysis.leader_target.analysed_at': { $exists: true } },
+          { projection: { 'analysis.leader_target.analysed_at': 1 } },
+        ).sort({ 'analysis.leader_target.analysed_at': 1 }).limit(1).toArray();
+        goLive = first[0]?.analysis?.leader_target?.analysed_at || null;
+      } catch (e) { goLive = null; }
+
+      const quoteOf = (d) => ({
+        text: String(d.content?.text || '').replace(/\s+/g, ' ').slice(0, 280),
+        handle: d.posted_by?.handle || null,
+        date: d.post_date,
+        url: d.tweet_url || null,
+        sentiment: lt(d)?.leader_sentiment || null,
+        engagement: engagementOf(d.engagement),
+      });
+      const top = (list, sent) => list.filter((d) => lt(d)?.leader_sentiment === sent)
+        .sort((a, b) => engagementOf(b.engagement) - engagementOf(a.engagement))
+        .slice(0, 3).map(quoteOf);
+
+      return {
+        leader: who.name,
+        camp: who.alignment === 'opposition' ? 'opposition' : 'ally',
+        // Sign convention, spelled out so the report can print it.
+        convention: who.alignment === 'opposition'
+          ? 'Opposition leader: criticism of him is negative for him (and counts as pro-government in the stance data).'
+          : 'Government-side leader: sentiment follows the government stance.',
+        targeted: {
+          ...sentiment,
+          net: netScore(sentiment.positive, sentiment.negative),
+          prev: prevSentiment,
+          prev_net: netScore(prevSentiment.positive, prevSentiment.negative),
+          confident: sentiment.total >= MIN_CONFIDENT,
+          top_positive: top(targeted, 'positive'),
+          top_negative: top(targeted, 'negative'),
+        },
+        target_unclear: { total: unclear.length, quotes: unclear.slice(0, 3).map(quoteOf) },
+        about_other_targets: aboutOthers.length,
+        own_posts: { total: own.length },
+        before_go_live: preGoLive.length,
+        coverage_from: goLive,
+      };
+    })();
+
     res.json({
       // `to` is the real window end, not `now` — for a custom range those
       // differ, and the drill-down links on the page are built from this.
@@ -1721,6 +1819,7 @@ const getCMBrief = async (req, res) => {
       issues, timeline, spreading,
       trend, counts, combined, by_source: bySource,
       principal, ministers, opposition_leaders: oppositionLeaders, party,
+      leader_sentiment: leaderSentiment,
       issue_tracking: issueTracking,
       issue_quotes: issueQuotes,
       recent_mentions: recentMentions,

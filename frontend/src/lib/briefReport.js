@@ -210,6 +210,50 @@ export const buildBriefReportHtml = (data, opts = {}) => {
     const issues = asArray(data?.issue_tracking).filter((t) => t.total >= issueMin);
     const issueVolume = issues.reduce((acc, t) => acc + t.total, 0);
     const leaders = asArray(data?.leaders);
+
+    /**
+     * Sentiment toward THE LEADER (single-leader Maharashtra report).
+     *
+     * Distinct from the government-relative stance used everywhere else in
+     * this report. Only posts whose target is this leader are scored, and an
+     * opposition leader's sign is inverted, so "criticised" reads as negative
+     * for him. Own posts and posts whose target is unclear are shown apart and
+     * never enter the score. Forward-only: earlier posts carry no target record
+     * and are counted, not scored, and the section says so.
+     */
+    const ls = isObj(data?.leader_sentiment) ? data.leader_sentiment : null;
+    const leaderSentimentHtml = (() => {
+        if (!ls) return '';
+        const t = ls.targeted || {};
+        const nm = esc(ls.leader);
+        const from = ls.coverage_from ? fmtDate(ls.coverage_from) : null;
+        const head = t.total
+            ? `<p>Of <b>${n(t.total)}</b> public posts aimed at <b>${nm}</b>, `
+              + `<b>${pct(t.positive, t.total)}%</b> were positive, <b>${pct(t.negative, t.total)}%</b> negative `
+              + `and <b>${pct(t.neutral, t.total)}%</b> neutral${t.net !== null && t.net !== undefined
+                  ? ` (net ${t.net > 0 ? '+' : ''}${t.net})` : ''}${t.confident ? '' : ' — a small sample, indicative only'}.</p>`
+            : `<p>No public post aimed at <b>${nm}</b> has been classified in this window.</p>`;
+        const rows = [
+            ['Aimed at him: positive', n(t.positive || 0)],
+            ['Aimed at him: negative', n(t.negative || 0)],
+            ['Aimed at him: neutral', n(t.neutral || 0)],
+            ['Names him, target unclear (not scored)', n(ls.target_unclear?.total || 0)],
+            ['Names him, aimed at someone else (not scored)', n(ls.about_other_targets || 0)],
+            ['Posted by him (not public opinion)', n(ls.own_posts?.total || 0)],
+        ];
+        const quotes = (list) => asArray(list).map((q) => `<li>${esc(q.text)}${
+            q.handle ? ` <span class="gap">— @${esc(q.handle)}</span>` : ''}</li>`).join('');
+        return head
+            + table(['Measure', 'Posts'], rows)
+            + (quotes(t.top_negative) ? `<h3>Most engaged negative posts</h3><ul>${quotes(t.top_negative)}</ul>` : '')
+            + (quotes(t.top_positive) ? `<h3>Most engaged positive posts</h3><ul>${quotes(t.top_positive)}</ul>` : '')
+            + `<p class="note"><b>How to read this.</b> ${esc(ls.convention || '')} `
+            + `<b>Coverage:</b> ${from
+                ? `leader-level sentiment is calculated only for posts analysed from ${esc(from)} onward`
+                : 'leader-level sentiment is calculated only for posts analysed since target classification began'}. `
+            + `Earlier posts${ls.before_go_live ? ` (${n(ls.before_go_live)} naming him in this window)` : ''} `
+            + 'are excluded because they do not carry the target-level classification.</p>';
+    })();
     const handles = asArray(data?.available_handles);
     const publicVoices = handles.filter((h) => (h.voice || 'organic') === 'organic');
     const officialVoices = handles.filter((h) => (h.voice || 'organic') !== 'organic');
@@ -708,6 +752,8 @@ export const buildBriefReportHtml = (data, opts = {}) => {
   ${section('1', 'Executive summary',
         execLines.map((l) => `<p>${l}</p>`).join('')
         + (execStats ? `<div class="stats">${execStats}</div>` : ''))}
+
+  ${ls ? section('1A', `Sentiment toward ${leaderFocus || ls.leader}`, leaderSentimentHtml) : ''}
 
   ${noCoverage ? section('2', 'What was monitored', `
     <p>This report covers <b>${esc(leaderFocus)}</b> only. The same collection ran
