@@ -664,6 +664,8 @@ const buildLeaderReport = async ({ db, leader = null, handle = null, from, to })
 
     return {
         kind: 'monitoring_report',
+        // Read by the download file name for the combined report.
+        profile: { state: 'Maharashtra' },
         review_coverage: reviewCoverage,
         leader: subject, handle: handle || null,
         window: { from: from.toISOString(), to: to.toISOString(), days: Math.max(1, Math.round((to - from) / 86400000)) },

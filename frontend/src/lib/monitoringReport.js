@@ -142,7 +142,9 @@ export const buildMonitoringReportHtml = (data, opts = {}) => {
     const N = num(m.relevant);
     const subject = m.subject_label || m.name || 'the subject';
     const platforms = asArray(m.platforms);
-    const appName = opts.appName || 'Blura SAGA';
+    // The report is about a state's leaders, so it carries that state's name —
+    // not the host app's ("Chhattisgarh Political Watch" on a Maharashtra report).
+    const appName = m.state ? `${m.state} Political Watch` : (opts.appName || 'Blura SAGA');
 
     /* ── title, period strip, tiles ───────────────────────────────── */
     const header = `<header class="hero">
@@ -364,22 +366,13 @@ export const buildMonitoringReportHtml = (data, opts = {}) => {
         [{ label: 'When', w: 15 }, { label: 'Account', w: 16 }, { label: 'What it says', w: 41 }, { label: 'Why flagged', w: 28 }],
         claims.map((c) => [esc(when(c.when)), acct(c.account), `${esc(clip(c.text, 180))}${link(c)}`, esc(clip(c.why, 160))]), { lead: 3, cls: 'navy' })}</section>` : '';
 
-    /* ── 10. considerations ───────────────────────────────────────── */
-    const cons = d.considerations || {};
-    const box = (title, items) => (asArray(items).length ? `<div class="cbox"><div class="ct">${esc(title)}</div><ul>${asArray(items).map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>` : '');
-    const consCards = [box('Fact-check against official records', cons.factcheck), box('Questions a factual clarification could answer', cons.questions),
-        box('Communication considerations', cons.communication), box('Information gaps', cons.gaps),
-        box('Continue monitoring', cons.monitoring), box('Safety and platform reporting', cons.safety)].filter(Boolean);
-    const consRows = pairs(consCards);
-    const consSec = consRows.length ? `<section class="sec">${keep(h2('10. Recommended considerations', 'Neutral, information-focused considerations for the office. Not messaging or persuasion advice.') + consRows[0])}${consRows.slice(1).join('')}</section>` : '';
-
-    /* ── 11. evidence, 12. footage ────────────────────────────────── */
+    /* ── 10. evidence, 11. footage ────────────────────────────────── */
     const ev = asArray(d.evidence);
-    const evSec = ev.length ? `<section class="sec">${table('11. Evidence register (media sample)', 'Posts with images or video from public accounts, highest engagement first.',
+    const evSec = ev.length ? `<section class="sec">${table('10. Evidence register (media sample)', 'Posts with images or video from public accounts, highest engagement first.',
         [{ label: 'When', w: 16 }, { label: 'Platform', w: 11 }, { label: 'Outlet / account', w: 18 }, { label: 'Summary', w: 43 }, { label: 'Engagement', w: 12, r: true }],
         ev.map((p) => [esc(when(p.when)), esc(p.platform), acct(p.account), `${esc(clip(p.text, 200))}${link(p)}`, n(p.engagement)]), { lead: 3, cls: 'navy' })}</section>` : '';
     const ft = asArray(d.footage);
-    const ftSec = ft.length ? `<section class="sec">${table('12. Footage', `${n(ft.length)} video posts, most viewed first.`,
+    const ftSec = ft.length ? `<section class="sec">${table('11. Footage', `${n(ft.length)} video posts, most viewed first.`,
         [{ label: 'When', w: 16 }, { label: 'Platform', w: 11 }, { label: 'Account', w: 18 }, { label: 'What it shows', w: 41 }, { label: 'Views', w: 14, r: true }],
         ft.map((p) => [esc(when(p.when)), esc(p.platform), acct(p.account), `${esc(clip(p.text, 190))}${link(p)}`, n(p.views || p.engagement)]), { lead: 3, cls: 'navy' })}</section>` : '';
 
@@ -476,7 +469,7 @@ export const buildMonitoringReportHtml = (data, opts = {}) => {
       ${keep(header + tiles1 + tiles2 + platNote)}
       ${execSummary}${intel}${attention}
       ${platformSec}${toneSec}${kwSec}${daySec}${locSec}
-      ${actSec}${placeSec}${sentSec}${sbpSec ? `<section class="sec">${sbpSec}${whoSec}</section>` : ''}${toneSec4}${riskSec}${entSec}${infSec}${narrSec}${claimSec}${consSec}${evSec}${ftSec}
+      ${actSec}${placeSec}${sentSec}${sbpSec ? `<section class="sec">${sbpSec}${whoSec}</section>` : ''}${toneSec4}${riskSec}${entSec}${infSec}${narrSec}${claimSec}${evSec}${ftSec}
       ${closing}
     </div></body></html>`;
 };
