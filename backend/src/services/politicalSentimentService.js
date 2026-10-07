@@ -427,7 +427,10 @@ const analyzePoliticalSentiment = async (text, politicalContext, options = {}) =
             const candidateActors = Array.isArray(raw.candidate_actors) ? raw.candidate_actors : [];
             const candidateSubjects = Array.isArray(raw.candidate_subjects) ? raw.candidate_subjects : [];
 
-            const resolvedActors = resolveEntities(candidateActors, ctx);
+            // The resolver needs the post's vertical: "the government" in a
+            // Maharashtra post is Maharashtra's, not this deployment's state.
+            const rctx = { ...ctx, vertical: options.vertical || ctx.vertical };
+            const resolvedActors = resolveEntities(candidateActors, rctx);
 
             // Who the tone is aimed at, resolved through the same roster lookup
             // as the actors. Null/unresolvable is fine and common — stanceEngine
@@ -435,7 +438,7 @@ const analyzePoliticalSentiment = async (text, politicalContext, options = {}) =
             const rawTarget = raw.sentiment_target && raw.sentiment_target.text
                 ? raw.sentiment_target
                 : null;
-            const resolvedTarget = rawTarget ? (resolveEntities([rawTarget], ctx)[0] || null) : null;
+            const resolvedTarget = rawTarget ? (resolveEntities([rawTarget], rctx)[0] || null) : null;
             if (resolvedTarget && resolvedTarget.affiliation) {
                 console.log(`[politicalSentiment] sentiment_target="${rawTarget.text}" → ${resolvedTarget.canonical} (${resolvedTarget.affiliation})`);
             }

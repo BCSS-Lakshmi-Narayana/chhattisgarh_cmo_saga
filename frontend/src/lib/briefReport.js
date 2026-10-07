@@ -859,12 +859,34 @@ export const buildBriefReportHtml = (data, opts = {}) => {
 </div></body></html>`;
 };
 
+/**
+ * Which layout to build. A caller may hand in its own builder as `opts.build`
+ * (the monitoring report does — see monitoringReport.js); with none, this is the
+ * agreed template report, so every existing caller behaves exactly as before.
+ *
+ * It is passed in, not imported: scripts/build_mh_leader_reports.js loads THIS
+ * file by evaluating its source, which only works while it has no imports.
+ */
+const buildHtml = (data, opts) => (typeof opts?.build === 'function'
+    ? opts.build(data, opts)
+    : buildBriefReportHtml(data, opts));
+
 /* ── delivery ───────────────────────────────────────────────────────── */
+/**
+ * A page printed from the browser carries its address in the footer. A report
+ * written into a blank window would print "about:blank" there, so the address
+ * is replaced with the company name before printing.
+ */
+const brandAddress = (win) => {
+    try { win.history.replaceState(null, '', `${window.location.origin}/Blue-Cloud-Softech-Solutions-Ltd`); } catch { /* not allowed: leave it */ }
+};
+
 const printViaIframe = (html) => new Promise((resolve) => {
     const frame = document.createElement('iframe');
     frame.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
     document.body.appendChild(frame);
     frame.onload = () => {
+        brandAddress(frame.contentWindow);
         try { frame.contentWindow.focus(); frame.contentWindow.print(); } catch { /* refused */ }
         setTimeout(() => frame.remove(), 1000);
         resolve(true);
@@ -874,10 +896,34 @@ const printViaIframe = (html) => new Promise((resolve) => {
 });
 
 export const openBriefReport = async (data, opts) => {
-    const html = buildBriefReportHtml(data, opts);
+    const html = buildHtml(data, opts);
+    /*
+     * Printing from the browser stamps every page with the app's address and
+     * the time ("localhost:3001/cm-dashboard"). When the caller asks for it, the
+     * server renders the PDF instead and it opens in a new tab — the same file
+     * "Download" gives, with working links and the report's own page numbers.
+     * Falls through to the browser print below if the renderer is unavailable.
+     */
+    if (opts?.serverOpen && opts?.api) {
+        try {
+            const name = briefFileSlug(data, opts);
+            const res = await opts.api.post('/cm-dashboard/brief/pdf', { html, filename: name }, { responseType: 'blob', timeout: 90000 });
+            const blob = res?.data;
+            if (blob && blob.size && !(blob.type || '').includes('json')) {
+                const url = URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
+                let win = null;
+                try { win = window.open(url, '_blank'); } catch { win = null; }
+                if (!win) saveBlob(blob, `${name}.pdf`); // pop-up blocked: hand over the file instead
+                setTimeout(() => URL.revokeObjectURL(url), 10 * 60 * 1000);
+                return win ? 'pdf-tab' : 'pdf';
+            }
+        } catch (err) {
+            console.warn(`[brief] PDF open failed (${err.message}); printing from the browser instead.`);
+        }
+    }
     let win = null;
     try { win = window.open('', '_blank'); } catch { win = null; }
-    if (win && win.document) { win.document.write(html); win.document.close(); return 'tab'; }
+    if (win && win.document) { win.document.write(html); win.document.close(); brandAddress(win); return 'tab'; }
     await printViaIframe(html);
     return 'print';
 };
@@ -917,7 +963,7 @@ const briefFileSlug = (data, opts) => {
 };
 
 export const downloadBriefReport = (data, opts) => {
-    const html = buildBriefReportHtml(data, opts);
+    const html = buildHtml(data, opts);
     const slug = briefFileSlug(data, opts);
     saveBlob(new Blob([html], { type: 'text/html;charset=utf-8' }), `${slug}.html`);
 };
@@ -952,7 +998,7 @@ const saveBlob = (blob, name) => {
  * @returns {Promise<'pdf'|'html'>}
  */
 export const downloadBriefPdf = async (data, opts) => {
-    const html = buildBriefReportHtml(data, opts);
+    const html = buildHtml(data, opts);
     const name = briefFileSlug(data, opts);
     const api = opts?.api;
     try {

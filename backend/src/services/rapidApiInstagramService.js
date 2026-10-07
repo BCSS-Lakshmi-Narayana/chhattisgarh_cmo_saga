@@ -3,6 +3,17 @@ const blugateClient = require('./blugateClient');
 
 const INSTAGRAM_BASE = `${blugateClient.GATEWAY_BASE}/instagram`;
 
+// Direct RapidAPI mode. When RAPIDAPI_INSTAGRAM_KEYS is set, Instagram calls go
+// straight to RAPIDAPI_INSTAGRAM_HOST with that key; when it is unset, they go
+// through BluGate exactly as before. Only the first key is used (no rotation).
+const getDirectKey = () => String(process.env.RAPIDAPI_INSTAGRAM_KEYS || '').split(',')[0].trim().replace(/^"|"$/g, '');
+const getDirectHost = () => String(process.env.RAPIDAPI_INSTAGRAM_HOST || 'instagram120.p.rapidapi.com').trim();
+const useDirect = () => !!getDirectKey();
+const providerLabel = () => (useDirect() ? 'RapidAPI' : 'BluGate');
+
+/** True when Instagram can be fetched, either directly or through BluGate. */
+const hasCredentials = () => useDirect() || blugateClient.hasCredentials();
+
 // ─── Cooldown Tracking (single BluGate client key — no rotation) ──────────
 let cooldownUntil = 0;
 let failureCount = 0;
@@ -20,7 +31,7 @@ const markFailed = (isRateLimit = false) => {
         // Exponential cooldown: 60s, 120s, 240s, max 10min
         const cooldownMs = Math.min(60000 * Math.pow(2, failureCount - 1), 600000);
         cooldownUntil = Date.now() + cooldownMs;
-        console.warn(`[Instagram] 🔑 BluGate rate-limited. Cooldown ${Math.round(cooldownMs / 1000)}s (failure #${failureCount})`);
+        console.warn(`[Instagram] 🔑 ${providerLabel()} rate-limited. Cooldown ${Math.round(cooldownMs / 1000)}s (failure #${failureCount})`);
     } else {
         // Non-rate-limit errors get a shorter cooldown
         const cooldownMs = Math.min(10000 * failureCount, 120000);
@@ -57,14 +68,25 @@ const rapidPost = async (path, data, _retryCount = 0) => {
     }
 
     try {
-        const response = await axios.post(`${INSTAGRAM_BASE}${path}`, data, {
-            headers: {
-                ...blugateClient.getHeaders(),
-                'Content-Type': 'application/json'
-            },
-            timeout: 30000, // 30s timeout
-            ...blugateClient.responseOptions(),
-        });
+        const direct = useDirect();
+        const response = await axios.post(
+            direct ? `https://${getDirectHost()}${path}` : `${INSTAGRAM_BASE}${path}`,
+            data,
+            {
+                headers: direct
+                    ? {
+                        'x-rapidapi-key': getDirectKey(),
+                        'x-rapidapi-host': getDirectHost(),
+                        'Content-Type': 'application/json'
+                    }
+                    : {
+                        ...blugateClient.getHeaders(),
+                        'Content-Type': 'application/json'
+                    },
+                timeout: 30000, // 30s timeout
+                ...(direct ? {} : blugateClient.responseOptions()),
+            }
+        );
 
         markSuccess();
         return response;
@@ -107,13 +129,13 @@ const rapidPost = async (path, data, _retryCount = 0) => {
 
         // 404 = endpoint doesn't exist — not a credential issue
         if (status === 404) {
-            console.error(`[Instagram] BluGate Error (${path}): ${status} — Endpoint '${path}' does not exist`);
+            console.error(`[Instagram] ${providerLabel()} Error (${path}): ${status} — Endpoint '${path}' does not exist`);
             throw error;
         }
 
         // Non-recoverable error (4xx other than 429/404) — don't retry
         markFailed(false);
-        console.error(`[Instagram] BluGate Error (${path}): ${status} — ${error.response?.data?.message || error.message}`);
+        console.error(`[Instagram] ${providerLabel()} Error (${path}): ${status} — ${error.response?.data?.message || error.message}`);
         throw error;
     }
 };
@@ -326,5 +348,6 @@ module.exports = {
     fetchInstagramPostDetail,
     searchUsers,
     searchPosts,
-    getKeyHealthStatus
+    getKeyHealthStatus,
+    hasCredentials
 };

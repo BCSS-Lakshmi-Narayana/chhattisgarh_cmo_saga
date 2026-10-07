@@ -21,6 +21,7 @@ import React, { useMemo, useState } from 'react';
 import { Download, X, CalendarDays, User, AtSign, Loader2, FileText } from 'lucide-react';
 import api from '../../lib/api';
 import { openBriefReport, downloadBriefReport, downloadBriefPdf } from '../../lib/briefReport';
+import { buildMonitoringReportHtml } from '../../lib/monitoringReport';
 
 const todayStr = () => new Date().toISOString().slice(0, 10);
 const daysAgoStr = (d) => new Date(Date.now() - d * 86400000).toISOString().slice(0, 10);
@@ -63,6 +64,9 @@ export default function BriefExportDialog({
     const [leaderMode, setLeaderMode] = useState('all'); // all | one | each
     const [leader, setLeader] = useState('');
     const [delivery, setDelivery] = useState('open');  // open | download
+    /* monitoring = the public-discussion monitoring report (one per leader);
+     * template   = the agreed template report. Monitoring is the default. */
+    const [style, setStyle] = useState('monitoring');
     const [busy, setBusy] = useState(false);
     const [err, setErr] = useState(null);
     const [progress, setProgress] = useState(null);
@@ -97,14 +101,23 @@ export default function BriefExportDialog({
         const q = new URLSearchParams({ from: f, to: t });
         if (who) q.set('leader', who);
         if (h) q.set('handle', h);
-        const r = await api.get(`/cm-dashboard/brief?${q.toString()}`);
+        // The monitoring report is built from the individual posts; the template
+        // report from the aggregated brief.
+        const endpoint = style === 'monitoring' ? 'leader-report' : 'brief';
+        const r = await api.get(`/cm-dashboard/${endpoint}?${q.toString()}`, { timeout: 120000 });
         return r.data;
     };
 
     const deliver = async (data) => {
         // `api` lets the report module post to the PDF renderer with the
         // same bearer token the rest of the app uses.
-        const opts = { appName, stateName, api };
+        const opts = {
+            appName, stateName, api,
+            build: style === 'monitoring' ? buildMonitoringReportHtml : undefined,
+            // Open the server-rendered PDF rather than printing from the browser,
+            // which stamps the app's address on every page.
+            serverOpen: style === 'monitoring',
+        };
         // Many documents always download: opening 30 tabs is blocked, and 30
         // print dialogs in a row is not usable either.
         if (delivery === 'download' || jobCount > 3) {
@@ -272,6 +285,16 @@ export default function BriefExportDialog({
                                 ))}
                             </select>
                         )}
+                    </Field>
+
+                    <Field icon={FileText} label="Report style"
+                        hint={style === 'monitoring'
+                            ? 'Title block, headline figures, executive summary, charts and evidence — pages never split a block.'
+                            : 'The agreed client template: issues, actions, leaders, geography, annexes.'}>
+                        <div className="flex bg-slate-100 rounded-lg p-0.5">
+                            {seg('monitoring', style, setStyle, 'Monitoring report')}
+                            {seg('template', style, setStyle, 'Template report')}
+                        </div>
                     </Field>
 
                     <Field icon={Download} label="Deliver as"
