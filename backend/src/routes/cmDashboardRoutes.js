@@ -18,6 +18,7 @@ const express = require('express');
 const router = express.Router();
 const { getCMBrief } = require('../controllers/cmDashboardController');
 const { renderBriefPdf } = require('../controllers/briefPdfController');
+const { getLeaderReport } = require('../controllers/leaderReportController');
 const { protect } = require('../middleware/authMiddleware');
 
 router.use(protect);
@@ -37,5 +38,12 @@ router.get('/brief', getCMBrief);
  * for why this is server-side and what it refuses to load.
  */
 router.post('/brief/pdf', renderBriefPdf);
+
+/**
+ * GET /api/cm-dashboard/leader-report?from&to[&leader][&handle]
+ * The public-discussion monitoring report for one leader (or all, combined),
+ * built from the individual posts. See controllers/leaderReportController.
+ */
+router.get('/leader-report', getLeaderReport);
 
 module.exports = router;

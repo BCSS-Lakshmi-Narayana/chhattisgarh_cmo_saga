@@ -664,8 +664,8 @@ const monitorXSource = async (source, options = {}) => {
 
 const monitorInstagramSource = async (source, accessToken) => {
   try {
-    if (!blugateClient.hasCredentials()) {
-      console.warn('[Instagram Monitor] ⚠️ BluGate credentials not configured. Skipping scan.');
+    if (!rapidApiInstagramService.hasCredentials()) {
+      console.warn('[Instagram Monitor] ⚠️ No Instagram credentials (RAPIDAPI_INSTAGRAM_KEYS or BluGate) configured. Skipping scan.');
       await Source.findOneAndUpdate({ id: source.id }, { last_checked: new Date() });
       return [];
     }

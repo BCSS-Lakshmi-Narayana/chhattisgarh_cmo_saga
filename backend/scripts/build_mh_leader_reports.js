@@ -23,6 +23,8 @@
  *   node backend/scripts/build_mh_leader_reports.js --out "C:/reports"
  *   node backend/scripts/build_mh_leader_reports.js --combined   also a 10th, all leaders
  *   node backend/scripts/build_mh_leader_reports.js --client     client build, full floors
+ *   node backend/scripts/build_mh_leader_reports.js --style template   the agreed template report
+ *                                                (default is the monitoring report)
  */
 require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
 const fs = require('fs');
@@ -43,6 +45,8 @@ const COMBINED = argv.includes('--combined');
 /** Client mode keeps the display floors; the default is the internal build. */
 const CLIENT = argv.includes('--client');
 const OUT = flag('out', path.resolve(__dirname, '../reports'));
+/** monitoring (default) = the public-discussion monitoring report; template = the agreed template. */
+const STYLE = flag('style', 'monitoring') === 'template' ? 'template' : 'monitoring';
 
 const iso = (d) => d.toISOString().slice(0, 10);
 const to = TO || iso(new Date());
@@ -55,13 +59,16 @@ const from = FROM || iso(new Date(Date.now() - (DAYS - 1) * 86400000));
  * keyword is enough. Deliberately the SAME file the app ships — rendering
  * these from a copy is how two reports of the same week start disagreeing.
  */
-const loadReporter = () => {
-    const p = path.resolve(__dirname, '../../frontend/src/lib/briefReport.js');
+const loadModule = (file, exportName) => {
+    const p = path.resolve(__dirname, '../../frontend/src/lib', file);
     if (!fs.existsSync(p)) throw new Error(`report module not found at ${p}`);
     const src = fs.readFileSync(p, 'utf8').replace(/^export /gm, '');
     // eslint-disable-next-line no-new-func
-    return new Function(`${src}\nreturn { buildBriefReportHtml };`)().buildBriefReportHtml;
+    return new Function(`${src}\nreturn { ${exportName} };`)()[exportName];
 };
+const loadReporter = () => (STYLE === 'template'
+    ? loadModule('briefReport.js', 'buildBriefReportHtml')
+    : loadModule('monitoringReport.js', 'buildMonitoringReportHtml'));
 
 const safeName = (s) => String(s).replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
@@ -75,6 +82,7 @@ const safeName = (s) => String(s).replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/
     fs.mkdirSync(OUT, { recursive: true });
     const buildBriefReportHtml = loadReporter();
     const { getCMBrief } = require('../src/controllers/cmDashboardController');
+    const { buildLeaderReport } = require('../src/controllers/leaderReportController');
 
     const brief = async (leader) => {
         const query = { from, to };
@@ -90,7 +98,12 @@ const safeName = (s) => String(s).replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/
     const written = [];
     for (const job of jobs) {
         // eslint-disable-next-line no-await-in-loop
-        const data = await brief(job.leader);
+        const data = STYLE === 'monitoring'
+            ? await runWithVerticals(['mh'], () => buildLeaderReport({
+                db: mongoose.connection.db, leader: job.leader,
+                from: new Date(`${from}T00:00:00.000Z`), to: new Date(`${to}T23:59:59.999Z`),
+            }))
+            : await brief(job.leader);
         if (!data) { console.log(`  !  ${job.label.padEnd(26)} brief returned nothing`); continue; }
 
         const html = buildBriefReportHtml(data, {
@@ -106,9 +119,9 @@ const safeName = (s) => String(s).replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/
         const file = path.join(OUT, `MH-${safeName(job.label)}-${to}.html`);
         fs.writeFileSync(file, html, 'utf8');
 
-        const mentions = data?.by_source?.mentions?.total || 0;
-        const alerts = data?.by_source?.alerts?.total || 0;
-        const scored = data?.combined?.total || 0;
+        const mentions = STYLE === 'monitoring' ? (data?.meta?.collected || 0) : (data?.by_source?.mentions?.total || 0);
+        const alerts = STYLE === 'monitoring' ? ((data?.bands?.critical || 0) + (data?.bands?.high || 0)) : (data?.by_source?.alerts?.total || 0);
+        const scored = STYLE === 'monitoring' ? (data?.meta?.relevant || 0) : (data?.combined?.total || 0);
         console.log(`  ✓  ${job.label.padEnd(26)}`
             + `${String(mentions).padStart(5)} mentions  `
             + `${String(scored).padStart(4)} scored  `

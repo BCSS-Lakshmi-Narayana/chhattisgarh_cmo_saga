@@ -177,6 +177,20 @@ const resolve = (candidates = [], ctx = {}) => {
             confidence = 0.7;
         }
 
+        /*
+         * A Maharashtra post's "the government" / "राज्य सरकार" is Maharashtra's.
+         * The host roster above (and step 4) name this deployment's state, so
+         * without this every generic government reference in a Maharashtra post
+         * resolved to the Government of Chhattisgarh — 227 posts before the fix.
+         * A post that actually names Chhattisgarh keeps it.
+         */
+        if (ctx.vertical === 'mh' && canonical === `Government of ${STATE_NAME}`
+            && !new RegExp(`${STATE_NAME}|${STATE_NAME_NATIVE}|\\bcg\\b`, 'i').test(rawText)) {
+            entityKey = null;
+            canonical = 'Government of Maharashtra';
+            affiliation = 'ally';
+        }
+
         // Unresolved candidates are still returned — with a null affiliation and
         // low confidence — so the stance engine can see that something was
         // extracted but could not be placed, and the confidence gate can react.
