@@ -127,9 +127,19 @@ const buildQualityGate = ({ llmResult, political, finalSentiment }) => {
   const directStance = ['pro_target', 'anti_target'].includes(political?.stance);
   const oppositeVerdicts = (llmSentiment === 'positive' && targetSentiment === 'negative')
     || (llmSentiment === 'negative' && targetSentiment === 'positive');
+  // "Pass A found nothing" (neutral) is not the same as "Pass A agrees", on a
+  // direct-stance post. Mirrors the same fix made in the BRS/Goa sibling
+  // codebases: the old check below only fired on strict positive/negative
+  // opposition, so a neutral-vs-confident-verdict mismatch on a direct-stance
+  // post waved through as a non-blocking warning instead of a flagged
+  // conflict.
+  const passAFoundNothing = llmSentiment === 'neutral' && targetSentiment !== 'neutral';
   if (sentimentDisagreement) {
-    if (passAWasClientRelative && directStance && oppositeVerdicts) reasons.push('client_sentiment_conflict');
-    else warnings.push('sentiment_disagreement');
+    if (directStance && ((passAWasClientRelative && oppositeVerdicts) || passAFoundNothing)) {
+      reasons.push('client_sentiment_conflict');
+    } else {
+      warnings.push('sentiment_disagreement');
+    }
   }
   if (political?.provider === 'fallback') reasons.push('llm_fallback');
 
