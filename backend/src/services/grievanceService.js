@@ -368,6 +368,9 @@ const buildGrievanceAnalysisUpdate = (analysisData, { videoTranscript = '', text
         'analysis.political_reasoning': analysisData.political_reasoning || '',
         'analysis.political_provider': analysisData.political_provider || '',
         'analysis.analyzed_at': new Date(),
+        // Maharashtra only (analysisService adds it for that vertical alone);
+        // spread conditionally so no other vertical's update gains a field.
+        ...(analysisData.leader_target ? { 'analysis.leader_target': analysisData.leader_target } : {}),
     };
 };
 

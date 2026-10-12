@@ -99,3 +99,4 @@ x.com_cookies.txt
 
 # Generated leader reports — rebuilt by npm run report:mh-leaders
 backend/reports/
+backend/.env.save

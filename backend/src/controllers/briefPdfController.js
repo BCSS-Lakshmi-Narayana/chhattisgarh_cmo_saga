@@ -37,6 +37,14 @@ const puppeteer = require('puppeteer');
 const ALLOWED_HOSTS = new Set(['fonts.googleapis.com', 'fonts.gstatic.com']);
 
 const MAX_HTML_BYTES = 8 * 1024 * 1024;
+
+/**
+ * Which Chrome renders the PDF. Puppeteer's own download can be missing on a
+ * server (its cache folder exists but holds no browser), and then every export
+ * silently fell back to HTML / browser print. BRIEF_PDF_CHROME_PATH points at a
+ * Chrome that IS installed; unset, puppeteer uses its own.
+ */
+const CHROME_PATH = process.env.BRIEF_PDF_CHROME_PATH || '';
 const RENDER_TIMEOUT_MS = 45000;
 
 /**
@@ -56,7 +64,9 @@ const renderBriefPdf = async (req, res) => {
     let browser;
     try {
         browser = await puppeteer.launch({
-            headless: 'new',
+            // headless-shell binaries run in 'shell' mode; a full Chrome in 'new'.
+            headless: CHROME_PATH && /headless-shell/i.test(CHROME_PATH) ? 'shell' : 'new',
+            ...(CHROME_PATH ? { executablePath: CHROME_PATH } : {}),
             args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
         });
         const page = await browser.newPage();
@@ -81,10 +91,12 @@ const renderBriefPdf = async (req, res) => {
             margin: { top: '14mm', right: '12mm', bottom: '16mm', left: '12mm' },
             displayHeaderFooter: true,
             headerTemplate: '<div></div>',
-            // A page number, because these get printed and passed around.
-            footerTemplate: '<div style="width:100%;font-size:8px;color:#9ca3af;'
-                + 'padding:0 12mm;text-align:right;font-family:Arial,sans-serif;">'
-                + '<span class="pageNumber"></span> / <span class="totalPages"></span></div>',
+            // The company name and a page number on every page, because these
+            // get printed and passed around.
+            footerTemplate: '<div style="width:100%;font-size:8px;color:#9ca3af;padding:0 12mm;'
+                + 'font-family:Arial,sans-serif;display:flex;justify-content:space-between;">'
+                + '<span>Blue Cloud Softech Solutions Ltd.</span>'
+                + '<span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>',
             timeout: RENDER_TIMEOUT_MS,
         });
 
