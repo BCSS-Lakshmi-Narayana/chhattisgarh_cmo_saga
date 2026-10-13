@@ -36,6 +36,7 @@
  */
 const mongoose = require('mongoose');
 const { scopedCollection } = require('../utils/verticalScope');
+const { profileFor } = require('../config/verticalProfiles');
 const mhMatch = require('../utils/mhLeaderMatch');
 const MH = require('../data/mh_leaders.json');
 
@@ -118,6 +119,22 @@ const PARTY = {
  * Exported so scripts/build_mh_leader_reports.js renders the same thing.
  */
 const buildLeaderReport = async ({ db, leader = null, handle = null, from, to }) => {
+    /*
+     * This entire report — the fixed nine-leader roster, mhLeaderMatch's
+     * district/voice/handle matching, the "Government of Chhattisgarh" mislabel
+     * patch above — was built for the Maharashtra vertical specifically. Running
+     * it for any other vertical doesn't just mislabel the title: the leader
+     * roster, district detection and account classification would all be wrong
+     * for that client's own data. So this report only runs where there is an
+     * MH-style profile (today, only `mh`), rather than silently producing a
+     * Maharashtra-flavoured report for someone else's export.
+     */
+    const vProfile = profileFor();
+    if (!vProfile) {
+        const err = new Error('The leader monitoring report is only available for the Maharashtra vertical.');
+        err.status = 400;
+        throw err;
+    }
     const who = leader ? MH.leaders.find((l) => l.name === leader || l.key === leader) || null : null;
     const subject = who ? who.name : (leader || null);
     const subjectLabel = subject || 'the government';
@@ -665,12 +682,12 @@ const buildLeaderReport = async ({ db, leader = null, handle = null, from, to })
     return {
         kind: 'monitoring_report',
         // Read by the download file name for the combined report.
-        profile: { state: 'Maharashtra' },
+        profile: { state: vProfile.state },
         review_coverage: reviewCoverage,
         leader: subject, handle: handle || null,
         window: { from: from.toISOString(), to: to.toISOString(), days: Math.max(1, Math.round((to - from) / 86400000)) },
-        meta: { name: subject || 'All monitored leaders', role: who?.role || (subject ? '' : 'Maharashtra leadership monitoring'),
-            party: who ? (PARTY[String(who.party || '').toLowerCase()] || who.party || '') : '', state: 'Maharashtra', subject_label: subjectLabel,
+        meta: { name: subject || 'All monitored leaders', role: who?.role || (subject ? '' : `${vProfile.state} leadership monitoring`),
+            party: who ? (PARTY[String(who.party || '').toLowerCase()] || who.party || '') : '', state: vProfile.state, subject_label: subjectLabel,
             base: who?.base ? [who.base.constituency, who.base.district].filter(Boolean).join(', ') : '',
             period, generated: longDay(istDay(new Date())), collected: collected.length, excluded: excluded.length + dropped,
             relevant: N, platforms },
@@ -705,6 +722,7 @@ const getLeaderReport = async (req, res) => {
         const report = await buildLeaderReport({ db: mongoose.connection.db, leader, handle, from, to });
         res.json(report);
     } catch (err) {
+        if (err.status) { res.status(err.status).json({ message: err.message }); return; }
         console.error('[leaderReport] failed:', err);
         res.status(500).json({ message: 'Could not build the report', error: err.message });
     }

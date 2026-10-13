@@ -56,6 +56,16 @@ function Field({ icon: Icon, label, children, hint }) {
 export default function BriefExportDialog({
     open, onClose, leaders = [], handles = [], appName, stateName,
 }) {
+    /*
+     * The "Monitoring report" style (leader-report endpoint) was built only
+     * for the Maharashtra vertical — fixed nine-leader roster, MH district and
+     * account matching, "Maharashtra" in the title. The backend now refuses to
+     * build it for any other vertical, but the dialog shouldn't offer (or
+     * default to) a style it knows will be rejected — so it only appears for
+     * the client whose state name is actually Maharashtra.
+     */
+    const monitoringAvailable = stateName === 'Maharashtra';
+
     const [mode, setMode] = useState('range');        // range | daily
     const [handleMode, setHandleMode] = useState('all'); // all | one | each
     const [handle, setHandle] = useState('');
@@ -64,9 +74,9 @@ export default function BriefExportDialog({
     const [leaderMode, setLeaderMode] = useState('all'); // all | one | each
     const [leader, setLeader] = useState('');
     const [delivery, setDelivery] = useState('open');  // open | download
-    /* monitoring = the public-discussion monitoring report (one per leader);
-     * template   = the agreed template report. Monitoring is the default. */
-    const [style, setStyle] = useState('monitoring');
+    /* monitoring = the public-discussion monitoring report (one per leader),
+     * Maharashtra only; template = the agreed template report, every vertical. */
+    const [style, setStyle] = useState(monitoringAvailable ? 'monitoring' : 'template');
     const [busy, setBusy] = useState(false);
     const [err, setErr] = useState(null);
     const [progress, setProgress] = useState(null);
@@ -287,15 +297,17 @@ export default function BriefExportDialog({
                         )}
                     </Field>
 
-                    <Field icon={FileText} label="Report style"
-                        hint={style === 'monitoring'
-                            ? 'Title block, headline figures, executive summary, charts and evidence — pages never split a block.'
-                            : 'The agreed client template: issues, actions, leaders, geography, annexes.'}>
-                        <div className="flex bg-slate-100 rounded-lg p-0.5">
-                            {seg('monitoring', style, setStyle, 'Monitoring report')}
-                            {seg('template', style, setStyle, 'Template report')}
-                        </div>
-                    </Field>
+                    {monitoringAvailable && (
+                        <Field icon={FileText} label="Report style"
+                            hint={style === 'monitoring'
+                                ? 'Title block, headline figures, executive summary, charts and evidence — pages never split a block.'
+                                : 'The agreed client template: issues, actions, leaders, geography, annexes.'}>
+                            <div className="flex bg-slate-100 rounded-lg p-0.5">
+                                {seg('monitoring', style, setStyle, 'Monitoring report')}
+                                {seg('template', style, setStyle, 'Template report')}
+                            </div>
+                        </Field>
+                    )}
 
                     <Field icon={Download} label="Deliver as"
                         hint={jobCount > 3
